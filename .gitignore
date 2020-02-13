@@ -67,3 +67,5 @@ yarn-debug.log*
 
 /public
 .DS_Store
+# Ignore application configuration
+/config/application.yml
