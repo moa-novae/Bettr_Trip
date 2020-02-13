@@ -1,5 +1,13 @@
+.content {
+  display:flex;
+  justify-content: space-evenly;
+}
+
 .map-container {
   height: '100px';
-  margin-left: 30%;
-  margin-top: 2%;
+  width: 50%;
+}
+
+.calendar-container {
+  width: 40%;
 }

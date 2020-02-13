@@ -6,11 +6,16 @@ import Calendar from '../calendar'
 class Content extends Component {
   render() {
     return (
-      <div className="map-container">
-        {/* <MapWithASearchBox /> */}
-        <Calendar />
-      </div>
+      <div className="content">
 
+        <div className="calendar-container">
+          <Calendar />
+        </div>
+        <div className="map-container">
+          <MapWithASearchBox />
+        </div>
+      
+      </div>
     );
   }
 }
