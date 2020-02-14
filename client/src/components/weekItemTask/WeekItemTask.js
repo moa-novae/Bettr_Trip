@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+//shows tasks in week view
 export default function(props) {
   return (
     <React.Fragment>
