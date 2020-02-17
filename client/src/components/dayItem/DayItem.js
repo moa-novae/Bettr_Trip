@@ -2,14 +2,9 @@ import React, { useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
 import Location from '../location/Location'
+
 import update from 'immutability-helper'
 
-import { makeStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const sampleCards = [
@@ -23,13 +18,13 @@ const sampleCards = [
     id: 2,
     location: 'location 2',
     activity: ['This', 'That', 'Those'],
-    travel: { method: 'Walk', duration: 10 },
+    travel: { method: 'walk', duration: 10 },
   },
   {
     id: 3,
     location: 'location 3',
     activity: ['This', 'That', 'Those'],
-    travel: { method: 'Bike', duration: 10 },
+    travel: { method: 'bike', duration: 10 },
   },
   {
     id: 4,
@@ -41,22 +36,23 @@ const sampleCards = [
     id: 5,
     location: 'location 5',
     activity: ['This', 'That', 'Those'],
-    travel: { method: 'Bus', duration: 10 },
+    travel: { method: 'bus', duration: 10 },
   },
   {
     id: 6,
     location: 'location 6',
     activity: ['This', 'That', 'Those'],
-    travel: { method: 'Walk', duration: 10 },
+    travel: { method: 'walk', duration: 10 },
   },
   {
     id: 7,
     location: 'location 7',
     activity: ['This', 'That', 'Those'],
-    travel: { method: 'Bike', duration: 10 },
+    travel: { method: 'bike', duration: 10 },
   },
 ]
 export default function() {
+  
   const [locations, setCards] = useState(sampleCards)
   //function reorganizes card list based on hover location and dragged card
   const moveCard = (dragIndex, hoverIndex) => {
@@ -75,7 +71,8 @@ export default function() {
     <div className="day-item">
       <DndProvider backend={Backend}>
         {locations.map((location, i) => (
-        
+            
+              
             <Location
               key={location.id}
               index={i}
@@ -83,8 +80,13 @@ export default function() {
               location={location.location}
               activity={location.activity}
               moveCard={moveCard}
-            />
+              travel={location.travel}
+              />
+              
+  
+          
             
+    
 
         ))}
       </DndProvider>
