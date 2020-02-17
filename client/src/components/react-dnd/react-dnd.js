@@ -16,7 +16,7 @@ export default function() {
     ) {
       return
     }
-    const column = this.state.columns[source.droppableId];
+    const column = state.columns[source.droppableId];
     const newTaskIds = Array.from(column.taskIds);
     newTaskIds.splice(source.index, 1);
     newTaskIds.splice(destination.index, 0, draggableId)
