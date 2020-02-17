@@ -2,11 +2,9 @@ import React, { useState, useRef } from 'react'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
 import Location from '../location/Location'
-
-
+import './DayItem.scss'
 
 import { useSprings, animated, interpolate } from 'react-spring'
-
 
 export const sampleCards = [
   {
@@ -54,17 +52,14 @@ export const sampleCards = [
 ]
 export default function() {
   const [locations, setCards] = useState(sampleCards)
-  const updateY = location => {
-    return { y: location * 200}}
-  
-  const props = (index) => useSprings(updateY(index))
 
+  
 
 
 
 
   return (
-    <div className="day-item">
+    <div className="day">
       <DndProvider backend={Backend}>
         {locations.map((location, i) => (
           <Location

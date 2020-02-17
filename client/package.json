@@ -13,6 +13,7 @@
     "axios": "^0.18.1",
     "immutability-helper": "^3.0.1",
     "react": "^16.8.6",
+    "react-beautiful-dnd": "^12.2.0",
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.8.6",
@@ -39,6 +40,10 @@
   ],
   "proxy": "http://localhost:3001",
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "@types/react-beautiful-dnd": "^12.1.1",
+    "@types/styled-components": "^4.4.3",
+    "node-sass": "^4.13.1",
+    "nodemon": "^2.0.2",
+    "sass-loader": "^8.0.2"
   }
 }

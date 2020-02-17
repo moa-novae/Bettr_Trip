@@ -132,7 +132,7 @@ export default function(props) {
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
   return (
-    <React.Fragment>
+    <div className='location'>
 
       <div ref={ref} style={{ ...style, opacity }}>
 
@@ -184,6 +184,6 @@ export default function(props) {
         
 
       </div>
-    </React.Fragment>
+    </div>
   )
 }
