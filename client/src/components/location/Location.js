@@ -1,6 +1,8 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import ItemTypes from '../dayItem/ItemTypes'
+import update from 'immutability-helper'
+import sampleCards from '../dayItem'
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -17,6 +19,8 @@ import { red } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBicycle, faCar, faWalking, faBus } from '@fortawesome/free-solid-svg-icons'
+
+
 
 
 const style = {
@@ -52,14 +56,30 @@ const useStyles = makeStyles(theme => ({
 
 export default function(props) {
 
+  
+
+
+
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-
+  
+  //function reorganizes card list based on hover location and dragged card
+  const moveCard = (dragIndex, hoverIndex) => {
+    const dragCard = props.locations[dragIndex]
+    props.setCards(
+      update(props.locations, {
+        //take the dragged the card and insert it to the hovered index
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
+      }),
+    )
+  }
   const ref = useRef(null)
   const [, drop] = useDrop({
     accept: ItemTypes.CARD,
@@ -94,7 +114,7 @@ export default function(props) {
         return
       }
       // Time to actually perform the action
-      props.moveCard(dragIndex, hoverIndex)
+      moveCard(dragIndex, hoverIndex)
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
       // but it's good here for the sake of performance
