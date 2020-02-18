@@ -10,4 +10,6 @@
 
 .calendar-container {
   width: 40%;
+  height: 100vh;
+  overflow-y: auto;
 }

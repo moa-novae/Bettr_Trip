@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+//creates array of dummy task
 function createTask (num) {
   let output = [];
   for (let i = 0; i < num; i++) {
@@ -41,6 +42,7 @@ export default function weekItem(props) {
   };
 
   return (
+    //this is mostly material UI copy pasta
     <React.Fragment>
       <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <ExpansionPanelSummary
