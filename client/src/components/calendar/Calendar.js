@@ -5,7 +5,7 @@ import ReactDnd from '../react-dnd'
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '50%',
+    
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),

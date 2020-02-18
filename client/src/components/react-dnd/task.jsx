@@ -11,17 +11,12 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
-import { red } from '@material-ui/core/colors';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBicycle, faCar, faWalking, faBus } from '@fortawesome/free-solid-svg-icons'
 
 const Container = styled.div`
-border: 1px solid lightgrey;
-border-radius: 2px;
-padding: 8px;
-marin-bottom: 8px;
 
 `;
 
@@ -34,39 +29,29 @@ const useStyles = makeStyles(theme => ({
     paddingTop: '56.25%', // 16:9
   },
   expand: {
-    transform: 'rotate(0deg)',
     marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
+    
   },
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  avatar: {
-    backgroundColor: red[500],
-  },
 }));
-
 
 export default function(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
+ 
   const handleExpandClick = () => {
-    setExpanded(!expanded);
+    props.setExpanded(!props.expanded);
   };
-
+  
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
-        <div className='location'
+        <Container className='location'
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          
-          >
-          
-
+          ref={provided.innerRef} 
+        >
           <Card className={classes.root}>
             <CardHeader
               title={props.task.location}
@@ -86,38 +71,30 @@ export default function(props) {
               <span>Details</span>
               <IconButton
                 className={clsx(classes.expand, {
-                  [classes.expandOpen]: expanded,
+                  [classes.expandOpen]: props.expanded,
                 })}
                 onClick={handleExpandClick}
-                aria-expanded={expanded}
+                aria-expanded={props.expanded}
                 aria-label="show more"
               >
                 <ExpandMoreIcon />
               </IconButton>
             </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <Collapse in={props.expanded} timeout="auto" unmountOnExit exit={props.exit}>
               <CardContent>
-                stuff
-            </CardContent>
+                
+                    {/* displays travel information */}
+                    <p>Duration: {props.task.travel.duration}</p>
+                    <p>Method: {props.task.travel.method}</p>
+                    {props.task.travel.method === 'Bicycle' && <FontAwesomeIcon icon={faBicycle} />}
+                    {props.task.travel.method === 'Car' && <FontAwesomeIcon icon={faCar} />}
+                    {props.task.travel.method === 'Walking' && <FontAwesomeIcon icon={faWalking} />}
+                    {props.task.travel.method === 'Bus' && <FontAwesomeIcon icon={faBus} />}
+
+              </CardContent>
             </Collapse>
           </Card>
-
-          { !snapshot.isDragging &&
-            <div>
-              <p>Duration: {props.task.travel.duration}</p>
-              <p>Method: {props.task.travel.method}</p>
-              {props.task.travel.method === 'bike' && <FontAwesomeIcon icon={faBicycle} />}
-              {props.task.travel.method === 'car' && <FontAwesomeIcon icon={faCar} />}
-              {props.task.travel.method === 'walk' && <FontAwesomeIcon icon={faWalking} />}
-              {props.task.travel.method === 'bus' && <FontAwesomeIcon icon={faBus} />}
-
-
-
-            </div>
-          }
-        </div>
-
-
+        </Container>
       )}
     </Draggable>
   )

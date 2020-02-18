@@ -5,7 +5,18 @@ import { DragDropContext } from 'react-beautiful-dnd'
 
 export default function() {
   const [state, setState] = useState(initialData)
+  const [isDragging, setDrag] = useState (false)
+  const [expanded, setExpanded] = React.useState(true);
+  const [exit, setExit] = useState(true) //animation of collapse material ui
+  const onBeforeCapture = start => {
+    console.log('ehl')
+    setExit(false) //disable animation so collapsed tab unmounts right away
+    setExpanded(false) //collapses tab
+  }
+
   const onDragEnd = result => {
+    setExpanded(true)
+
     const { destination, source, draggableId } = result;
     if (!destination) {
       return
@@ -35,14 +46,17 @@ export default function() {
     setState(newState)
 
   }
-
+ 
+  
   return (
     <div>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext 
+      onDragEnd={onDragEnd} 
+      onBeforeCapture={onBeforeCapture}>
         {state.columnOrder.map(columnId => {
           const column = state.columns[columnId];
           const tasks = column.taskIds.map(taskId => state.tasks[taskId])
-          return <Column key={column.id} column={column} tasks={tasks} />
+          return <Column key={column.id} column={column} tasks={tasks} expanded={expanded} setExpanded={setExpanded} exit={exit}/>
         })}
       </DragDropContext>
     </div>
