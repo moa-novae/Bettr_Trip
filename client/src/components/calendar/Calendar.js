@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import WeekItem from '../weekItem'
-import DayItem from '../dayItem'
-import ReactDnd from '../react-dnd'
+import DayItem from '../dayItem-legacy'
+import ReactDnd from '../dayView'
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {

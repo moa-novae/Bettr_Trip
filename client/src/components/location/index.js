@@ -1,1 +1,1 @@
-export {default} from "../dayItem/Location"
+export {default} from "../dayItem-legacy/Location"
