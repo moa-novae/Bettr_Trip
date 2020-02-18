@@ -61,11 +61,13 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
       />
     </SearchBox>
     <Button saveLocation={() => props.saveLocation()} />
+    {(props.markers ? props.markers.map((marker, index) =>
+      <Marker key={index} position={marker.position} title={marker.title} />
+    ) : console.log('no marker'))}
   </GoogleMap>
 ))
 
 export default () => {
-  // const [location, setLocation] = useState({});
   const [state, setState] = useState({
     bounds: null,
     center: { lat: -34.397, lng: 150.644 },
@@ -77,23 +79,31 @@ export default () => {
   const saveLocation = () => {
     const location = state.location
     console.log('save button clicked')
+    console.log(location)
     const url = window.location.href
-    axios.post(`trips/${url}`, {
-      name: location.name.placeName,
-      region: location.name.region,
-      lat: location.coordinates.lat,
-      lng: location.coordinates.lng
+    const markerPosition = { lat: location.coordinates.lat, lng: location.coordinates.lng }
+    const marker = new window.google.maps.Marker({
+      position: markerPosition,
+      title: location.name.placeName
     })
-      .then(() => {
-        setState({
-          bin: {
-            name: location.name.placeName,
-            region: location.name.region,
-            lat: location.coordinates.lat,
-            lng: location.coordinates.lng
-          }
-        })
-      })
+    setState({markers: [...state.markers, marker]})
+    // axios.post(`trips/${url}`, {
+    //   name: location.name.placeName,
+    //   region: (location.name.region ? location.name.region : null),
+    //   lat: location.coordinates.lat,
+    //   lng: location.coordinates.lng
+    // })
+    //   .then(() => {
+    //     setState({
+    //       markers: [...markers, { lat: location.coordinates.lat, lng: location.coordinates.lng }],
+    //       bin: {
+    //         name: location.name.placeName,
+    //         region: (location.name.region ? location.name.region : null),
+    //         lat: location.coordinates.lat,
+    //         lng: location.coordinates.lng
+    //       }
+    //     })
+    //   })
   }
 
   const onPlacesChanged = () => {
@@ -117,17 +127,15 @@ export default () => {
     }));
 
     const nextCenter = _.get(nextMarkers, '0.position', state.center);
-    console.log({ state, nextCenter, nextMarkers })
-    console.log({ bounds })
-    console.log(places)
     setState({
       center: nextCenter,
-      markers: nextMarkers,
+      markers: [...state.markers, nextMarkers],
       location: {
-        name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2]? places[0].address_components[2].long_name : null) },
-        coordinates: { lat: bounds.Ya.i, lng: bounds.Ta.g }
+        name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
+        coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
       }
     })
+    console.log({state})
   }
 
   return (<div>
@@ -141,6 +149,7 @@ export default () => {
       mapElement={<div style={{ height: `100%` }} />}
       onPlacesChanged={onPlacesChanged}
       center={state.center}
+      markers={state.markers}
     />
   </div>)
 }
