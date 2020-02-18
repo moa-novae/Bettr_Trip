@@ -10,8 +10,6 @@ const {
 const { SearchBox } = require("react-google-maps/lib/components/places/SearchBox");
 // const API = ENV["GOOGLE_API_KEY"]
 
-console.log(process.env.REACT_APP_GOOGLE_API_KEY, "<--- heyeyeye")
-
 const MapWithASearchBox = compose(
   withProps({
     googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
