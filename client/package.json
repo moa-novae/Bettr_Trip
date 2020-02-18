@@ -14,6 +14,8 @@
     "axios": "^0.18.1",
     "bootstrap": "^4.4.1",
     "immutability-helper": "^3.0.1",
+    "moment": "^2.24.0",
+    "moment-range": "^4.0.2",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^12.2.0",
     "react-daterange-picker": "^2.0.1",
