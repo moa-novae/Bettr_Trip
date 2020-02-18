@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
-import ItemTypes from '../dayItem/ItemTypes'
+import ItemTypes from '../dayItem-legacy/ItemTypes'
 import update from 'immutability-helper'
-import sampleCards from '../dayItem'
+import sampleCards from '../dayItem-legacy'
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';

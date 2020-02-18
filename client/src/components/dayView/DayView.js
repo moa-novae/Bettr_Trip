@@ -11,12 +11,12 @@ export default function() {
   const onBeforeCapture = start => {
     console.log('ehl')
     setExit(false) //disable animation so collapsed tab unmounts right away
-    setExpanded(false) //collapses tab
+    setExpanded(false) //collapses tab before drag starts
   }
 
+  //manages logic when drag finishes
   const onDragEnd = result => {
     setExpanded(true)
-
     const { destination, source, draggableId } = result;
     if (!destination) {
       return
@@ -47,7 +47,6 @@ export default function() {
 
   }
  
-  
   return (
     <div>
       <DragDropContext 
