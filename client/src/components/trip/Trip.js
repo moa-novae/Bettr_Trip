@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import './Trip.css';
+import DatePicker from '../datepicker/DatePicker';
 
 export default function() {
   const [name, setName] = useState("");
@@ -26,6 +27,7 @@ export default function() {
           value={name}
         />
         <section className="trip_form_validation">{error}</section>
+        <DatePicker />
       </form>
       <button confirm onClick={() => validate()}>Save</button>
     </section>
