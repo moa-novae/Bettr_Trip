@@ -106,6 +106,10 @@ export default () => {
     //   })
   }
 
+  // const deleteMarker = () => {
+
+  // }
+
   const onPlacesChanged = () => {
     const places = refs.searchBox.getPlaces(); //gets place of thing searched 
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
