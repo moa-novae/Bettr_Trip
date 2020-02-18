@@ -13,8 +13,9 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBicycle, faCar, faWalking, faBus } from '@fortawesome/free-solid-svg-icons'
+
+import Transportation from '../Transportation'
+
 
 const Container = styled.div`
 
@@ -22,7 +23,7 @@ const Container = styled.div`
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: 345,
+    width: '100%', 
   },
   media: {
     height: 0,
@@ -68,7 +69,7 @@ export default function(props) {
               </ol>
             </CardContent>
             <CardActions disableSpacing>
-              <span>Details</span>
+              <span>Travel</span>
               <IconButton
                 className={clsx(classes.expand, {
                   [classes.expandOpen]: props.expanded,
@@ -84,12 +85,7 @@ export default function(props) {
               <CardContent>
                 
                     {/* displays travel information */}
-                    <p>Duration: {props.task.travel.duration}</p>
-                    <p>Method: {props.task.travel.method}</p>
-                    {props.task.travel.method === 'Bicycle' && <FontAwesomeIcon icon={faBicycle} />}
-                    {props.task.travel.method === 'Car' && <FontAwesomeIcon icon={faCar} />}
-                    {props.task.travel.method === 'Walking' && <FontAwesomeIcon icon={faWalking} />}
-                    {props.task.travel.method === 'Bus' && <FontAwesomeIcon icon={faBus} />}
+                    <Transportation travel={props.task.travel}/>
 
               </CardContent>
             </Collapse>
