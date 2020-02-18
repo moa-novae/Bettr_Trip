@@ -124,7 +124,7 @@ export default () => {
       center: nextCenter,
       markers: nextMarkers,
       location: {
-        name: { placeName: places[0].address_components[0].long_name, region: places[0].address_components[2].long_name },
+        name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2]? places[0].address_components[2].long_name : null) },
         coordinates: { lat: bounds.Ya.i, lng: bounds.Ta.g }
       }
     })
