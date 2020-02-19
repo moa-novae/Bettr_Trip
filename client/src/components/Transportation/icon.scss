@@ -1,5 +1,7 @@
 .icon-container{
-  position: relative
+  position: relative;
+  display: inline;
+  vertical-align: middle;
 }
 .icon-container > *{
   position: absolute;

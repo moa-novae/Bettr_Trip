@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import WeekItem from '../weekItem'
 import DayItem from '../dayItem-legacy'
-import ReactDnd from '../dayView'
+import DayView from '../dayView'
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,11 +28,11 @@ const createDaysArr = function (num) {
 }
 
 export default function ControlledExpansionPanels() {
-  const [view, setView] = useState('week') //view determins to show either week or day
+  const [view, setView] = useState('day') //view determins to show either week or day
   const classes = useStyles()
   const daysArr = createDaysArr(5)
   const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
-  const day = <ReactDnd />
+  const day = <DayView />
   return (
     <div className={classes.root}>
       {view === 'week' && week}

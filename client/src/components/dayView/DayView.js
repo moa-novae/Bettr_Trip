@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
-import initialData from './initial-data'
-import Column from './column.jsx'
-import { DragDropContext } from 'react-beautiful-dnd'
+import React, { setState, useState } from 'react';
+import initialData from './initial-data';
+import Column from './column.jsx';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 export default function() {
-  const [state, setState] = useState(initialData)
-  const [isDragging, setDrag] = useState (false)
-  const [expanded, setExpanded] = React.useState(true);
+  const [state, setDayState] = useState(initialData);
+  const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
     console.log('ehl')
@@ -43,7 +42,7 @@ export default function() {
         [newColumn.id]: newColumn,
       },
     }
-    setState(newState)
+    useState(prev => ({...prev, newState}))
 
   }
 
@@ -52,10 +51,10 @@ export default function() {
       <DragDropContext 
       onDragEnd={onDragEnd} 
       onBeforeCapture={onBeforeCapture}>
-        {state.columnOrder.map(columnId => {
+        {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
-          const tasks = column.taskIds.map(taskId => state.tasks[taskId])
-          return <Column key={column.id} column={column} tasks={tasks} expanded={expanded} setExpanded={setExpanded} exit={exit}/>
+          const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
+          return <Column key={column.id} column={column} tasks={tasks} expanded={expanded} setExpanded={setExpanded} exit={exit} setDayState={setDayState}/>
         })}
       </DragDropContext>
     </div>

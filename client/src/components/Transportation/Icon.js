@@ -26,10 +26,25 @@ export default function(props) {
     Bus: <DirectionsBusIcon />,
   }
   return (
-<>
+    <>
+      <i onClick={() => {
+        if (props.canSelectAsNew) {
 
-    { iconDisplay[props.method]}
-</>
+          props.setDayState((prev) => {
+            let newState = { ...prev }
+            newState.tasks[props.task.id].travel.method = props.method
+            return newState
+          })
+        }
+        props.setShowIcons(!props.showIcons)
+        props.setStart(true)
+
+
+      }}>
+
+        {iconDisplay[props.method]}
+      </i>
+    </>
 
 
 

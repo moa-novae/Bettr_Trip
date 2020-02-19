@@ -85,7 +85,7 @@ export default function(props) {
               <CardContent>
                 
                     {/* displays travel information */}
-                    <Transportation travel={props.task.travel}/>
+                    <Transportation travel={props.task.travel} setDayState={props.setDayState} task={props.task}/>
 
               </CardContent>
             </Collapse>
