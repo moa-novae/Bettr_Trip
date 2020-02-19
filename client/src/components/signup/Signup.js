@@ -4,9 +4,9 @@ import './Signup.css';
 export default function() {
   return (
     <div>
-      <h3>About Us</h3>
+      <h3>Sign Up Page</h3>
       <div>
-        <h5>We are Logo! Plan your next trip with ease!</h5>
+        <h5>Fill in your info: </h5>
       </div>
     </div>
   );

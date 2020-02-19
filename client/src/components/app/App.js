@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 import Content from '../content';
 import Nav from '../nav';
+import Home from '../home';
 import About from '../about';
 import Login from '../login';
 import Trip from '../trip';
@@ -34,10 +35,13 @@ class App extends Component {
     return (
       <Router>
         <Nav />
-        <Route path='/about' component={About} />
-        <Route path='/trips' component={Trip} />
-        <Route path='/login' component={Login} />
-        <Route path='/signup' component={Signup} />
+        <Switch>
+          <Route path='/' exact component={Home} />
+          <Route path='/about' exact component={About} />
+          <Route path='/trips' exact component={Trip} />
+          <Route path='/login' exact component={Login} />
+          <Route path='/signup' exact component={Signup} />
+        </Switch>
         <div className="App">
           <Content />    
         </div>
