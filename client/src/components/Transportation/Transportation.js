@@ -1,6 +1,6 @@
 import React, { useEffect, useState, setState, useRef } from 'react'
 import Icon from './Icon'
-import { animated, useSprings, useTransition, useChain } from 'react-spring'
+import { animated, useSprings, useTransition, useChain, useSpring } from 'react-spring'
 import './icon.scss'
 import zIndex from '@material-ui/core/styles/zIndex'
 
@@ -18,78 +18,107 @@ export default function(props) {
   const [unmountIcons, setUnmountIcons] = useState(true) // true => only show selected icon upon animation end
   const [start, setStart] = useState(false)
   const [finish, setFinish] = useState(false)
-  
-  //const springsRef = useRef();
-  const [springProps, set] = useSprings(transportMethods.length, index => ({
 
-    x: showIcons === 0 ? 0 : 40 * index,
-    from: { x: 0 },
+  //const springsRef = useRef();
+  const [springProps, set] = useSpring(() => ({
+
+    to: { x: !showIcons ? 0 : 40 },
+    from: { x: !showIcons ? 40 : 0 },
 
   }))
 
+  const { task, setDayState } = props
+
   // const unselectedIcons = transportMethods.splice(0, 1)
   // const transitionRef = useRef();
-  // const transitions = useTransition(unselectedIcons, item => unselectedIcons.indexOf(item), {
-  //   ref: transitionRef,
-  //   from: {opaciy: 0},
-  //   enter: { opacity: 1},
-  //   leave: { opacity: 0},
-  // })
+  console.log('transport', transportMethods)
+  const method = transportMethods.map((child, i) => {
+    return [child, i]
+  })
 
+
+
+
+
+
+
+  const transitions = useTransition(
+    transportMethods[0],
+    item => item,
+    {
+      from: { opacity: 0, x: 10 },
+      leave: ({ opacity: 0, x: 0 }),
+      enter: ({ opacity: 1, x: 40}),
+    })
+  const transitions1 = useTransition(
+    transportMethods[1],
+    item => item,
+    {
+      from: { opacity: 0, x: 0 },
+      leave: ({ opacity: 0, x: 0 }),
+      enter: ({ opacity: 1, x: 200 }),
+    })
+  const transitions2 = useTransition(
+    transportMethods[2],
+    item => item,
+    {
+      from: { opacity: 0, x: 0 },
+      leave: ({ opacity: 0, x: 0 }),
+      enter: ({ opacity: 1, x: 200 }),
+    })
+  const transitions3 = useTransition(
+    transportMethods[3],
+    item => item,
+    {
+      from: { opacity: 0, x: 0 },
+      leave: ({ opacity: 0, x: 0 }),
+      enter: ({ opacity: 1, x: 200 }),
+    })
+  const trans = [transitions, transitions1, transitions2, transitions3]
+  console.log(method[1], 'method')
   //useChain([springRef, transitionRef])
-  useEffect(() => {
-    set(index => ({
-      to: {x: !showIcons ? 0 : 40 * index},
-      from: { x:  !showIcons? 40 * index : 0 },
-      onStart: () => {
-        if (showIcons) {
-          if (start) setUnmountIcons(false);
-        }
-      },
-      onRest: () => {
-        console.log('onRest')
-        
-        if (!showIcons) {
+  // useEffect(() => {
+  //   set(({
+  //     to: {x: !showIcons ? 0 : 40 * index},
+  //     from: { x:  !showIcons? 40 * index : 0 },
 
-          setFinish(true)
-          if (start) {
-            if (finish) { setUnmountIcons(true); }
-          }
-        }
-        setStart(false)
-      }
-    }))
-  }, [showIcons])
+  //   }))
+  // }, [showIcons])
 
   return (
     <>
       <p>Duration: {props.travel.duration}</p>
       <p>Method: {props.travel.method}</p>
       <div className="icon-container">
+        {
+          trans.map(e =>
 
-        {springProps.map(({ x }, i) => {
-          return (
+            e.map(({ item, props, key }, index) => {
+              return (
 
-            <animated.div
-              key={i}
-              style={{
-                left: x,
-                zIndex: 10 - x,
-              }}>
+                <animated.div
+                  key={key}
+                  style={{
+                    ...props, 
+                    transform: props.x.interpolate((x) => `translate3d(${x}px,0,0)`)
+                  }}>
 
-              {(i === 0 || !unmountIcons) &&
-                <Icon method={transportMethods[i]}
-                  setShowIcons={setShowIcons}
-                  showIcons={showIcons}
-                  setDayState={props.setDayState}
-                  task={props.task}
-                  canSelectAsNew={(!unmountIcons)}
-                  setStart={setStart}
+                  {(transportMethods.indexOf(item) === 0 || showIcons) &&
+                    <Icon method={item}
+                      setShowIcons={setShowIcons}
+                      showIcons={showIcons}
+                      setDayState={setDayState}
+                      task={task}
+                      canSelectAsNew={(!unmountIcons)}
+                      setStart={setStart}
 
-                />}
-            </animated.div>
+                    />}
+                </animated.div>
+              )
+            })
           )
-        })}
+        }
+        {/* {console.log('finish loop')} */}
       </div>
 
     </>

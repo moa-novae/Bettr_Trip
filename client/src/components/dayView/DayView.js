@@ -42,7 +42,7 @@ export default function() {
         [newColumn.id]: newColumn,
       },
     }
-    useState(prev => ({...prev, newState}))
+    setDayState(prev =>  (newState))
 
   }
 
