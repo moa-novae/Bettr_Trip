@@ -80,30 +80,29 @@ export default () => {
     const location = state.location
     console.log('save button clicked')
     console.log(location)
-    const url = window.location.href
     const markerPosition = { lat: location.coordinates.lat, lng: location.coordinates.lng }
     const marker = new window.google.maps.Marker({
       position: markerPosition,
       title: location.name.placeName
     })
-    setState({markers: [...state.markers, marker]})
-    // axios.post(`trips/${url}`, {
-    //   name: location.name.placeName,
-    //   region: (location.name.region ? location.name.region : null),
-    //   lat: location.coordinates.lat,
-    //   lng: location.coordinates.lng
-    // })
-    //   .then(() => {
-    //     setState({
-    //       markers: [...markers, { lat: location.coordinates.lat, lng: location.coordinates.lng }],
-    //       bin: {
-    //         name: location.name.placeName,
-    //         region: (location.name.region ? location.name.region : null),
-    //         lat: location.coordinates.lat,
-    //         lng: location.coordinates.lng
-    //       }
-    //     })
-    //   })
+    // setState({markers: [...state.markers, marker]})
+    axios.post("points/create", {
+      name: location.name.placeName,
+      // region: (location.name.region ? location.name.region : null),
+      lat: location.coordinates.lat,
+      lng: location.coordinates.lng
+    })
+      .then(() => {
+        setState({
+          markers: [...state.markers, marker],
+          bin: {
+            name: location.name.placeName,
+            region: (location.name.region ? location.name.region : null),
+            lat: location.coordinates.lat,
+            lng: location.coordinates.lng
+          }
+        })
+      })
   }
 
   // const deleteMarker = () => {
