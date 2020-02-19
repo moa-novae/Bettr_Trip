@@ -1,0 +1,7 @@
+.icon-container{
+  position: relative
+}
+.icon-container > *{
+  position: absolute;
+  top: 0px;
+}

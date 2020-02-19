@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Icon from './Icon'
 import { animated, useSprings, interpolate, useSpring } from 'react-spring'
+import './icon.scss'
 
 export default function(props) {
   const transportMethods = ['Bicycle', 'Walking', 'Bus', 'Car']
@@ -8,30 +9,44 @@ export default function(props) {
   transportMethods.splice(transportMethods.indexOf(props.travel.method), 1)
   transportMethods.splice(0, 0, props.travel.method)
 
-  const [showIcons, setShowIcons] = useState(1)
+  const [showIcons, setShowIcons] = useState(0)
 
-  const [springProps, set] = useSpring(() => ({transform: showIcons === 0 ?`translate3d(0%, 0, 0)` : `translate3d(10%, 0, 0)`}))
-  
+  const [springProps, set] = useSprings(transportMethods.length, index => ({
+    x: showIcons === 0 ? 0 : 40 * index,
+    from: { x: 0 }
+  }))
   useEffect(() => {
-    console.log("Was this called???")
-    console.log("This is showicons: ", showIcons)
-    console.log( showIcons === 1 ?`translate3d(0%, 0, 0)` : `translate3d(10%, 0, 0)`)
-    set({transform: showIcons === 0 ?`translate3d(0%, 0, 0)` : `translate3d(10%, 0, 0)`} )
+    set(index => ({
+      x: showIcons === 0 ? 0 : 40 * index,
+      from: { x: 0 }
+    }))
   }, [showIcons])
-  console.log(springProps)
+
   return (
     <>
       <p>Duration: {props.travel.duration}</p>
       <p>Method: {props.travel.method}</p>
-      <animated.div style={springProps}>
-        
-        <Icon travel={props.travel} />
-      </animated.div>
-      <button onClick={()=>setShowIcons( showIcons === 0 ? 1 : 0)
+      <div className="icon-container">
+
+        {springProps.map(({ x }, i) => (
+
+          <animated.div
+            key={i}
+            style={{
+              
+              position: 'absolute',
+              left: x
+            }}>
+
+            <Icon method={transportMethods[i]} />
+          </animated.div>
+        ))}
+      </div>
+      <button onClick={() => setShowIcons(showIcons === 0 ? 1 : 0)
       }>
         {showIcons}
       </button>
-      
+
     </>
   )
 

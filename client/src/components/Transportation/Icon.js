@@ -1,20 +1,38 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBicycle, faCar, faWalking, faBus } from '@fortawesome/free-solid-svg-icons'
+import { faBicycle, faCar, faWalking, faBus, faCircle } from '@fortawesome/free-solid-svg-icons'
+import '../../../node_modules/font-awesome/css/font-awesome.min.css';
+import '../../../node_modules/font-awesome/css/font-awesome.css';
+import '../../../node_modules/font-awesome/css/font-awesome.css.map';
 
-export default function (props) {
+import Icon from '@material-ui/core/Icon';
+import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
+import DirectionsCarIcon from '@material-ui/icons/DirectionsCar';
+import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike';
+import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
+
+
+
+
+
+
+
+
+export default function(props) {
   const iconDisplay = {
-    Bicycle: faBicycle,
-    Car: faCar,
-    Walking: faWalking,
-    Bus: faBus,
+    Bicycle: <DirectionsBikeIcon />,
+    Car: <DirectionsCarIcon />,
+    Walking: <DirectionsWalkIcon />,
+    Bus: <DirectionsBusIcon />,
   }
   return (
-    <div className='icon'>
-      <i onClick={() => console.log('click')}>
+<>
 
-      <FontAwesomeIcon icon={iconDisplay[props.travel.method]} />
-      </i>
-    </div>
+    { iconDisplay[props.method]}
+</>
+
+
+
+
   )
 }
