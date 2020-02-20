@@ -5,7 +5,9 @@ Rails.application.routes.draw do
 
   resource :home, only: [:index]
   resources :trips, only: [:index, :create, :update]
-  resource :points, only: [:create, :update, :delete]
+  # resource :points, only: [:create, :update, :delete]
+  # resources :points, only: [:index, :create, :update]
+
 
   namespace :api do # /api/data
 
@@ -22,6 +24,7 @@ Rails.application.routes.draw do
   get '/signup' => 'users#new'
   post '/users' => 'users#create'
   post '/points/create' => 'points#create'
+  get '/points/index' => 'points#index'
 
   get '*path', to: "static_pages#fallback_index_html", constraints: ->(request) do
     !request.xhr? && request.format.html?
