@@ -60,9 +60,9 @@ export default function(props) {
       })
     }
   }
-  useEffect(() => {
-    onTimeChange(startTime, endTime)
-  }, [startTime, endTime])
+  // useEffect(() => {
+  //   onTimeChange(startTime, endTime)
+  // }, [startTime, endTime])
 
 
   return (
@@ -83,12 +83,14 @@ export default function(props) {
             {'End'}
             <TimePicker value={endTime} onChange={setEndTime} />
 
-            <div onClick={() => props.setDayState(prev => {
+            <i onClick={() => props.setDayState(prev => {
               console.log('clicked')
               let newState = { ...prev }
               delete newState.tasks[props.task.id]
               return (newState)
             })}>
+              <DeleteForeverIcon />
+            </i>
               <div>
 
                 <p>
@@ -101,8 +103,6 @@ export default function(props) {
                 </p>
               </div>
 
-              <DeleteForeverIcon />
-            </div>
             <CardMedia
             //add pictures
             />
