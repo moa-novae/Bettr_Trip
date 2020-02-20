@@ -1,4 +1,4 @@
-import React, { setState, useState } from 'react';
+import React, { setState, useState, useEffect } from 'react';
 import initialData from './initial-data';
 import Column from './column.jsx';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -12,6 +12,11 @@ export default function() {
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
   }
+
+
+  
+  
+
 
   //manages logic when drag finishes
   const onDragEnd = result => {
@@ -42,7 +47,7 @@ export default function() {
         [newColumn.id]: newColumn,
       },
     }
-    useState(prev => ({...prev, newState}))
+    setDayState(prev => newState)
 
   }
 

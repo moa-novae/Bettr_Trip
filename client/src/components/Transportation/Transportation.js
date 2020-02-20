@@ -19,6 +19,7 @@ export default function(props) {
   const [start, setStart] = useState(false)
   const [finish, setFinish] = useState(false)
   
+
   //const springsRef = useRef();
   const [springProps, set] = useSprings(transportMethods.length, index => ({
 
@@ -39,22 +40,21 @@ export default function(props) {
   //useChain([springRef, transitionRef])
   useEffect(() => {
     set(index => ({
-      to: {x: !showIcons ? 0 : 40 * index},
-      from: { x:  !showIcons? 40 * index : 0 },
+      to: { x: !showIcons ? 0 : 40 * index },
+      from: { x: !showIcons ? 40 * index : 0 },
       onStart: () => {
         if (showIcons) {
           if (start) setUnmountIcons(false);
         }
       },
       onRest: () => {
-        console.log('onRest')
         
+
         if (!showIcons) {
 
           setFinish(true)
-          if (start) {
-            if (finish) { setUnmountIcons(true); }
-          }
+          setUnmountIcons(true)
+          
         }
         setStart(false)
       }
@@ -83,8 +83,9 @@ export default function(props) {
                   showIcons={showIcons}
                   setDayState={props.setDayState}
                   task={props.task}
-                  canSelectAsNew={(!unmountIcons)}
+                  canSelectAsNew={(i === 0 || !unmountIcons)}
                   setStart={setStart}
+              
 
                 />}
             </animated.div>

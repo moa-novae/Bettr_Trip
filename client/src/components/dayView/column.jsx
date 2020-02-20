@@ -24,9 +24,12 @@ export default function(props) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {props.tasks.map((task, index) => (
+            {props.tasks.map((task, index) => {
+              console.log(task)
+
+              if(task) {return (
               <Task key={task.id} task={task} index={index} expanded={props.expanded} setExpanded={props.setExpanded} exit={props.exit} setDayState={props.setDayState}/>
-            ))}
+            )}})}
             {provided.placeholder}
           </TaskList>
         )}

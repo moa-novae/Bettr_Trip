@@ -13,9 +13,12 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+
+
 
 import Transportation from '../Transportation'
-
+import EditableContainer from '../editableContainer'
 
 const Container = styled.div`
 
@@ -23,7 +26,7 @@ const Container = styled.div`
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%', 
+    width: '100%',
   },
   media: {
     height: 0,
@@ -31,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
   expand: {
     marginLeft: 'auto',
-    
+
   },
   expandOpen: {
     transform: 'rotate(180deg)',
@@ -40,33 +43,38 @@ const useStyles = makeStyles(theme => ({
 
 export default function(props) {
   const classes = useStyles();
- 
+
   const handleExpandClick = () => {
     props.setExpanded(!props.expanded);
   };
-  
+
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
         <Container className='location'
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          ref={provided.innerRef} 
+          ref={provided.innerRef}
         >
           <Card className={classes.root}>
             <CardHeader
               title={props.task.location}
               subheader="Activity"
             />
+            <div onClick={() => props.setDayState(prev => {
+              console.log('clicked')
+              let newState = {...prev}
+              delete newState.tasks[props.task.id]
+              return (newState)
+            })}>
+
+            <DeleteForeverIcon />
+            </div>
             <CardMedia
             //add pictures
             />
             <CardContent>
-              <ol>
-                {props.task.activity.map(e => {
-                  return <li>{e}</li>
-                })}
-              </ol>
+              <EditableContainer children= {props.task.activity}/>
             </CardContent>
             <CardActions disableSpacing>
               <span>Travel</span>
@@ -83,9 +91,9 @@ export default function(props) {
             </CardActions>
             <Collapse in={props.expanded} timeout="auto" unmountOnExit exit={props.exit}>
               <CardContent>
-                
-                    {/* displays travel information */}
-                    <Transportation travel={props.task.travel} setDayState={props.setDayState} task={props.task}/>
+
+                {/* displays travel information */}
+                <Transportation travel={props.task.travel} setDayState={props.setDayState} task={props.task} />
 
               </CardContent>
             </Collapse>
