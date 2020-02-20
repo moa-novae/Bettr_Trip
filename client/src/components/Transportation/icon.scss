@@ -1,0 +1,9 @@
+.icon-container{
+  position: relative;
+  display: inline;
+  vertical-align: middle;
+}
+.icon-container > *{
+  position: absolute;
+  top: 0px;
+}

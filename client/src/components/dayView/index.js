@@ -1,1 +1,1 @@
-export {default} from './DayView'
+export {default} from './DayView.js'
