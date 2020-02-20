@@ -17,8 +17,8 @@ Rails.application.routes.draw do
 
   get '/signup' => 'users#new'
   post '/users' => 'users#create'
-  post '/points/create' => 'points#create'
-  get '/points/index' => 'points#index'
+  # post '/points/create' => 'points#create'
+  # get '/points/index' => 'points#index'
 
   get '*path', to: "static_pages#fallback_index_html", constraints: ->(request) do
     !request.xhr? && request.format.html?

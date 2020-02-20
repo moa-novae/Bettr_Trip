@@ -1,17 +1,18 @@
-// //can compare this compose with original google map render that doenst use compose
-// //can switch from compose - potentially give you more control over state/API calls
-
-// //otherwise: see if can set state within component did mount 
-
-
-// //for the buttons: what if i have a component within maps that passes down the data grabbed from the api and renders a form for each
-
 import React, { useEffect, useState } from 'react'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 import _ from 'lodash';
 import axios from 'axios';
 import { componentDidMount } from 'react-google-maps/lib/utils/MapChildHelper';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
+import Bin from '../bin'
+
 
 
 
@@ -32,14 +33,21 @@ const Button = (props) => {
     </button>
   )
 }
-const Bin = (props) => {
-  return (
-    <div
-      className={"Bin"}
-    >Bin
-    </div>
-  )
-}
+// const Bin = (props) => {
+//   const binItems = props.bin.map(function(item, index) {
+//     <BinItem key={index}
+//     name={item.name}
+//     region={(item.region? item.region : null)}
+//     />
+
+//   })
+//   return (
+//     <div
+//       className={"Bin"}
+//     >Bin
+//     </div>
+//   )
+// }
 const Input = () => {
   return (
     <input
@@ -76,7 +84,7 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
       <Input />
     </SearchBox>
     <Button saveLocation={() => props.saveLocation()} />
-    <Bin />
+    {/* <Bin bin={props.bin}/> */}
     {(props.markers ? props.markers.map((marker, index) =>
       <Marker key={index} position={marker.position} title={marker.title} />
     ) : console.log('no marker'))}
@@ -86,17 +94,19 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
 export default () => {
   const [state, setState] = useState({
     bounds: null,
-    center: { lat: -34.397, lng: 150.644 },
+    center: {},
     markers: [],
     location: {},
     bin: [],
     markerLibrary: []
   })
+  let { id } = useParams();
+
 
   const saveLocation = () => {
     const location = state.location
     const markerPosition = { lat: location.coordinates.lat, lng: location.coordinates.lng }
-    const marker = new window.google.maps.Marker({
+    const marker = new window.google.maps.Marker({ //creates new marker using google api 
       position: markerPosition,
       title: location.name.placeName
     })
@@ -106,25 +116,29 @@ export default () => {
       lat: location.coordinates.lat,
       lng: location.coordinates.lng
     }
-    setState({
+    console.log('BIN OBJ', binObject)
+    setState(state => ({
+      ...state,
       markers: [...state.markers, marker],
       bin: [...state.bin, binObject]
-    })
-    axios.post("http://localhost:3001/points/create", {
+    }))
+    axios.post(`http://localhost:3001/api/trips/${id}/points`, {
       name: location.name.placeName,
-      // region: (location.name.region ? location.name.region : null),
+      trip_id: id,
+      region: (location.name.region ? location.name.region : null),
       latitude: location.coordinates.lat,
       longitude: location.coordinates.lng
     })
       .then(response => {
         console.log(response)
+        console.log('STATE POST', state)
       })
   }
 
   // const deleteMarker = () => {
 
   // }
-
+  //manages logic when place is searched 
   const onPlacesChanged = () => {
     const places = refs.searchBox.getPlaces(); //gets place of thing searched 
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
@@ -146,21 +160,22 @@ export default () => {
     }));
 
     const nextCenter = _.get(nextMarkers, '0.position', state.center);
-    setState({
+    setState(state => ({
+      ...state,
       center: nextCenter,
       markers: [...state.markers, nextMarkers],
       location: {
         name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
         coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
       }
-    })
+    }))
     console.log({ state })
   }
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get('http://localhost:3001/points/index')
+        const response = await axios.get(`http://localhost:3001/api/trips/${id}/points/`)
         const markerArray = [];
         const binArray = [];
         for (let point of response.data.points) {
@@ -169,16 +184,23 @@ export default () => {
           let newMarker = { position: markerPosition, title: point.name }
           markerArray.push(newMarker)
           //add bin object to database
-          // let binObject = 
+          const binObject = {
+            name: point.name,
+            region: (point.region ? point.region : null),
+            lat: parseFloat(point.latitude),
+            lng: parseFloat(point.longitude)
+          }
+          binArray.push(binObject);
         }
-        setState({
+        setState(state => ({
+          ...state,
           bounds: null,
-          center: { lat: -34.397, lng: 150.644 },
+          center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
           markers: [...state.markers],
           location: {},
-          bin: [...state.bin,],
+          bin: [...binArray],
           markerLibrary: [...markerArray]
-        })
+        }))
 
       } catch (error) {
         console.error(error)
@@ -187,21 +209,22 @@ export default () => {
     fetchData();
   }, [])
 
-  setTimeout(function () {
-    if (state.markerLibrary) {
-      console.log('HERE', state.markerLibrary)
-      const markerArray = [];
-      for (let marker of state.markerLibrary) {
-        const newMarker = new window.google.maps.Marker({
-          position: marker.position,
-          title: marker.title
-          // position: {lat: 22, lng: 22},
-        });
-        markerArray.push(newMarker)
+  useEffect(() => {
+    setTimeout(function () {
+      if (state.markerLibrary) {
+        console.log('HERE', state.markerLibrary)
+        const markerArray = [];
+        for (let marker of state.markerLibrary) {
+          const newMarker = new window.google.maps.Marker({
+            position: marker.position,
+            title: marker.title
+          });
+          markerArray.push(newMarker)
+        }
+        setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
       }
-      setState({ markers: [...state.markers, ...markerArray] })
-    }
-  }, 1000)
+    }, 1000)
+  }, [state.markerLibrary])
 
 
   return (<div>
