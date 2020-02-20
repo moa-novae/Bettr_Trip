@@ -35,8 +35,9 @@ export default function ControlledExpansionPanels() {
       daysArr = tripData.points;
       console.log(daysArr, "This is just daysArr!!!");
     }).then(() => {
-    console.log(daysArr[0].start_time + "wowowowowow");
-
+      if (daysArr.length === 0) {
+        
+      }
     // for acculuating points data
     let pointDataArr = [];
 
