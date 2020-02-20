@@ -16,6 +16,7 @@ class PointsController < ApplicationController
     @point.save
   end
 
+  
 
   private
 

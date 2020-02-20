@@ -17,7 +17,15 @@ module API
       @point = Point.new(point_params)
       @point.save
     end
-  
+    
+    def update
+      point = Point.find_by(id: params[:id])
+      point.save
+    end
+
+
+
+
   
     private
   
