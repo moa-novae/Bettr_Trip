@@ -67,11 +67,11 @@ export default function(props) {
   };
 
   
-  //function reorganizes card list based on hover location and dragged card
+  //function reorganizes card list based on hover name and dragged card
   const moveCard = (dragIndex, hoverIndex) => {
-    const dragCard = props.locations[dragIndex]
+    const dragCard = props.names[dragIndex]
     props.setCards(
-      update(props.locations, {
+      update(props.names, {
         //take the dragged the card and insert it to the hovered index
         $splice: [
           [dragIndex, 1],
@@ -132,14 +132,14 @@ export default function(props) {
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
   return (
-    <div className='location'>
+    <div className='name'>
 
       <div ref={ref} style={{ ...style, opacity }}>
 
 
         <Card className={classes.root}>
           <CardHeader
-            title={props.location}
+            title={props.name}
             subheader="Activity"
           />
           <CardMedia
