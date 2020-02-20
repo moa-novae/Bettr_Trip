@@ -59,7 +59,16 @@ export default function() {
         {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
           const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
-          return <Column key={column.id} column={column} tasks={tasks} expanded={expanded} setExpanded={setExpanded} exit={exit} setDayState={setDayState}/>
+          return <Column 
+          key={column.id} 
+          column={column} 
+          tasks={tasks} 
+          expanded={expanded} 
+          setExpanded={setExpanded} 
+          exit={exit} 
+          setDayState={setDayState}
+          state={state}
+          />
         })}
       </DragDropContext>
     </div>

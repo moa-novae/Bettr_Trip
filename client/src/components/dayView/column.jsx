@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Task from './task.jsx'
 import styled from 'styled-components'
 import { Droppable } from "react-beautiful-dnd"
@@ -13,7 +13,7 @@ const TaskList = styled.div`
 padding: 8px`
 
 export default function(props) {
-  
+
   return (
     <Container>
       <Title> {props.column.title} </Title>
@@ -25,11 +25,22 @@ export default function(props) {
             {...provided.droppableProps}
           >
             {props.tasks.map((task, index) => {
-              console.log(task)
 
-              if(task) {return (
-              <Task key={task.id} task={task} index={index} expanded={props.expanded} setExpanded={props.setExpanded} exit={props.exit} setDayState={props.setDayState}/>
-            )}})}
+
+              if (task) {
+                return (
+                  <Task
+                    key={task.id}
+                    task={task}
+                    index={index}
+                    expanded={props.expanded}
+                    setExpanded={props.setExpanded}
+                    exit={props.exit}
+                    setDayState={props.setDayState}
+                    state={props.state} />
+                )
+              }
+            })}
             {provided.placeholder}
           </TaskList>
         )}

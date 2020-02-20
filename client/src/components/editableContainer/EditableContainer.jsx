@@ -55,7 +55,7 @@ export default class EditableContainer extends React.Component {
   }
 
   render () {
-    const {children, ...rest} = this.props
+    const {children, setDayState, state, id, ...rest} = this.props
     const {edit} = this.state
 
     if (edit) {
@@ -64,6 +64,11 @@ export default class EditableContainer extends React.Component {
         <Field
           autoFocus
           onBlur={this.handleBlur.bind(this)}
+          setDayState={setDayState}
+          state={state}
+          children={children}
+          id={id}
+          
         />
       )
     } else {

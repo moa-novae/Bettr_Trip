@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 
@@ -14,11 +14,12 @@ import IconButton from '@material-ui/core/IconButton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-
-
-
+import { TimePicker } from '@material-ui/pickers'
 import Transportation from '../Transportation'
 import EditableContainer from '../editableContainer'
+import MomentAdapter from '@date-io/moment'
+const Moment = new MomentAdapter();
+const { moment, format } = Moment
 
 const Container = styled.div`
 
@@ -48,6 +49,22 @@ export default function(props) {
     props.setExpanded(!props.expanded);
   };
 
+  const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start))
+  const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end))
+  const onTimeChange = (start, end) => {
+    if (startTime && endTime) {
+      return props.setDayState(prev => {
+        let newState = { ...prev }
+        newState.tasks[props.task.id].time = { start: start, end: end }
+        return newState
+      })
+    }
+  }
+  useEffect(() => {
+    onTimeChange(startTime, endTime)
+  }, [startTime, endTime])
+
+
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
@@ -61,20 +78,36 @@ export default function(props) {
               title={props.task.location}
               subheader="Activity"
             />
+            {'Start'}
+            <TimePicker value={startTime} onChange={setStartTime} />
+            {'End'}
+            <TimePicker value={endTime} onChange={setEndTime} />
+
             <div onClick={() => props.setDayState(prev => {
               console.log('clicked')
-              let newState = {...prev}
+              let newState = { ...prev }
               delete newState.tasks[props.task.id]
               return (newState)
             })}>
+              <div>
 
-            <DeleteForeverIcon />
+                <p>
+                  {moment(startTime).format('hh:mm')}
+
+                </p>
+                <p>
+                  {moment(endTime).format('hh:mm')}
+
+                </p>
+              </div>
+
+              <DeleteForeverIcon />
             </div>
             <CardMedia
             //add pictures
             />
             <CardContent>
-              <EditableContainer children= {props.task.activity}/>
+              <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
             </CardContent>
             <CardActions disableSpacing>
               <span>Travel</span>

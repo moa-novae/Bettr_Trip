@@ -7,7 +7,9 @@ import About from '../about';
 import Login from '../login';
 import Trip from '../trip';
 import Signup from '../signup';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
+import MomentUtils from '@date-io/moment';
 
 class App extends Component {
   constructor(props) {
@@ -19,15 +21,15 @@ class App extends Component {
 
   fetchData = () => {
     axios.get('/api/data') // You can simply make your requests to "/api/whatever you want"
-    .then((response) => {
-      // handle success
-      console.log(response.data) // The entire response from the Rails API
+      .then((response) => {
+        // handle success
+        console.log(response.data) // The entire response from the Rails API
 
-      console.log(response.data.message) // Just the message
-      this.setState({
-        message: response.data.message
-      });
-    }) 
+        console.log(response.data.message) // Just the message
+        this.setState({
+          message: response.data.message
+        });
+      })
   }
 
   render() {
@@ -39,7 +41,9 @@ class App extends Component {
         <Route path='/login' component={Login} />
         <Route path='/signup' component={Signup} />
         <div className="App">
-          <Content />    
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Content />
+          </MuiPickersUtilsProvider>
         </div>
       </Router>
     );
