@@ -17,8 +17,9 @@ class TripsController < ApplicationController
              day3: {point1: {longitude: -79.402189, latitude: 43.644236, start_time: '7:30:00', end_time: '18:30:00', travel_method: BICYCLE}, 
                     point2: {longitude: -79.387109, latitude: 43.642783, start_time: '20:00:00', end_time: '22:00:00', travel_method: BICYCLE}}
             }
-    }
+        }
   end
+
 
   def show
     render :json => {
