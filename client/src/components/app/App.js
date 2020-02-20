@@ -48,7 +48,7 @@ class App extends Component {
             <Route path='/trips/:id' component={Content} />
           </Switch>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Content />
+            {/* <Content /> */}
           </MuiPickersUtilsProvider>
         </div>
       </Router>

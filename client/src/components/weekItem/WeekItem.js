@@ -25,13 +25,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 //creates array of dummy task
-function createTask (num) {
-  let output = [];
-  for (let i = 0; i < num; i++) {
-    output.push(`Place ${i + 1}`)
-  }
-  return output
-}
+// function createTask (arr) {
+//   let output = [];
+//   for (let i = 0; i < num; i++) {
+//     output.push(`Place ${i + 1}`)
+//   }
+//   return output
+// }
 
 export default function weekItem(props) {
   const classes = useStyles();
@@ -40,6 +40,39 @@ export default function weekItem(props) {
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  const formatTime = timeString => {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    const days = [
+      'Sun',
+      'Mon',
+      'Tue',
+      'Wed',
+      'Thu',
+      'Fri',
+      'Sat'
+    ];
+    const time = new Date(timeString);
+    const dayIndex = time.getDay();
+    const dayName = days[dayIndex];
+    const monthIndex = time.getMonth();
+    const monthName = months[monthIndex];
+    const date = time.getDate();
+    return `${dayName} ${monthName} ${date}`;
+  }
 
   return (
     //this is mostly material UI copy pasta
@@ -50,13 +83,13 @@ export default function weekItem(props) {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={classes.heading}>{props.day}</Typography>
+          <Typography className={classes.heading}>{formatTime(props.pointData[0].start_time)}</Typography>
           <Typography className={classes.secondaryHeading}>I show general info</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
         <div className={classes.demo}>
             <List>
-              {createTask(3).map(e => <WeekItemTask task={e} setView={props.setView}/>)}                        
+              {props.pointData.map(p => <WeekItemTask pointData={p} setView={props.setView}/>)}                        
             </List>
           </div>
         </ExpansionPanelDetails>
