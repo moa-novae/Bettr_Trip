@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.8.4",
+    "@date-io/moment": "^1.3.13",
     "@datepicker-react/styled": "^2.3.1",
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
@@ -11,11 +12,14 @@
     "@fortawesome/react-fontawesome": "^0.1.8",
     "@material-ui/core": "^4.9.2",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/pickers": "^3.2.10",
+    "@wojtekmaj/react-timerange-picker": "^2.4.0",
     "axios": "^0.18.1",
     "bootstrap": "^4.4.1",
     "immutability-helper": "^3.0.1",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
+    "font-awesome": "^4.7.0",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^12.2.0",
     "react-daterange-picker": "^2.0.1",
@@ -27,6 +31,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^2.1.8",
     "react-spring": "^8.0.27",
+    "react-time-picker": "^3.9.0",
     "styled-components": "^5.0.1"
   },
   "scripts": {

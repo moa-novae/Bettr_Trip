@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 
@@ -13,8 +13,13 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBicycle, faCar, faWalking, faBus } from '@fortawesome/free-solid-svg-icons'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { TimePicker } from '@material-ui/pickers'
+import Transportation from '../Transportation'
+import EditableContainer from '../editableContainer'
+import MomentAdapter from '@date-io/moment'
+const Moment = new MomentAdapter();
+const { moment, format } = Moment
 
 const Container = styled.div`
 
@@ -22,7 +27,7 @@ const Container = styled.div`
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: 345,
+    width: '100%',
   },
   media: {
     height: 0,
@@ -30,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   expand: {
     marginLeft: 'auto',
-    
+
   },
   expandOpen: {
     transform: 'rotate(180deg)',
@@ -39,36 +44,73 @@ const useStyles = makeStyles(theme => ({
 
 export default function(props) {
   const classes = useStyles();
- 
+
   const handleExpandClick = () => {
     props.setExpanded(!props.expanded);
   };
-  
+
+  const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start))
+  const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end))
+  const onTimeChange = (start, end) => {
+    if (startTime && endTime) {
+      return props.setDayState(prev => {
+        let newState = { ...prev }
+        newState.tasks[props.task.id].time = { start: start, end: end }
+        return newState
+      })
+    }
+  }
+  useEffect(() => {
+    onTimeChange(startTime, endTime)
+  }, [startTime, endTime])
+
+
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
         <Container className='location'
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          ref={provided.innerRef} 
+          ref={provided.innerRef}
         >
           <Card className={classes.root}>
             <CardHeader
               title={props.task.location}
               subheader="Activity"
             />
+            {'Start'}
+            <TimePicker value={startTime} onChange={setStartTime} />
+            {'End'}
+            <TimePicker value={endTime} onChange={setEndTime} />
+
+            <div onClick={() => props.setDayState(prev => {
+              console.log('clicked')
+              let newState = { ...prev }
+              delete newState.tasks[props.task.id]
+              return (newState)
+            })}>
+              <div>
+
+                <p>
+                  {moment(startTime).format('hh:mm')}
+
+                </p>
+                <p>
+                  {moment(endTime).format('hh:mm')}
+
+                </p>
+              </div>
+
+              <DeleteForeverIcon />
+            </div>
             <CardMedia
             //add pictures
             />
             <CardContent>
-              <ol>
-                {props.task.activity.map(e => {
-                  return <li>{e}</li>
-                })}
-              </ol>
+              <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
             </CardContent>
             <CardActions disableSpacing>
-              <span>Details</span>
+              <span>Travel</span>
               <IconButton
                 className={clsx(classes.expand, {
                   [classes.expandOpen]: props.expanded,
@@ -82,14 +124,9 @@ export default function(props) {
             </CardActions>
             <Collapse in={props.expanded} timeout="auto" unmountOnExit exit={props.exit}>
               <CardContent>
-                
-                    {/* displays travel information */}
-                    <p>Duration: {props.task.travel.duration}</p>
-                    <p>Method: {props.task.travel.method}</p>
-                    {props.task.travel.method === 'Bicycle' && <FontAwesomeIcon icon={faBicycle} />}
-                    {props.task.travel.method === 'Car' && <FontAwesomeIcon icon={faCar} />}
-                    {props.task.travel.method === 'Walking' && <FontAwesomeIcon icon={faWalking} />}
-                    {props.task.travel.method === 'Bus' && <FontAwesomeIcon icon={faBus} />}
+
+                {/* displays travel information */}
+                <Transportation travel={props.task.travel} setDayState={props.setDayState} task={props.task} />
 
               </CardContent>
             </Collapse>
