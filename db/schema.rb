@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_20_225447) do
+ActiveRecord::Schema.define(version: 2020_02_20_233115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 2020_02_20_225447) do
     t.bigint "trip_id"
     t.string "region"
     t.string "activity"
+    t.string "travel_method"
+    t.string "travel_duration"
     t.index ["trip_id"], name: "index_points_on_trip_id"
   end
 
