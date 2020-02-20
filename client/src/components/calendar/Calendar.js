@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import WeekItem from '../weekItem'
 import DayItem from '../dayItem-legacy'
 import ReactDnd from '../dayView'
 import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
+
+
+
+
+// useEffect to load points data on change
+
+
 const useStyles = makeStyles(theme => ({
   root: {
     
@@ -28,6 +43,19 @@ const createDaysArr = function (num) {
 }
 
 export default function ControlledExpansionPanels() {
+  let { id } = useParams();
+
+  useEffect(() => {
+    let url = window.location.href;
+    console.log(url, "<--- this is url");
+    Promise.all([
+    axios.get(`/api/trips/${id}/points`)
+    ]).then(all => {
+      const tripData = all[0].data;
+      console.log(tripData, "<--- this is tripData");
+    });
+  }, []);
+
   const [view, setView] = useState('week') //view determins to show either week or day
   const classes = useStyles()
   const daysArr = createDaysArr(5)

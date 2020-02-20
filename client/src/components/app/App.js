@@ -35,15 +35,15 @@ class App extends Component {
     return (
       <Router>
         <Nav />
-        <Switch>
-          <Route path='/' exact component={Home} />
-          <Route path='/about' exact component={About} />
-          <Route path='/trips' exact component={Trip} />
-          <Route path='/login' exact component={Login} />
-          <Route path='/signup' exact component={Signup} />
-        </Switch>
         <div className="App">
-          <Content />    
+          <Switch>
+            <Route path='/' exact component={Home} />
+            <Route path='/about' exact component={About} />
+            <Route path='/trips' exact component={Trip} />
+            <Route path='/login' exact component={Login} />
+            <Route path='/signup' exact component={Signup} />
+            <Route path='/trips/:id' component={Content} />
+          </Switch>
         </div>
       </Router>
     );

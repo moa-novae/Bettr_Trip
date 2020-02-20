@@ -1,10 +1,16 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import './Trip.css';
 import DatePicker from '../datepicker/DatePicker';
+import axios from 'axios'
+import { useHistory } from "react-router-dom";
 
 export default function() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [date, setDate] = useState({});
+  let history = useHistory();
+
+
 
   const validate = () => {
     if (name === "") {
@@ -12,6 +18,21 @@ export default function() {
       return;
     }
     setError("");
+
+    const trip = {
+      name: name, 
+      start_date: date.value.start._i, 
+      end_date: date.value.end._i
+    };
+
+    axios
+      .post('/api/trips', trip)
+      .then(response => {
+        console.log(response, "<---look at me!");
+        console.log(response.data.trip_id, "<---look at me again!");
+        let tripID = response.data.trip_id;
+        history.push(`trips/${tripID}`);
+      });
   };
 
   return (
@@ -27,7 +48,7 @@ export default function() {
           value={name}
         />
         <section className="trip_form_validation">{error}</section>
-        <DatePicker />
+        <DatePicker onSelect={setDate}/>
       </form>
       <button confirm onClick={() => validate()}>Save</button>
     </section>

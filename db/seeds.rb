@@ -5,3 +5,11 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+puts "Seeding Data ..."
+
+puts "Creating trips ..."
+
+Trip.destroy_all
+
+trip1 = Trip.create(name: 'Europe', start_date: )
