@@ -110,7 +110,7 @@ export default () => {
       markers: [...state.markers, marker],
       bin: [...state.bin, binObject]
     })
-    axios.post("points/create", {
+    axios.post("http://localhost:3001/points/create", {
       name: location.name.placeName,
       // region: (location.name.region ? location.name.region : null),
       latitude: location.coordinates.lat,

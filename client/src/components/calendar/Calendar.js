@@ -49,7 +49,7 @@ export default function ControlledExpansionPanels() {
     let url = window.location.href;
     console.log(url, "<--- this is url");
     Promise.all([
-    axios.get(`/api/trips/${id}/points`)
+    axios.get(`http://localhost:3001/api/trips/${id}/points`)
     ]).then(all => {
       const tripData = all[0].data;
       console.log(tripData, "<--- this is tripData");

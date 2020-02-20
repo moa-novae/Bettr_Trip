@@ -26,7 +26,7 @@ export default function() {
     };
 
     axios
-      .post('/api/trips', trip)
+      .post('http://localhost:3001/api/trips', trip)
       .then(response => {
         console.log(response, "<---look at me!");
         console.log(response.data.trip_id, "<---look at me again!");
