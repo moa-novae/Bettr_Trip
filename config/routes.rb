@@ -4,17 +4,11 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   resource :home, only: [:index]
-  resources :trips, only: [:index, :create, :update]
-  # resource :points, only: [:create, :update, :delete]
-  # resources :points, only: [:index, :create, :update]
 
-
-  namespace :api do # /api/data
-
-    get '/data', to: 'tests#index'
-    
-    resources :dogs
-
+  namespace :api, defaults: { format: 'json' } do
+    resources :trips, only: [:index, :create] do
+      resources :points
+    end
   end
 
   get 'login' => 'sessions#new'
