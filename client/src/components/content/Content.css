@@ -13,3 +13,8 @@
   height: 100vh;
   overflow-y: auto;
 }
+
+.bin {
+  width: 1%;
+  height: 50vh;
+}

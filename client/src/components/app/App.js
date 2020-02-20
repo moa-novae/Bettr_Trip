@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 import Content from '../content';
+// import Content from '../content.js';
 import Nav from '../nav';
 import Home from '../home';
 import About from '../about';
