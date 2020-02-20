@@ -8,8 +8,18 @@
 
 puts "Seeding Data ..."
 
-puts "Creating trips ..."
+puts "Creating points ..."
 
-Trip.destroy_all
+Point.destroy_all
 
-trip1 = Trip.create(name: 'Europe', start_date: )
+Point.create(id: 1, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41.123924', end_time: '2020-02-20 03:15:41.123924', trip_id: 1)
+Point.create(id: 2, name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-20 04:15:41.123924', end_time: '2020-02-20 05:15:41.123924', trip_id: 1)
+Point.create(id: 5, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-21 02:15:41.123924', end_time: '2020-02-21 03:15:41.123924', trip_id: 1)
+Point.create(id: 6, name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-21 04:15:41.123924', end_time: '2020-02-21 05:15:41.123924', trip_id: 1)
+Point.create(id: 7, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-22 02:15:41.123924', end_time: '2020-02-22 03:15:41.123924', trip_id: 1)
+Point.create(id: 8, name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-22 04:15:41.123924', end_time: '2020-02-22 05:15:41.123924', trip_id: 1)
+
+
+
+Point.create(id: 3, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41.123924', end_time: '2020-02-20 03:15:41.123924', trip_id: 2)
+Point.create(id: 4, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 04:00:41.123924', end_time: '2020-02-20 05:15:41.123924', trip_id: 2)
