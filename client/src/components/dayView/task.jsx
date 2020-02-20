@@ -75,7 +75,7 @@ export default function(props) {
         >
           <Card className={classes.root}>
             <CardHeader
-              title={props.task.location}
+              title={props.task.name}
               subheader="Activity"
             />
             {'Start'}
@@ -92,7 +92,7 @@ export default function(props) {
               <div>
 
                 <p>
-                  {moment(startTime).format('hh:mm')}
+                  {moment(startTime).format('MMM:DD')}
 
                 </p>
                 <p>
