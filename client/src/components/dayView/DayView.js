@@ -87,16 +87,16 @@ export default function(props) {
   
 
   useEffect(() => {
+    
     for (let [key, value] of Object.entries(state.tasks)) {
-      console.log('trip_id', key)
+      console.log('axios put', state.tasks[key].time.start, state.tasks[key].time.end, 'd:', key)
       axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
         name: state.tasks[key].name,
         start_time: state.tasks[key].time.start,
         end_time: state.tasks[key].time.end,
         activity: state.tasks[key].activity
-      },
-      {headers: {"Access-Control-Allow-Origin": "*"}}
-      ).then(console.log('hi there pu'))
+      }
+      )
     }
   }, [state])
 
