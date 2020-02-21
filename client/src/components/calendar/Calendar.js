@@ -5,7 +5,9 @@ import Alert from '../alert'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
 
+import MomentUtils from '@date-io/moment';
 const useStyles = makeStyles(theme => ({
   root: {
     
@@ -26,7 +28,7 @@ export default function ControlledExpansionPanels() {
   let { id } = useParams();
   let daysArr = [];
   const [weekViews, setWeeks] = useState([]);
-
+  const [dayState, setDay] = useState([]);
   useEffect(() => {
     Promise.all([
     axios.get(`http://localhost:3001/api/trips/${id}/points`)
@@ -35,6 +37,7 @@ export default function ControlledExpansionPanels() {
       // setPoints(tripData.points);
       daysArr = tripData.points;
       console.log(daysArr, "This is just daysArr!!!");
+      setDay([...daysArr])
     }).then(() => {
       let week = [];
       if (daysArr.length === 0) {
@@ -72,6 +75,7 @@ export default function ControlledExpansionPanels() {
       }
     console.log(week, "this is week")
     setWeeks(week);
+    
     });
   }, []);
 
@@ -79,11 +83,13 @@ export default function ControlledExpansionPanels() {
   const classes = useStyles()
   console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
-  const day = <ReactDnd />
+  
   return (
     <div className={classes.root}>
       {view === 'week' && weekViews}
-      {view === 'day' && day}
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+      {view === 'day' && <ReactDnd daysArr={dayState}/>}
+      </MuiPickersUtilsProvider>
     </div>
   );
 }

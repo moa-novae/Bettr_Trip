@@ -14,14 +14,14 @@ Point.destroy_all
 Trip.destroy_all
 Trip.create(id: 1, name: "Fun Trip", start_date: "2020-02-10", end_date: '2020-02-20')
 
-Point.create(id: 1, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41.123924', end_time: '2020-02-20 03:15:41.123924', trip_id: 1)
-Point.create(id: 2, name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-20 04:15:41.123924', end_time: '2020-02-20 05:15:41.123924', trip_id: 1)
-Point.create(id: 5, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-21 02:15:41.123924', end_time: '2020-02-21 03:15:41.123924', trip_id: 1)
-Point.create(id: 6, name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-21 04:15:41.123924', end_time: '2020-02-21 05:15:41.123924', trip_id: 1)
-Point.create(id: 7, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-22 02:15:41.123924', end_time: '2020-02-22 03:15:41.123924', trip_id: 1)
-Point.create(id: 8, name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-22 04:15:41.123924', end_time: '2020-02-22 05:15:41.123924', trip_id: 1)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41.123924', end_time: '2020-02-20 03:15:41.123924', trip_id: 1, activity: 'somethings', travel_method: 'Car', travel_duration: 2)
+Point.create(name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-20 04:15:41.123924', end_time: '2020-02-20 05:15:41.123924', trip_id: 1, activity: 'icecream', travel_method: 'Bus', travel_duration: 20)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-21 02:15:41.123924', end_time: '2020-02-21 03:15:41.123924', trip_id: 1, activity: 'sightsee', travel_method: 'Bicycle', travel_duration: 12)
+Point.create(name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-21 04:15:41.123924', end_time: '2020-02-21 05:15:41.123924', trip_id: 1, activity: 'nothing', travel_method: 'Walking', travel_duration: 2)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-22 02:15:41.123924', end_time: '2020-02-22 03:15:41.123924', trip_id: 1, activity: 'dunno', travel_method: 'Car', travel_duration: 2)
+Point.create(name: "Seattle", latitude: 47.6062095, longitude: 122.3320708, start_time: '2020-02-22 04:15:41.123924', end_time: '2020-02-22 05:15:41.123924', trip_id: 1, activity: 'wot', travel_method: 'Car', travel_duration: 2)
 
 
 
-Point.create(id: 3, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41.123924', end_time: '2020-02-20 03:15:41.123924', trip_id: 2)
-Point.create(id: 4, name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 04:00:41.123924', end_time: '2020-02-20 05:15:41.123924', trip_id: 2)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41.123924', end_time: '2020-02-20 03:15:41.123924', trip_id: 2)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 04:00:41.123924', end_time: '2020-02-20 05:15:41.123924', trip_id: 2)
