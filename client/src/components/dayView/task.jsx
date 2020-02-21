@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function(props) {
+
   const classes = useStyles();
 
   const handleExpandClick = () => {
@@ -64,9 +65,8 @@ export default function(props) {
     onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
   }, [startTime, endTime])
 
-
+  
   return (
-
     <Draggable draggableId={props.task.id.toString()} index={props.index}>
       {(provided, snapshot) => (
         <Container className='location'

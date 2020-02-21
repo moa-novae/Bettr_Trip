@@ -30,7 +30,7 @@ export default function(props) {
   initialState.columns['column-1'].title = 'Day list'
   initialState.columnOrder = ['column-1']
   
-  console.log(initialState.tasks['1'].time)
+  
 
   
 
