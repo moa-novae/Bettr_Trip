@@ -66,25 +66,25 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function(lat, lng) {
-    //axios delete with lat and long to find point in database 
-    //then filter bin and markers to find those objects and remove them from state
-    axios.delete(`http://localhost:3001/api/trips/${id}/points`, {
-      latitude: lat,
-      longitude: lng
-    })
-      .then(() => {
-        const binIndex = state.bin.findIndex(i => (i.latitude === lat && i.longitude === lng))
-        const markerIndex = state.markers.findIndex(i => (i.positionlatitude === lat && i.position.longitude === lng))
-        const binArray = state.bin.splice(binIndex, 1)
-        const markerArray = state.markers.splice(markerIndex, 1)
-        setState(state => ({
-          ...state,
-          markers: markerArray,
-          bin: binArray
-        }))
-      })
-  }
+  // const deletePoint = function(lat, lng) {
+  //   //axios delete with lat and long to find point in database 
+  //   //then filter bin and markers to find those objects and remove them from state
+  //   axios.delete(`http://localhost:3001/api/trips/${id}/points`, {
+  //     latitude: lat,
+  //     longitude: lng
+  //   })
+  //     .then(() => {
+  //       const binIndex = state.bin.findIndex(i => (i.latitude === lat && i.longitude === lng))
+  //       const markerIndex = state.markers.findIndex(i => (i.positionlatitude === lat && i.position.longitude === lng))
+  //       const binArray = state.bin.splice(binIndex, 1)
+  //       const markerArray = state.markers.splice(markerIndex, 1)
+  //       setState(state => ({
+  //         ...state,
+  //         markers: markerArray,
+  //         bin: binArray
+  //       }))
+  //     })
+  // }
 
   //manages logic when place is searched 
   const onPlacesChanged = () => {
@@ -192,7 +192,7 @@ export default function Content() {
       <div className="bin">
         <Bin 
         bin={state.bin} 
-        deletePoint={deletePoint}
+        // deletePoint={deletePoint}
         />
       </div>
 

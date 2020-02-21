@@ -18,10 +18,10 @@ module API
       @point.save
     end
 
-    def delete
-      puts "DELETE PARAMS - #{delete_point_params}"
-      # @point = Point.find_by(latitude: delete_point_params[:latitude], longitude: delete_point_params[:longitude])
-    end
+    # def delete
+    #   puts "DELETE PARAMS - #{delete_point_params}"
+    #   # @point = Point.find_by(latitude: delete_point_params[:latitude], longitude: delete_point_params[:longitude])
+    # end
   
   
     private
