@@ -29,55 +29,55 @@ export default function ControlledExpansionPanels() {
   let daysArr = [];
   const [weekViews, setWeeks] = useState([]);
   const [dayState, setDay] = useState([]);
-  // useEffect(() => {
-  //   Promise.all([
-  //   axios.get(`http://localhost:3001/api/trips/${id}/points`)
-  //   ]).then(all => {
-  //     const tripData = all[0].data;
-  //     // setPoints(tripData.points);
-  //     daysArr = tripData.points;
-  //     console.log(daysArr, "This is just daysArr!!!");
-  //     setDay([...daysArr])
-  //   }).then(() => {
-  //     let week = [];
-  //     if (daysArr.length === 0) {
-  //       week.push(<Alert />);
-  //     } else {
-  //       // for acculuating points data
-  //       let pointDataArr = [];
+  useEffect(() => {
+    Promise.all([
+    axios.get(`http://localhost:3001/api/trips/${id}/points`)
+    ]).then(all => {
+      const tripData = all[0].data;
+      // setPoints(tripData.points);
+      daysArr = tripData.points;
+      console.log(daysArr, "This is just daysArr!!!");
+      setDay([...daysArr])
+    }).then(() => {
+      let week = [];
+      if (daysArr.length === 0) {
+        week.push(<Alert />);
+      } else {
+        // for acculuating points data
+        let pointDataArr = [];
 
-  //       for (let i = 0; i < daysArr.length; i++) {
-  //         if (i === 0) {
-  //           pointDataArr.push(daysArr[i])
-  //         } else if (i === daysArr.length - 1) {
-  //           if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
-  //             console.log(pointDataArr, "<--- pointDataArr!!!!");
-  //             week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
-  //             pointDataArr = [];
-  //             pointDataArr.push(daysArr[i]);
-  //             week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
-  //           } else {
-  //             console.log(pointDataArr, "<--- pointDataArr!!!!");
-  //             pointDataArr.push(daysArr[i]);
-  //             week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
-  //           }
-  //         } else {
-  //           if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
-  //             console.log(pointDataArr, "<--- pointDataArr!!!!");
-  //             week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
-  //             pointDataArr = [];
-  //             pointDataArr.push(daysArr[i]);
-  //           } else {
-  //             pointDataArr.push(daysArr[i]);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   console.log(week, "this is week")
-  //   setWeeks(week);
+        for (let i = 0; i < daysArr.length; i++) {
+          if (i === 0) {
+            pointDataArr.push(daysArr[i])
+          } else if (i === daysArr.length - 1) {
+            if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
+              console.log(pointDataArr, "<--- pointDataArr!!!!");
+              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              pointDataArr = [];
+              pointDataArr.push(daysArr[i]);
+              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+            } else {
+              console.log(pointDataArr, "<--- pointDataArr!!!!");
+              pointDataArr.push(daysArr[i]);
+              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+            }
+          } else {
+            if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
+              console.log(pointDataArr, "<--- pointDataArr!!!!");
+              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              pointDataArr = [];
+              pointDataArr.push(daysArr[i]);
+            } else {
+              pointDataArr.push(daysArr[i]);
+            }
+          }
+        }
+      }
+    console.log(week, "this is week")
+    setWeeks(week);
     
-  //   });
-  // }, []);
+    });
+  }, []);
 
   
   const classes = useStyles()
