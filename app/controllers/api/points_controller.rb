@@ -15,8 +15,10 @@ module API
       puts "PARAMS---- #{add_point_params}"
       
       @point = Point.new(add_point_params)
-      # @point.trip_id = params[:trip_id]
       @point.save
+      render :json => {
+        point: @point
+      }
     end
     
     def update
@@ -26,9 +28,9 @@ module API
       @point.save
     end
     
-  def delete
-    puts "DELETE PARAMS - #{delete_point_params}"
-    # @point = Point.find_by(latitude: delete_point_params[:latitude], longitude: delete_point_params[:longitude])
+  def destroy
+    @point = Point.find_by(id: params[:id])
+    @point.destroy
   end
 
       private
@@ -37,8 +39,8 @@ module API
       params.require(:point).permit(:name, :region, :latitude, :longitude, :trip_id, :start_time, :end_time, :activity, :travel_method, :travel_duration)
     end
 
-    def delete_point_params
-      params.require(:point).permit(:latitude, :longitude)
-    end
+    # def delete_point_params
+    #   params.require(:point).permit(:id)
+    # end
   end
 end

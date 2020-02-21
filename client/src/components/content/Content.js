@@ -25,7 +25,7 @@ const onMapMounted = (ref) => {
 export default function Content() {
   const [state, setState] = useState({
     bounds: null,
-    center: {},
+    center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
     markers: [],
     location: {},
     bin: [],
@@ -41,18 +41,6 @@ export default function Content() {
       position: markerPosition,
       title: location.name.placeName
     })
-    const binObject = {
-      name: location.name.placeName,
-      region: (location.name.region ? location.name.region : null),
-      lat: location.coordinates.lat,
-      lng: location.coordinates.lng
-    }
-    console.log('BIN OBJ', binObject)
-    setState(state => ({
-      ...state,
-      markers: [...state.markers, marker],
-      bin: [...state.bin, binObject]
-    }))
     axios.post(`http://localhost:3001/api/trips/${id}/points`, {
       name: location.name.placeName,
       trip_id: id,
@@ -61,23 +49,36 @@ export default function Content() {
       longitude: location.coordinates.lng
     })
       .then(response => {
-        console.log(response)
+        console.log("IS THE POINT HERE", response.data)
         console.log('STATE POST', state)
+        const binObject = {
+          name: location.name.placeName,
+          id: parseFloat(response.data.point.id),
+          region: (location.name.region ? location.name.region : null),
+          lat: location.coordinates.lat,
+          lng: location.coordinates.lng
+        }
+        console.log('BIN OBJ', binObject)
+        setState(state => ({
+          ...state,
+          markers: [...state.markers, marker],
+          bin: [...state.bin, binObject]
+        }))
       })
   }
 
-  const deletePoint = function(lat, lng) {
+  const deletePoint = function (pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
-    axios.delete(`http://localhost:3001/api/trips/${id}/points`, {
-      latitude: lat,
-      longitude: lng
-    })
+    console.log('delete button clicked')
+    axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
       .then(() => {
-        const binIndex = state.bin.findIndex(i => (i.latitude === lat && i.longitude === lng))
-        const markerIndex = state.markers.findIndex(i => (i.positionlatitude === lat && i.position.longitude === lng))
-        const binArray = state.bin.splice(binIndex, 1)
-        const markerArray = state.markers.splice(markerIndex, 1)
+        // const binIndex = state.bin.findIndex(i => i.id === pointId)
+        // const markerIndex = state.markers.findIndex(i => (i.positionlatitude === lat && i.position.longitude === lng))
+        // const binArray = state.bin.splice(binIndex, 1)
+        // const markerArray = state.markers.splice(markerIndex, 1)
+        const binArray = state.bin.filter(item => item.id !== pointId)
+        const markerArray = state.markerLibrary.filter(item => (item.position.latitude !== lat && item.position.longitude !== lng))
         setState(state => ({
           ...state,
           markers: markerArray,
@@ -134,6 +135,7 @@ export default function Content() {
           //add bin object to database
           const binObject = {
             name: point.name,
+            id: parseFloat(point.id),
             region: (point.region ? point.region : null),
             lat: parseFloat(point.latitude),
             lng: parseFloat(point.longitude)
@@ -147,7 +149,7 @@ export default function Content() {
           markers: [...state.markers],
           location: {},
           bin: [...binArray],
-          markerLibrary: [...markerArray]
+          markerLibrary: [...markerArray] //sets new markers data into marker library to later be turned into markers 
         }))
 
       } catch (error) {
@@ -157,22 +159,25 @@ export default function Content() {
     fetchData();
   }, [])
 
-  //sets markers to be rendered after map loads 
   useEffect(() => {
     setTimeout(function () {
-      if (state.markerLibrary) {
-        const markerArray = [];
-        for (let marker of state.markerLibrary) {
-          const newMarker = new window.google.maps.Marker({
-            position: marker.position,
-            title: marker.title
-          });
-          markerArray.push(newMarker)
-        }
-        setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
-      }
-    }, 1000)
+
+
+    const markerArray = [];
+    if (state.markerLibrary) {
+    for (let marker of state.markerLibrary) {
+      const newMarker = new window.google.maps.Marker({
+        position: marker.position,
+        title: marker.title
+      });
+      markerArray.push(newMarker)
+    }
+    setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
+    }
+  }, 1000)
+
   }, [state.markerLibrary])
+
   return (
     <div className="content">
 
@@ -190,9 +195,9 @@ export default function Content() {
         />
       </div>
       <div className="bin">
-        <Bin 
-        bin={state.bin} 
-        deletePoint={deletePoint}
+        <Bin
+          bin={state.bin}
+          deletePoint={deletePoint}
         />
       </div>
 

@@ -3,13 +3,14 @@ import BinItem from '../binItem'
 
 
 export default function (props) {
-  const binItems = props.bin.map(function(item, index) {
+  const binItems = props.bin.map(function(binObj, index) {
     return (<BinItem key={index}
-    name={item.name}
-    region={(item.region? item.region : null)}
+    name={binObj.name}
+    region={(binObj.region? binObj.region : null)}
     deletePoint={props.deletePoint}
-    lat={props.lat}
-    lng={props.lng}
+    lat={binObj.lat}
+    lng={binObj.lng}
+    id={binObj.id}
     />)
   })
   return (
