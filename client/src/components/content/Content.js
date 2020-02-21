@@ -31,6 +31,7 @@ export default function Content() {
     bin: [],
     markerLibrary: []
   })
+
   let { id } = useParams();
 
   //function called when save button clicked
@@ -161,20 +162,18 @@ export default function Content() {
 
   useEffect(() => {
     setTimeout(function () {
-
-
-    const markerArray = [];
-    if (state.markerLibrary) {
-    for (let marker of state.markerLibrary) {
-      const newMarker = new window.google.maps.Marker({
-        position: marker.position,
-        title: marker.title
-      });
-      markerArray.push(newMarker)
-    }
-    setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
-    }
-  }, 1000)
+      const markerArray = [];
+      if (state.markerLibrary) {
+        for (let marker of state.markerLibrary) {
+          const newMarker = new window.google.maps.Marker({
+            position: marker.position,
+            title: marker.title
+          });
+          markerArray.push(newMarker)
+        }
+        setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
+      }
+    }, 1000)
 
   }, [state.markerLibrary])
 
