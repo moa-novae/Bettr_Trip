@@ -3,10 +3,9 @@ module API
 
     def index
       trip_id = params[:trip_id].to_i
-      @points = Point.where(trip_id: trip_id)
+      @points = Point.where(trip_id: trip_id).order(start_time: :asc)
 
       render :json => {
-        message: "To be added data for each unique URL", 
         points: @points
       }
     end
