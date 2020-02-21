@@ -14,7 +14,8 @@ export default function(props) {
     <React.Fragment>
       <ListItem button onClick={()=> props.setView('day')}>
         <ListItemText
-          primary={props.pointData.start_time}
+          secondary={`${props.pointData.start_time} ~ ${props.pointData.end_time}`}
+          primary={props.pointData.name}
         />
       </ListItem>
     </React.Fragment>
