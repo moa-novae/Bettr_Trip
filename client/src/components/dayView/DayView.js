@@ -6,20 +6,40 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom'
 
 
-export default function() {
+export default function(props) {
   let { id } = useParams();
-  useEffect(() => {
-  
+  console.log(props.daysArr)
+  let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
+  props.daysArr.map(point => {
+    initialState.tasks[point.id] = {
+      trip_id: point.trip_id,
+      id: point.id,
+      name: point.name,
+      latitude: point.latitude,
+      longitude: point.longitude,
+      time:{start: point.start_time, end: point.end_time,},
+      region: point.region,
+      activity: point.activity,
+      travel: {method: point.travel_method, duration: point.travel_duration}
+    }
+    initialState.columns['column-1'].taskIds.push(point.id)
+    
   })
+  initialState.columns['column-1'].id = 'column-1'
+  initialState.columns['column-1'].title = 'Day list'
+  initialState.columnOrder = ['column-1']
+  
+
+  
 
 
 
 
-  const [state, setDayState] = useState(initialData);
+  const [state, setDayState] = useState(initialState);
+  console.log(state, 'state')
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
-    console.log('ehl')
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
   }
@@ -66,12 +86,15 @@ export default function() {
 
   useEffect(() => {
     for (let [key, value] of Object.entries(state.tasks)) {
-      axios.put(`http://localhost:3001/api/trips/${id}/points/${key}`, {
+      console.log('trip_id', key)
+      axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
         name: state.tasks[key].name,
         start_time: state.tasks[key].time.start,
         end_time: state.tasks[key].time.end,
         activity: state.tasks[key].activity
-      })
+      },
+      {headers: {"Access-Control-Allow-Origin": "*"}}
+      ).then(console.log('hi there pu'))
     }
   }, [state])
 

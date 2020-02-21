@@ -10,8 +10,7 @@ import Login from '../login';
 import Trip from '../trip';
 import Signup from '../signup';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
-import MomentUtils from '@date-io/moment';
+
 
 class App extends Component {
   constructor(props) {
@@ -47,9 +46,9 @@ class App extends Component {
             <Route path='/signup' exact component={Signup} />
             <Route path='/trips/:id' component={Content} />
           </Switch>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            {/* <Content /> */}
-          </MuiPickersUtilsProvider>
+
+          {/* <Content /> */}
+
         </div>
       </Router>
     );
