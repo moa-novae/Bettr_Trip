@@ -23,12 +23,26 @@ module API
       @point = Point.find_by(id: params[:id])
       puts "UPDATE-----point_id = #{params[:id]}"
       headers['Access-Control-Allow-Origin'] = '*'
+      @point.name = params[:name]
+      @point.latitude = params[:latitude]
+      @point.longitude = params[:longitude]
+      @point.start_time = params[:start_time]
+      @point.end_time = params[:end_time]
+      @point.trip_id = params[:trip_id]
+      @point.region = params[:region]
+      @point.activity = params[:activity]
+      @point.travel_method = params[:travel_method]
+      @point.travel_duration = params[:travel_duration]
       @point.save
     end
 
-
-
-
+    def show
+      @point = Point.find_by(id: params[:id])
+      puts "SHOW-----point_id = #{params[:id]}"
+      render :json => {
+        point: @point
+      }
+    end
   
     private
   
