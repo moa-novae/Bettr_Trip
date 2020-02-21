@@ -25,7 +25,7 @@ export default function(props) {
             {...provided.droppableProps}
           >
             {props.tasks.map((task, index) => {
-
+              console.log('mapped')
 
               if (task) {
                 return (

@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function(props) {
+  console.log('task', props.state)
   const classes = useStyles();
 
   const handleExpandClick = () => {
@@ -64,7 +65,7 @@ export default function(props) {
     onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
   }, [startTime, endTime])
 
-
+  
   return (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (

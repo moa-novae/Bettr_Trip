@@ -104,7 +104,7 @@ export default function weekItem(props) {
         <div className={classes.demo}>
             <List>
               {addTravelTime(props.pointData)}
-              {/* {props.pointData.map(p => <WeekItemTask pointData={p} setView={props.setView}/>)}                         */}
+              {props.pointData.map(p => <WeekItemTask pointData={p} setView={props.setView}/>)}                        
             </List>
           </div>
         </ExpansionPanelDetails>

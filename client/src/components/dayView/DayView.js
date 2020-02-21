@@ -1,5 +1,4 @@
 import React, { setState, useState, useEffect, params } from 'react';
-import initialData from './initial-data';
 import Column from './column.jsx';
 import { DragDropContext } from 'react-beautiful-dnd';
 import axios from 'axios';
@@ -7,35 +6,37 @@ import { useParams } from 'react-router-dom'
 
 
 export default function(props) {
-  let { id } = useParams();
-  console.log(props.daysArr)
-  let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
-  props.daysArr.map(point => {
-    initialState.tasks[point.id] = {
-      trip_id: point.trip_id,
-      id: point.id,
-      name: point.name,
-      latitude: point.latitude,
-      longitude: point.longitude,
-      time:{start: point.start_time, end: point.end_time,},
-      region: point.region,
-      activity: point.activity,
-      travel: {method: point.travel_method, duration: point.travel_duration}
-    }
-    initialState.columns['column-1'].taskIds.push(point.id)
-    
-  })
-  initialState.columns['column-1'].id = 'column-1'
-  initialState.columns['column-1'].title = 'Day list'
-  initialState.columnOrder = ['column-1']
-  
+  const formatInitialState = (daysArr) => {
 
-  
+    let initialState = { tasks: {}, columns: { 'column-1': { taskIds: [] } }, columnOrder: ['column-1'] };
 
+    props.daysArr.map(point => {
+      initialState.tasks[point.id] = {
+        trip_id: point.trip_id,
+        id: point.id,
+        name: point.name,
+        latitude: point.latitude,
+        longitude: point.longitude,
+        time: { start: point.start_time, end: point.end_time, },
+        region: point.region,
+        activity: point.activity,
+        travel: { method: point.travel_method, duration: point.travel_duration }
+      }
+      initialState.columns['column-1'].taskIds.push(point.id)
+
+    })
+    initialState.columns['column-1'].id = 'column-1'
+    initialState.columns['column-1'].title = 'Day list'
+    initialState.columnOrder = ['column-1']
+  }
 
 
 
-  const [state, setDayState] = useState(initialState);
+
+
+
+
+  const [state, setDayState] = useState({ tasks: {}, columns: { 'column-1': { taskIds: [] } }, columnOrder: ['column-1'] });
   console.log(state, 'state')
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
@@ -82,9 +83,12 @@ export default function(props) {
 
   }
 
-  
+  useEffect(() => {
+    setDayState(formatInitialState(props.daysArr))
+  },[props.daysArr])
 
   useEffect(() => {
+    console.log(state,'useeffect')
     for (let [key, value] of Object.entries(state.tasks)) {
       console.log('trip_id', key)
       axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
@@ -93,34 +97,37 @@ export default function(props) {
         end_time: state.tasks[key].time.end,
         activity: state.tasks[key].activity
       },
-      {headers: {"Access-Control-Allow-Origin": "*"}}
+        { headers: { "Access-Control-Allow-Origin": "*" } }
       ).then(console.log('hi there pu'))
     }
   }, [state])
+  console.log(state,'afteruseeffect')
 
 
 
 
   return (
     <div>
-      <DragDropContext
-        onDragEnd={onDragEnd}
-        onBeforeCapture={onBeforeCapture}>
-        {state.columnOrder.map(columnId => { //currently only one column
-          const column = state.columns[columnId];
-          const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
-          return <Column
-            key={column.id}
-            column={column}
-            tasks={tasks}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            exit={exit}
-            setDayState={setDayState}
-            state={state}
-          />
-        })}
-      </DragDropContext>
+      {state.tasks &&
+        <DragDropContext
+          onDragEnd={onDragEnd}
+          onBeforeCapture={onBeforeCapture}>
+          {state.columnOrder.map(columnId => { //currently only one column
+            const column = state.columns[columnId];
+            const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
+            return <Column
+              key={column.id}
+              column={column}
+              tasks={tasks}
+              expanded={expanded}
+              setExpanded={setExpanded}
+              exit={exit}
+              setDayState={setDayState}
+              state={state}
+            />
+          })}
+        </DragDropContext>
+      }
     </div>
   )
 }

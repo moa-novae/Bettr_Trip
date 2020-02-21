@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ControlledExpansionPanels() {
-  const [view, setView] = useState('week') //view determins to show either week or day
+  const [view, setView] = useState('day') //view determins to show either week or day
   let { id } = useParams();
   let daysArr = [];
   const [weekViews, setWeeks] = useState([]);
@@ -36,8 +36,10 @@ export default function ControlledExpansionPanels() {
       const tripData = all[0].data;
       // setPoints(tripData.points);
       daysArr = tripData.points;
-      console.log(daysArr, "This is just daysArr!!!");
+     // console.log(daysArr, "This is just daysArr!!!");
       setDay([...daysArr])
+      
+
     }).then(() => {
       let week = [];
       if (daysArr.length === 0) {
@@ -51,19 +53,19 @@ export default function ControlledExpansionPanels() {
             pointDataArr.push(daysArr[i])
           } else if (i === daysArr.length - 1) {
             if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
-              console.log(pointDataArr, "<--- pointDataArr!!!!");
+          //    console.log(pointDataArr, "<--- pointDataArr!!!!");
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               pointDataArr = [];
               pointDataArr.push(daysArr[i]);
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
             } else {
-              console.log(pointDataArr, "<--- pointDataArr!!!!");
+            //  console.log(pointDataArr, "<--- pointDataArr!!!!");
               pointDataArr.push(daysArr[i]);
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
             }
           } else {
             if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
-              console.log(pointDataArr, "<--- pointDataArr!!!!");
+            //  console.log(pointDataArr, "<--- pointDataArr!!!!");
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               pointDataArr = [];
               pointDataArr.push(daysArr[i]);
@@ -73,7 +75,7 @@ export default function ControlledExpansionPanels() {
           }
         }
       }
-    console.log(week, "this is week")
+ //   console.log(week, "this is week")
     setWeeks(week);
     
     });
@@ -81,14 +83,14 @@ export default function ControlledExpansionPanels() {
 
   
   const classes = useStyles()
-  console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
+//  console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
-  
+  console.log('daystate', dayState)
   return (
     <div className={classes.root}>
       {view === 'week' && weekViews}
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {view === 'day' && <ReactDnd daysArr={dayState}/>}
+      {view === 'day' && <ReactDnd daysArr ={dayState}/>}
       </MuiPickersUtilsProvider>
     </div>
   );
