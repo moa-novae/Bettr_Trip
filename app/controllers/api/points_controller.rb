@@ -24,12 +24,15 @@ module API
       puts "THESE ARE THE PARAMS = #{params[:start_time]}"
       Point.update(params[:id], :name => params[:name], :start_time => params[:start_time], :end_time => params[:end_time],
       :activity => params[:activity], :travel_method => params[:travel_method], :travel_duration => params[:travel_duration])
-      
     end
 
-
-
-
+    def show
+      @point = Point.find_by(id: params[:id])
+      puts "SHOW-----point_id = #{params[:id]}"
+      render :json => {
+        point: @point
+      }
+    end
   
     private
   

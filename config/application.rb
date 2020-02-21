@@ -33,7 +33,7 @@ module RailsBackEnd
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', :headers => :any, :methods => [:get, :post, :put, :options, :delete]
+        resource '*', :headers => :any, :methods => [:get, :post, :put, :options, :delete, :show]
       end
     end
   end
