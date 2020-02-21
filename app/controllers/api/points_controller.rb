@@ -12,11 +12,11 @@ module API
 
     def create
       puts "PARAMS---- #{params}"
-      puts "PARAMS---- #{point_params}"
+      puts "PARAMS---- #{add_point_params}"
       
       @point = Point.new(add_point_params)
-      @point.trip_id = params[:trip_id]
-      @point.save!
+      # @point.trip_id = params[:trip_id]
+      @point.save
     end
     
     def update

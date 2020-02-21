@@ -7,7 +7,7 @@ export default function (props) {
     return (<BinItem key={index}
     name={item.name}
     region={(item.region? item.region : null)}
-    // deletePoint={props.deletePoint}
+    deletePoint={props.deletePoint}
     lat={props.lat}
     lng={props.lng}
     />)
