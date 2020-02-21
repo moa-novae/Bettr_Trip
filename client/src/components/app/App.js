@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import './App.css';
+import './App.scss';
 import Content from '../content';
 // import Content from '../content.js';
 import Nav from '../nav';
@@ -36,18 +36,29 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Nav />
-        <div className="App">
-          <Switch>
-            <Route path='/' exact component={Home} />
-            <Route path='/about' exact component={About} />
-            <Route path='/trips' exact component={Trip} />
-            <Route path='/login' exact component={Login} />
-            <Route path='/signup' exact component={Signup} />
-            <Route path='/trips/:id' component={Content} />
-          </Switch>
 
-          {/* <Content /> */}
+        <div className="App">
+        <div className="main">
+
+        
+
+
+            <Nav />
+            <Switch>
+              <Route path='/' exact component={Home} />
+              <Route path='/about' exact component={About} />
+              <Route path='/trips' exact component={Trip} />
+              <Route path='/login' exact component={Login} />
+              <Route path='/signup' exact component={Signup} />
+              <Route path='/trips/:id' component={Content} />
+            </Switch>
+
+        </div>
+            
+
+
+            {/* <Content /> */}
+     
 
         </div>
       </Router>

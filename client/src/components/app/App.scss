@@ -1,0 +1,22 @@
+$dark: #003559;
+
+
+.main {
+  text-align: center;
+  content: '';
+  
+  backdrop-filter: blur(5px);
+  height: 100vh;
+  width: 100vw;
+  z-index: -1;
+  
+}
+
+.App {
+  
+  background-image: url('../../images/landing_page.jpg');
+  background-size: 100vw;
+  background-repeat: no-repeat;
+}
+
+@import '~bootstrap/scss/bootstrap';

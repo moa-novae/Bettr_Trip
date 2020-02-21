@@ -3,7 +3,7 @@ import './About.css';
 
 export default function() {
   return (
-    <div>
+    <div className="about">
       <h3>About Us</h3>
       <div>
         <h5>We are Logo! Plan your next trip with ease!</h5>

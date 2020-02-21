@@ -43,30 +43,32 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function(props) {
+
   const classes = useStyles();
 
   const handleExpandClick = () => {
     props.setExpanded(!props.expanded);
   };
-
-  const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start))
-  const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end))
+  const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss'))
+  const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss'))
   const onTimeChange = (start, end) => {
-    if (startTime && endTime) {
-      return props.setDayState(prev => {
-        let newState = { ...prev }
-        newState.tasks[props.task.id].time = { start: start, end: end }
-        return newState
-      })
-    }
+
+    return props.setDayState(prev => {
+      let newState = { ...prev }
+      newState.tasks[props.task.id].time = { start: start, end: end }
+      return newState
+    })
+
   }
   useEffect(() => {
-    onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
+
+    onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'),
+      moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
   }, [startTime, endTime])
 
 
   return (
-    <Draggable draggableId={props.task.id} index={props.index}>
+    <Draggable draggableId={props.task.id.toString()} index={props.index}>
       {(provided, snapshot) => (
         <Container className='location'
           {...provided.draggableProps}
@@ -84,7 +86,6 @@ export default function(props) {
             <TimePicker value={endTime} onChange={setEndTime} />
 
             <i onClick={() => props.setDayState(prev => {
-              console.log('clicked')
               let newState = { ...prev }
               delete newState.tasks[props.task.id]
               return (newState)

@@ -8,10 +8,10 @@ import { useParams } from 'react-router-dom'
 
 export default function(props) {
   let { id } = useParams();
-  console.log(props.daysArr)
+ 
   let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
   props.daysArr.map(point => {
-    initialState.tasks[point.id] = {
+    initialState.tasks[point.id.toString()] = {
       trip_id: point.trip_id,
       id: point.id,
       name: point.name,
@@ -22,12 +22,14 @@ export default function(props) {
       activity: point.activity,
       travel: {method: point.travel_method, duration: point.travel_duration}
     }
+
     initialState.columns['column-1'].taskIds.push(point.id)
     
   })
   initialState.columns['column-1'].id = 'column-1'
   initialState.columns['column-1'].title = 'Day list'
   initialState.columnOrder = ['column-1']
+  
   
 
   
@@ -36,7 +38,6 @@ export default function(props) {
 
 
   const [state, setDayState] = useState(initialState);
-  console.log(state, 'state')
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
@@ -85,16 +86,18 @@ export default function(props) {
   
 
   useEffect(() => {
+    
     for (let [key, value] of Object.entries(state.tasks)) {
-      console.log('trip_id', key)
+
       axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
         name: state.tasks[key].name,
         start_time: state.tasks[key].time.start,
         end_time: state.tasks[key].time.end,
-        activity: state.tasks[key].activity
-      },
-      {headers: {"Access-Control-Allow-Origin": "*"}}
-      ).then(console.log('hi there pu'))
+        activity: state.tasks[key].activity,
+        travel_method: state.tasks[key].travel.method,
+        travel_duration: state.tasks[key].travel.duration
+      }
+      )
     }
   }, [state])
 

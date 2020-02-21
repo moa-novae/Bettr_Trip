@@ -3,7 +3,7 @@ module API
 
     def index
       trip_id = params[:trip_id].to_i
-      @points = Point.where(trip_id: trip_id).order(start_time: :asc)
+      @points = Point.where(trip_id: trip_id).where.not(start_time: nil).order(start_time: :asc)
 
       render :json => {
         points: @points
@@ -22,10 +22,11 @@ module API
     end
     
     def update
-      @point = Point.find_by(id: params[:id])
       puts "UPDATE-----point_id = #{params[:id]}"
-      headers['Access-Control-Allow-Origin'] = '*'
-      @point.save
+      puts "THESE ARE THE PARAMS = #{params[:start_time]}"
+      Point.update(params[:id], :name => params[:name], :start_time => params[:start_time], :end_time => params[:end_time],
+      :activity => params[:activity], :travel_method => params[:travel_method], :travel_duration => params[:travel_duration])
+      
     end
     
   def destroy

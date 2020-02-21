@@ -20,10 +20,10 @@ import DirectionsBusIcon from '@material-ui/icons/DirectionsBus';
 
 export default function(props) {
   const iconDisplay = {
-    Bicycle: <DirectionsBikeIcon />,
-    Car: <DirectionsCarIcon />,
+    bicycling: <DirectionsBikeIcon />,
+    driving: <DirectionsCarIcon />,
     Walking: <DirectionsWalkIcon />,
-    Bus: <DirectionsBusIcon />,
+    transit: <DirectionsBusIcon />,
   }
   return (
     <>

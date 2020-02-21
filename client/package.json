@@ -16,12 +16,13 @@
     "@wojtekmaj/react-timerange-picker": "^2.4.0",
     "axios": "^0.18.1",
     "bootstrap": "^4.4.1",
+    "font-awesome": "^4.7.0",
     "immutability-helper": "^3.0.1",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
-    "font-awesome": "^4.7.0",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^12.2.0",
+    "react-bootstrap": "^1.0.0-beta.16",
     "react-daterange-picker": "^2.0.1",
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
@@ -49,7 +50,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  
   "devDependencies": {
     "@types/react-beautiful-dnd": "^12.1.1",
     "@types/styled-components": "^4.4.3",
