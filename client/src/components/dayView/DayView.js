@@ -11,7 +11,7 @@ export default function(props) {
   console.log(props.daysArr)
   let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
   props.daysArr.map(point => {
-    initialState.tasks[point.id] = {
+    initialState.tasks[point.id.toString()] = {
       trip_id: point.trip_id,
       id: point.id,
       name: point.name,
@@ -22,6 +22,7 @@ export default function(props) {
       activity: point.activity,
       travel: {method: point.travel_method, duration: point.travel_duration}
     }
+
     initialState.columns['column-1'].taskIds.push(point.id)
     
   })
@@ -29,6 +30,7 @@ export default function(props) {
   initialState.columns['column-1'].title = 'Day list'
   initialState.columnOrder = ['column-1']
   
+  console.log(initialState.tasks['1'].time)
 
   
 
