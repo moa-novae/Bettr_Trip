@@ -176,7 +176,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar />
+        <Calendar bin={state.bin} deletePoint={deletePoint}/>
       </div>
       <div className="map-container">
         <MapWithASearchBox
@@ -188,12 +188,7 @@ export default function Content() {
           onMapMounted={onMapMounted}
         />
       </div>
-      <div className="bin">
-        <Bin
-          bin={state.bin}
-          deletePoint={deletePoint}
-        />
-      </div>
+
 
     </div>
   );

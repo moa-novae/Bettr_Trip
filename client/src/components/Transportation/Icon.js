@@ -1,6 +1,5 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBicycle, faCar, faWalking, faBus, faCircle } from '@fortawesome/free-solid-svg-icons'
+
 import '../../../node_modules/font-awesome/css/font-awesome.min.css';
 import '../../../node_modules/font-awesome/css/font-awesome.css';
 import '../../../node_modules/font-awesome/css/font-awesome.css.map';

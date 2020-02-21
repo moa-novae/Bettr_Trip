@@ -38,9 +38,9 @@ class App extends Component {
       <Router>
 
         <div className="App">
-        <div className="main">
+          <div className="main">
 
-        
+
 
 
             <Nav />
@@ -53,12 +53,12 @@ class App extends Component {
               <Route path='/trips/:id' component={Content} />
             </Switch>
 
-        </div>
-            
+          </div>
 
 
-            {/* <Content /> */}
-     
+
+          {/* <Content /> */}
+
 
         </div>
       </Router>

@@ -4,11 +4,12 @@ import Column from './column.jsx';
 import { DragDropContext } from 'react-beautiful-dnd';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'
+import Bin from '../bin'
 
 
 export default function(props) {
-  let { id } = useParams();
- 
+
+
   let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
   props.daysArr.map(point => {
     initialState.tasks[point.id.toString()] = {
@@ -28,7 +29,9 @@ export default function(props) {
   })
   initialState.columns['column-1'].id = 'column-1'
   initialState.columns['column-1'].title = 'Day list'
-  initialState.columnOrder = ['column-1']
+  initialState.columns['column-2'].id = 'column-2'
+  initialState.columns['column-2'].title = 'Bin'
+  initialState.columnOrder = ['column-1', 'column-2']
   
   
 
@@ -86,16 +89,15 @@ export default function(props) {
   
 
   useEffect(() => {
-    
-    for (let [key, value] of Object.entries(state.tasks)) {
+    for (let id of state.columns['column-1'].taskIds){
 
-      axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
-        name: state.tasks[key].name,
-        start_time: state.tasks[key].time.start,
-        end_time: state.tasks[key].time.end,
-        activity: state.tasks[key].activity,
-        travel_method: state.tasks[key].travel.method,
-        travel_duration: state.tasks[key].travel.duration
+      axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
+        name: state.tasks[id].name,
+        start_time: state.tasks[id].time.start,
+        end_time: state.tasks[id].time.end,
+        activity: state.tasks[id].activity,
+        travel_method: state.tasks[id].travel.method,
+        travel_duration: state.tasks[id].travel.duration
       }
       )
     }
@@ -121,6 +123,9 @@ export default function(props) {
             exit={exit}
             setDayState={setDayState}
             state={state}
+            //the last two are for bin
+            bin={props.bin}
+            deletePoint={props.deletePoint}
           />
         })}
       </DragDropContext>
