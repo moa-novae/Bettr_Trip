@@ -19,7 +19,7 @@ import Transportation from '../Transportation'
 import EditableContainer from '../editableContainer'
 import MomentAdapter from '@date-io/moment'
 const Moment = new MomentAdapter();
-const { moment, format } = Moment
+const { moment } = Moment
 
 const Container = styled.div`
 
@@ -60,9 +60,9 @@ export default function(props) {
       })
     }
   }
-  // useEffect(() => {
-  //   onTimeChange(startTime, endTime)
-  // }, [startTime, endTime])
+  useEffect(() => {
+    onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
+  }, [startTime, endTime])
 
 
   return (
@@ -91,17 +91,17 @@ export default function(props) {
             })}>
               <DeleteForeverIcon />
             </i>
-              <div>
+            <div>
 
-                <p>
-                  {moment(startTime).format('MMM:DD')}
+              <p>
+                {moment(startTime).format('hh:mm')}
 
-                </p>
-                <p>
-                  {moment(endTime).format('hh:mm')}
+              </p>
+              <p>
+                {moment(endTime).format('hh:mm')}
 
-                </p>
-              </div>
+              </p>
+            </div>
 
             <CardMedia
             //add pictures
