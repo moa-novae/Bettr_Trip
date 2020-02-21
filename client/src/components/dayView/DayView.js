@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 
 export default function(props) {
   let { id } = useParams();
-  console.log(props.daysArr)
+ 
   let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
   props.daysArr.map(point => {
     initialState.tasks[point.id.toString()] = {
@@ -38,7 +38,6 @@ export default function(props) {
 
 
   const [state, setDayState] = useState(initialState);
-  console.log(state, 'state')
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
@@ -89,12 +88,14 @@ export default function(props) {
   useEffect(() => {
     
     for (let [key, value] of Object.entries(state.tasks)) {
-      console.log('axios put', state.tasks[key].time.start, state.tasks[key].time.end, 'd:', key)
+
       axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
         name: state.tasks[key].name,
         start_time: state.tasks[key].time.start,
         end_time: state.tasks[key].time.end,
-        activity: state.tasks[key].activity
+        activity: state.tasks[key].activity,
+        travel_method: state.tasks[key].travel.method,
+        travel_duration: state.tasks[key].travel.duration
       }
       )
     }

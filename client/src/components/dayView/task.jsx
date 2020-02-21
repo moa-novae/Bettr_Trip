@@ -51,13 +51,11 @@ export default function(props) {
   };
   const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss'))
   const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss'))
-  console.log('task init', startTime, endTime, 'd:', props.task.id)
   const onTimeChange = (start, end) => {
 
     return props.setDayState(prev => {
       let newState = { ...prev }
       newState.tasks[props.task.id].time = { start: start, end: end }
-      console.log('newstate', start, end, 'd:', props.task.id)
       return newState
     })
 
@@ -66,7 +64,6 @@ export default function(props) {
 
     onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'),
       moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
-    console.log(props.state.tasks, 'useEffect')
   }, [startTime, endTime])
 
 
@@ -89,7 +86,6 @@ export default function(props) {
             <TimePicker value={endTime} onChange={setEndTime} />
 
             <i onClick={() => props.setDayState(prev => {
-              console.log('clicked')
               let newState = { ...prev }
               delete newState.tasks[props.task.id]
               return (newState)
