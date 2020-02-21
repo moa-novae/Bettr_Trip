@@ -7,7 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import List from '@material-ui/core/List';
-import WeekItemTask from '../weekItemTask'
+import WeekItemTask from '../weekItemTask';
+import TravelTime from '../traveltime';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,6 +75,19 @@ export default function weekItem(props) {
     return `${dayName} ${monthName} ${date}`;
   }
 
+  const addTravelTime = pointData => {
+    let listArr = [];
+    for (let i = 0; i < pointData.length; i++) {
+      if (i === pointData.length - 1) {
+        listArr.push(<WeekItemTask pointData={pointData[i]} setView={props.setView}/>)
+      } else {
+        listArr.push(<WeekItemTask pointData={pointData[i]} setView={props.setView}/>);
+        listArr.push(<TravelTime pointData={[ pointData[i], pointData[i + 1] ]}/>);
+      }
+    }
+    return listArr;
+  };
+
   return (
     //this is mostly material UI copy pasta
     <React.Fragment>
@@ -89,7 +103,8 @@ export default function weekItem(props) {
         <ExpansionPanelDetails>
         <div className={classes.demo}>
             <List>
-              {props.pointData.map(p => <WeekItemTask pointData={p} setView={props.setView}/>)}                        
+              {addTravelTime(props.pointData)}
+              {/* {props.pointData.map(p => <WeekItemTask pointData={p} setView={props.setView}/>)}                         */}
             </List>
           </div>
         </ExpansionPanelDetails>
