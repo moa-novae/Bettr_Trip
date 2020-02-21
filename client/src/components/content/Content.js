@@ -71,13 +71,8 @@ export default function Content() {
   const deletePoint = function (pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
-    console.log('delete button clicked')
     axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
       .then(() => {
-        // const binIndex = state.bin.findIndex(i => i.id === pointId)
-        // const markerIndex = state.markers.findIndex(i => (i.positionlatitude === lat && i.position.longitude === lng))
-        // const binArray = state.bin.splice(binIndex, 1)
-        // const markerArray = state.markers.splice(markerIndex, 1)
         const binArray = state.bin.filter(item => item.id !== pointId)
         const markerArray = state.markerLibrary.filter(item => (item.position.latitude !== lat && item.position.longitude !== lng))
         setState(state => ({

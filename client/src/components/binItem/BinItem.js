@@ -4,7 +4,7 @@ const Button = (props) => {
   return (
     <button
       className={"delete-point-button"}
-      onClick={() => { console.log('delete button clicked in bin item'); props.deletePoint(props.id, props.lat, props.lng) }}
+      onClick={() => { props.deletePoint(props.id, props.lat, props.lng) }}
     >Delete
     </button>
   )
