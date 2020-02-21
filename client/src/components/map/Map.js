@@ -22,21 +22,7 @@ const Button = (props) => {
     </button>
   )
 }
-// const Bin = (props) => {
-//   const binItems = props.bin.map(function(item, index) {
-//     <BinItem key={index}
-//     name={item.name}
-//     region={(item.region? item.region : null)}
-//     />
 
-//   })
-//   return (
-//     <div
-//       className={"Bin"}
-//     >Bin
-//     </div>
-//   )
-// }
 const Input = () => {
   return (
     <input

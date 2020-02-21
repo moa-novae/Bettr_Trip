@@ -22,7 +22,7 @@ const onMapMounted = (ref) => {
   refs.map = ref;
 }
 
-export default function Content () {
+export default function Content() {
   const [state, setState] = useState({
     bounds: null,
     center: {},
@@ -63,6 +63,26 @@ export default function Content () {
       .then(response => {
         console.log(response)
         console.log('STATE POST', state)
+      })
+  }
+
+  const deletePoint = function(lat, lng) {
+    //axios delete with lat and long to find point in database 
+    //then filter bin and markers to find those objects and remove them from state
+    axios.delete(`http://localhost:3001/api/trips/${id}/points`, {
+      latitude: lat,
+      longitude: lng
+    })
+      .then(() => {
+        const binIndex = state.bin.findIndex(i => (i.latitude === lat && i.longitude === lng))
+        const markerIndex = state.markers.findIndex(i => (i.positionlatitude === lat && i.position.longitude === lng))
+        const binArray = state.bin.splice(binIndex, 1)
+        const markerArray = state.markers.splice(markerIndex, 1)
+        setState(state => ({
+          ...state,
+          markers: markerArray,
+          bin: binArray
+        }))
       })
   }
 
@@ -137,7 +157,7 @@ export default function Content () {
     fetchData();
   }, [])
 
-  //sets markers and bin to be loaded and rendered after map loads 
+  //sets markers to be rendered after map loads 
   useEffect(() => {
     setTimeout(function () {
       if (state.markerLibrary) {
@@ -153,7 +173,6 @@ export default function Content () {
       }
     }, 1000)
   }, [state.markerLibrary])
-
   return (
     <div className="content">
 
@@ -171,7 +190,10 @@ export default function Content () {
         />
       </div>
       <div className="bin">
-        <Bin bin={state.bin}/>
+        <Bin 
+        bin={state.bin} 
+        deletePoint={deletePoint}
+        />
       </div>
 
     </div>

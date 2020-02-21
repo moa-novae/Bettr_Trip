@@ -7,6 +7,9 @@ export default function (props) {
     return (<BinItem key={index}
     name={item.name}
     region={(item.region? item.region : null)}
+    deletePoint={props.deletePoint}
+    lat={props.lat}
+    lng={props.lng}
     />)
   })
   return (
@@ -15,13 +18,3 @@ export default function (props) {
     </div>
   )
 }
-// const Bin = (props) => {
- 
-//   // })
-//   return (
-//     <div
-//       className={"Bin"}
-//     >Bin
-//     </div>
-//   )
-// }
