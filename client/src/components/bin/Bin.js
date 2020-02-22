@@ -8,8 +8,8 @@ export default function (props) {
     name={binObj.name}
     region={(binObj.region? binObj.region : null)}
     deletePoint={props.deletePoint}
-    lat={binObj.lat}
-    lng={binObj.lng}
+    latitude={binObj.latitude}
+    longitude={binObj.longitude}
     id={binObj.id}
     />)
   })
