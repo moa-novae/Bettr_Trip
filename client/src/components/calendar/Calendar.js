@@ -6,8 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
-
+import Switch from '../switch';
 import MomentUtils from '@date-io/moment';
+
 const useStyles = makeStyles(theme => ({
   root: {
     
@@ -36,22 +37,3 @@ export default function ControlledExpansionPanels(props) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // daysArr.forEach(point => {
-    //   if (!dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`]) {
-    //     dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`] = [point];
-    //   } else {
-    //     dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`].push(point);
-    //   }
