@@ -14,11 +14,21 @@ module API
       puts "PARAMS---- #{params}"
       puts "PARAMS---- #{add_point_params}"
       
-      @point = Point.new(add_point_params)
-      @point.save
+      @point = Point.create(
+        name: params[:name],
+        trip_id: params[:trip_id],
+        region: params[:region],
+        latitude: params[:latitude],
+        longitude: params[:longitude]
+
+      )
+    
       render :json => {
         point: @point
       }
+    end
+    
+    def bin 
     end
     
     def update

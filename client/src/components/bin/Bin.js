@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function(props) {
   const classes = useStyles();
-  const binItems = props.bin.map(function(binObj, index) {
+  const binItems = props.bin.map((binObj, index) => {
     if (binObj) {
       return (<BinItem key={index}
         name={binObj.name}
