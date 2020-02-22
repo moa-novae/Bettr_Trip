@@ -33,6 +33,14 @@ class App extends Component {
       })
   }
 
+  save = (email, password) => {
+    const user = { email, password };
+    axios.post('/users', user)
+    .then(res => {
+      console.log(res, "<--- res after creating a new user");
+    });
+  };
+
   render() {
     return (
       <Router>
