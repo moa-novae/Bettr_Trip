@@ -198,13 +198,12 @@ export default function Content() {
             }
           }
         }
-      console.log(week, "this is week")
+      console.log('marker lib', markerArray)
       // setWeeks(week);
       setState(state => ({
         ...state,
         bounds: null,
         center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-        markers: [...state.markers],
         location: {},
         bin: [...binArray],
         markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
