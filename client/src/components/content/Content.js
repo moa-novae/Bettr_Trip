@@ -50,8 +50,8 @@ export default function Content() {
       longitude: location.coordinates.lng
     })
       .then(response => {
-        console.log("IS THE POINT HERE", response.data)
-        console.log('STATE POST', state)
+        // console.log("IS THE POINT HERE", response.data)
+        // console.log('STATE POST', state)
         const binObject = {
           name: location.name.placeName,
           id: parseFloat(response.data.point.id),
@@ -69,7 +69,7 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function (pointId, lat, lng) {
+  const deletePoint = function(pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
     axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
@@ -130,15 +130,18 @@ export default function Content() {
           let newMarker = { position: markerPosition, title: point.name }
           markerArray.push(newMarker)
           //add bin object to database
-          const binObject = {
-            name: point.name,
-            id: parseFloat(point.id),
-            region: (point.region ? point.region : null),
-            lat: parseFloat(point.latitude),
-            lng: parseFloat(point.longitude),
-            trip_id: id
+          let binObject;
+          if (!point.start_time && point.end_time) {
+            binObject = {
+              name: point.name,
+              id: parseFloat(point.id),
+              region: (point.region ? point.region : null),
+              lat: parseFloat(point.latitude),
+              lng: parseFloat(point.longitude),
+              trip_id: id
+            }
+            binArray.push(binObject);
           }
-          binArray.push(binObject);
         }
         setState(state => ({
           ...state,
@@ -158,7 +161,7 @@ export default function Content() {
   }, [])
 
   useEffect(() => {
-    setTimeout(function () {
+    setTimeout(function() {
       const markerArray = [];
       if (state.markerLibrary) {
         for (let marker of state.markerLibrary) {
@@ -178,7 +181,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar bin={state.bin} deletePoint={deletePoint}/>
+        <Calendar bin={state.bin} deletePoint={deletePoint} />
       </div>
       <div className="map-container">
         <MapWithASearchBox

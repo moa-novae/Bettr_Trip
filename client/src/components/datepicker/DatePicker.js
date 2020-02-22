@@ -19,7 +19,7 @@ class DatePicker extends React.Component {
 
   onSelect = (value, states) => {
     this.setState({ value, states });
-    console.log("This is DatePicker's state", this.state);
+    // console.log("This is DatePicker's state", this.state);
     this.props.onSelect(this.state);
   };
 

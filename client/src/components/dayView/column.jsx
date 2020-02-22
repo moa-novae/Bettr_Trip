@@ -15,10 +15,10 @@ const TaskList = styled.div`
 padding: 8px`
 
 export default function(props) {
-  const {column} = props
+  const { column } = props
   return (
     <>
-    {column.title === "Day list" &&
+      {column.title === "Day list" &&
         <Container>
           <Title> {props.column.title} </Title>
           <Droppable droppableId={props.column.id}>
@@ -50,13 +50,14 @@ export default function(props) {
             )}
           </Droppable>
         </Container>
-    }
-    {column.title === 'Bin' &&  
-      <Bin
-        bin={props.bin}
-        deletePoint={props.deletePoint}
-      />
-    }
+      }
+      {column.title === 'Bin' &&
+        <Bin
+          bin={props.bin}
+          deletePoint={props.deletePoint}
+          column={column}
+        />
+      }
     </>
   )
 }

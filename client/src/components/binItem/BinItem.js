@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd'
 
 const Button = (props) => {
   return (
@@ -10,12 +11,20 @@ const Button = (props) => {
   )
 }
 
-export default function (props) {
+export default function(props) {
   return (
-    <ul className={"bin-item"}>
-      {props.name}
-      {props.region}
-      <Button lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint}/>
-    </ul>
+    <Draggable draggableId={props.id.toString()} index={props.index}>
+      {(provided, snapshot) => (
+        <ul className={"bin-item"}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          >
+          {props.name}
+          {props.region}
+          <Button lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint} />
+        </ul>
+      )}
+    </Draggable>
   )
 }

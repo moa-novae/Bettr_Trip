@@ -68,12 +68,12 @@ export default function MediaControlCard(props) {
     .then(res => {
       const travel_method_per_point = res.data.point.travel_method;
 
-      console.log('Im here');
+      // console.log('Im here');
 
       axios.get(`${proxyurl}https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${start_coord}&destinations=${end_coord}&mode=${travel_method_per_point}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`)
       .then(res => {
         const travelData = res.data;
-        console.log(travelData, "<--- travelData pls work!!!");
+        // console.log(travelData, "<--- travelData pls work!!!");
         let time = "";
         time = travelData.rows[0].elements[0].duration.text;
         setTravel(time);

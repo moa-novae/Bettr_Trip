@@ -51,19 +51,19 @@ export default function ControlledExpansionPanels(props) {
             pointDataArr.push(daysArr[i])
           } else if (i === daysArr.length - 1) {
             if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
-              console.log(pointDataArr, "<--- pointDataArr!!!!");
+              // console.log(pointDataArr, "<--- pointDataArr!!!!");
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               pointDataArr = [];
               pointDataArr.push(daysArr[i]);
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
             } else {
-              console.log(pointDataArr, "<--- pointDataArr!!!!");
+              // console.log(pointDataArr, "<--- pointDataArr!!!!");
               pointDataArr.push(daysArr[i]);
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
             }
           } else {
             if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
-              console.log(pointDataArr, "<--- pointDataArr!!!!");
+              // console.log(pointDataArr, "<--- pointDataArr!!!!");
               week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               pointDataArr = [];
               pointDataArr.push(daysArr[i]);
@@ -73,7 +73,7 @@ export default function ControlledExpansionPanels(props) {
           }
         }
       }
-    console.log(week, "this is week")
+    // console.log(week, "this is week")
     setWeeks(week);
     
     });
@@ -81,9 +81,9 @@ export default function ControlledExpansionPanels(props) {
 
   
   const classes = useStyles()
-  console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
+  // console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
-  
+  console.log('bin cal', props.bin)
   return (
     <div className={classes.root}>
       

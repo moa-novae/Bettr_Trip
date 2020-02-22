@@ -11,7 +11,7 @@ export default function(props) {
 
 
   let initialState = { tasks: {}, columns: { 'column-1': { taskIds: [] } } };
-  console.log('pre init', props.daysArr)
+  // console.log('pre init', props.daysArr)
   initialState.columns['column-1'].id = 'column-1'
   initialState.columns['column-1'].title = 'Day list'
   initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
@@ -116,7 +116,7 @@ export default function(props) {
         onBeforeCapture={onBeforeCapture}>
         {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
-          console.log('column', column)
+          // console.log('column', column)
           const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
           return <Column
             key={column.id}
