@@ -25,20 +25,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
-export default function(props) {
+export default function (props) {
   const classes = useStyles();
-  const binItems = props.bin.map((binObj, index) => {
+  const binItems = props.bin.map(function(binObj, index) {
     if (binObj) {
-      return (<BinItem key={index}
-        name={binObj.name}
-        region={(binObj.region ? binObj.region : null)}
-        deletePoint={props.deletePoint}
-        lat={binObj.lat}
-        lng={binObj.lng}
-        id={binObj.id}
-        index={index}
-      />)
+    return (<BinItem key={index}
+    name={binObj.name}
+    region={(binObj.region? binObj.region : null)}
+    deletePoint={props.deletePoint}
+    latitude={binObj.latitude}
+    longitude={binObj.longitude}
+    id={binObj.id}
+    index={index}
+    />)
     }
   })
   return (

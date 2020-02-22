@@ -12,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 export default function(props) {
   return (
     <React.Fragment>
-      <ListItem button onClick={()=> props.setView('day')}>
+      <ListItem button onClick={()=> props.setView(true)}>
         <ListItemText
           secondary={`${props.pointData.start_time} ~ ${props.pointData.end_time}`}
           primary={props.pointData.name}

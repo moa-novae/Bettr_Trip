@@ -5,7 +5,7 @@ const Button = (props) => {
   return (
     <button
       className={"delete-point-button"}
-      onClick={() => { props.deletePoint(props.id, props.lat, props.lng) }}
+      onClick={() => { props.deletePoint(props.id, props.latitude, props.longitude) }}
     >Delete
     </button>
   )
@@ -22,7 +22,7 @@ export default function(props) {
           >
           {props.name}
           {props.region}
-          <Button lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint} />
+          <Button latitude={props.latitude} longitude={props.longitude} id={props.id} deletePoint={props.deletePoint} />
         </ul>
       )}
     </Draggable>

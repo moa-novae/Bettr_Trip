@@ -3,7 +3,7 @@ module API
 
     def index
       trip_id = params[:trip_id].to_i
-      @points = Point.where(trip_id: trip_id).where.not(start_time: nil).order(start_time: :asc)
+      @points = Point.where(trip_id: trip_id).order(start_time: :asc)
 
       render :json => {
         points: @points

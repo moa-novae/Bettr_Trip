@@ -12,7 +12,8 @@ import {
 } from "react-router-dom";
 import axios from 'axios';
 import _ from 'lodash';
-
+import Alert from '../alert'
+import WeekItem from '../weekItem'
 
 const refs = {}; //google map element 
 const onSearchBoxMounted = (ref) => {
@@ -29,8 +30,10 @@ export default function Content() {
     markers: [],
     location: {},
     bin: [],
-    markerLibrary: []
+    markerLibrary: [],
+    weekViews: []
   })
+  const [view, setView] = useState('week')
 
   let { id } = useParams();
 
@@ -50,17 +53,23 @@ export default function Content() {
       longitude: location.coordinates.lng
     })
       .then(response => {
-        // console.log("IS THE POINT HERE", response.data)
-        // console.log('STATE POST', state)
+        console.log(response.data)
+        const data = response.data
         const binObject = {
           name: location.name.placeName,
-          id: parseFloat(response.data.point.id),
+          id: parseFloat(data.point.id),
           region: (location.name.region ? location.name.region : null),
-          lat: location.coordinates.lat,
-          lng: location.coordinates.lng,
-          trip_id: id
+          latitude: location.coordinates.lat,
+          longitude: location.coordinates.lng,
+          start_time: data.point.start_time,
+          end_time: data.point.end_time,
+          created_at: data.point.created_at,
+          updated_at: data.point.updated_at,
+          trip_id: parseFloat(data.point.trip_id),
+          activity: data.point.activity,
+          travel_method: data.point.travel_method,
+          travel_duration: data.point.travel_duration,
         }
-        console.log('BIN OBJ', binObject)
         setState(state => ({
           ...state,
           markers: [...state.markers, marker],
@@ -130,28 +139,76 @@ export default function Content() {
           let newMarker = { position: markerPosition, title: point.name }
           markerArray.push(newMarker)
           //add bin object to database
-          let binObject;
-          if (!point.start_time && point.end_time) {
-            binObject = {
-              name: point.name,
-              id: parseFloat(point.id),
-              region: (point.region ? point.region : null),
-              lat: parseFloat(point.latitude),
-              lng: parseFloat(point.longitude),
-              trip_id: id
-            }
-            binArray.push(binObject);
+          const binObject = {
+            name: point.name,
+            id: parseFloat(point.id),
+            region: (point.region ? point.region : null),
+            latitude: parseFloat(point.latitude),
+            longitude: parseFloat(point.longitude),
+            start_time: point.start_time,
+            end_time: point.end_time,
+            created_at: point.created_at,
+            updated_at: point.updated_at,
+            trip_id: parseFloat(point.trip_id),
+            activity: point.activity,
+            travel_method: point.travel_method,
+            travel_duration: point.travel_duration
           }
         }
-        setState(state => ({
-          ...state,
-          bounds: null,
-          center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-          markers: [...state.markers],
-          location: {},
-          bin: [...binArray],
-          markerLibrary: [...markerArray] //sets new markers data into marker library to later be turned into markers 
-        }))
+        // setState(state => ({
+        //   ...state,
+        //   bounds: null,
+        //   center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
+        //   markers: [...state.markers],
+        //   location: {},
+        //   bin: [...binArray],
+        //   markerLibrary: [...markerArray] //sets new markers data into marker library to later be turned into markers 
+        // }))
+        let week = [];
+        if (!binArray || binArray.length === 0) {
+          week.push(<Alert />);
+        } else {
+          const binFilter = binArray.filter(item => item.start_time !== null)
+          // for acculuating points data
+          let pointDataArr = [];
+          for (let i = 0; i < binFilter.length; i++) {
+            if (i === 0) {
+              pointDataArr.push(binFilter[i])
+            } else if (i === binFilter.length - 1) {
+              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
+                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                pointDataArr = [];
+                pointDataArr.push(binFilter[i]);
+                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              } else {
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
+                pointDataArr.push(binFilter[i]);
+                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              }
+            } else {
+              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
+                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                pointDataArr = [];
+                pointDataArr.push(binFilter[i]);
+              } else {
+                pointDataArr.push(binFilter[i]);
+              }
+            }
+          }
+        }
+      // console.log('marker lib', markerArray)
+      // setWeeks(week);
+      setState(state => ({
+        ...state,
+        bounds: null,
+        center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
+        location: {},
+        bin: [...binArray],
+        markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+        weekViews: week
+      }))
 
       } catch (error) {
         console.error(error)
@@ -181,7 +238,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar bin={state.bin} deletePoint={deletePoint} />
+        <Calendar daysArr={state.bin} view={view} weekViews={state.weekViews} deletePoint={deletePoint}/>
       </div>
       <div className="map-container">
         <MapWithASearchBox

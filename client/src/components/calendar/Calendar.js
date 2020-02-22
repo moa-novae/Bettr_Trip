@@ -6,8 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
-
+import Switch from '../switch';
 import MomentUtils from '@date-io/moment';
+
 const useStyles = makeStyles(theme => ({
   root: {
     
@@ -83,34 +84,14 @@ export default function ControlledExpansionPanels(props) {
   const classes = useStyles()
   // console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
-  console.log('bin cal', props.bin)
+  // console.log('bin cal', props.bin)
   return (
     <div className={classes.root}>
-      
-      {view === 'week' && weekViews}
+      {props.view === 'week' && props.weekViews}
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {view === 'day' && <ReactDnd daysArr={dayState} bin={props.bin} deletePoint={props.deletePoint}/>}
+      {props.view === 'day' && <ReactDnd daysArr={props.daysArr} bin={props.bin} deletePoint={props.deletePoint}/>}
       </MuiPickersUtilsProvider>
       
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // daysArr.forEach(point => {
-    //   if (!dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`]) {
-    //     dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`] = [point];
-    //   } else {
-    //     dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`].push(point);
-    //   }

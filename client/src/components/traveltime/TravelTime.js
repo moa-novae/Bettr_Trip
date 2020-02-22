@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function MediaControlCard(props) {
+  console.log('travel time props', props)
   let { id } = useParams();
   const WALK = "walking";
   const BIKE = "bicycling";

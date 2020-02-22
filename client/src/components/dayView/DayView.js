@@ -15,7 +15,7 @@ export default function(props) {
   initialState.columns['column-1'].title = 'Day list'
   initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
   initialState.columnOrder = ['column-1', 'column-2']
-  console.log('props.daysArr', props.daysArr)
+  // console.log('props.daysArr', props.daysArr)
   
   props.daysArr.map(point => {
     initialState.tasks[point.id.toString()] = {
@@ -49,7 +49,7 @@ export default function(props) {
   })
 
 
-  console.log('init', initialState)
+  // console.log('init', initialState)
 
 
 
@@ -129,7 +129,7 @@ export default function(props) {
       newState.tasks[draggableId].time = {start: '2020-02-20 02:17:41' ,end: '2020-02-20 03:17:41'}
       newState.tasks[draggableId].travel ={method: 'driving', duration: 3}
       setDayState(prev => newState)
-      console.log(state.tasks)
+      // console.log(state.tasks)
       debugger;
     }
 
@@ -177,7 +177,7 @@ export default function(props) {
         onBeforeCapture={onBeforeCapture}>
         {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
-          console.log(state.columns, 'state.columns')
+          // console.log(state.columns, 'state.columns')
           // console.log('column', column)
           const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
           return <Column
