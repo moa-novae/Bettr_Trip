@@ -40,7 +40,7 @@ export default function ControlledExpansionPanels(props) {
       setDay([...daysArr])
     }).then(() => {
       let week = [];
-      if (daysArr.length === 0) {
+      if (!daysArr || daysArr.length === 0) {
         week.push(<Alert />);
       } else {
         // for acculuating points data
@@ -86,7 +86,7 @@ export default function ControlledExpansionPanels(props) {
     <div className={classes.root}>
       {view === 'week' && weekViews}
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {view === 'day' && <ReactDnd daysArr={props.daysArr}/>}
+      {view === 'day' && <ReactDnd daysArr={daysArr}/>}
       </MuiPickersUtilsProvider>
     </div>
   );
