@@ -6,8 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
-
+import Switch from '../switch';
 import MomentUtils from '@date-io/moment';
+
 const useStyles = makeStyles(theme => ({
   root: {
     
@@ -23,19 +24,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const singleFilter = dayObj => {
+  return dayObj.start_time !== null;
+}
+
 export default function ControlledExpansionPanels() {
-  const [view, setView] = useState('week') //view determins to show either week or day
   let { id } = useParams();
   let daysArr = [];
   const [weekViews, setWeeks] = useState([]);
   const [dayState, setDay] = useState([]);
+  const [switchValue, setSwitchValue] = useState(false);
+
   useEffect(() => {
     Promise.all([
     axios.get(`http://localhost:3001/api/trips/${id}/points`)
     ]).then(all => {
       const tripData = all[0].data;
       // setPoints(tripData.points);
-      daysArr = tripData.points;
+      daysArr = tripData.points.filter(singleFilter);
       console.log(daysArr, "This is just daysArr!!!");
       setDay([...daysArr])
     }).then(() => {
@@ -52,19 +58,19 @@ export default function ControlledExpansionPanels() {
           } else if (i === daysArr.length - 1) {
             if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
               console.log(pointDataArr, "<--- pointDataArr!!!!");
-              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              week.push(<WeekItem pointData={pointDataArr} setView={setSwitchValue} />);
               pointDataArr = [];
               pointDataArr.push(daysArr[i]);
-              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              week.push(<WeekItem pointData={pointDataArr} setView={setSwitchValue} />);
             } else {
               console.log(pointDataArr, "<--- pointDataArr!!!!");
               pointDataArr.push(daysArr[i]);
-              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              week.push(<WeekItem pointData={pointDataArr} setView={setSwitchValue} />);
             }
           } else {
             if (daysArr[i].start_time.slice(8, 10) !== daysArr[i - 1].start_time.slice(8, 10)) {
               console.log(pointDataArr, "<--- pointDataArr!!!!");
-              week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+              week.push(<WeekItem pointData={pointDataArr} setView={setSwitchValue} />);
               pointDataArr = [];
               pointDataArr.push(daysArr[i]);
             } else {
@@ -75,40 +81,24 @@ export default function ControlledExpansionPanels() {
       }
     console.log(week, "this is week")
     setWeeks(week);
-    
     });
   }, []);
 
   
-  const classes = useStyles()
+  const classes = useStyles();
+
   console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
   
   return (
     <div className={classes.root}>
-      {view === 'week' && weekViews}
+      <div>
+        <Switch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
+      </div>
+      {switchValue === false && weekViews}
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {view === 'day' && <ReactDnd daysArr={dayState}/>}
+      {switchValue === true && <ReactDnd daysArr={dayState}/>}
       </MuiPickersUtilsProvider>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // daysArr.forEach(point => {
-    //   if (!dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`]) {
-    //     dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`] = [point];
-    //   } else {
-    //     dayAccumulator[`${point.start_time.getMonth() + 1}/${point.start_time.getDate()}`].push(point);
-    //   }
