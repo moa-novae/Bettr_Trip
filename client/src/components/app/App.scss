@@ -5,9 +5,9 @@ $dark: #003559;
   text-align: center;
   content: '';
   backdrop-filter: blur(5px);
-  height: 105vh;
-  width: 105vw;
-  z-index: -1;
+  height: 100vh;
+  width: 100vw;
+  z-index: 0;
   
 }
 
@@ -16,6 +16,9 @@ $dark: #003559;
   background-image: url('../../images/landing_page.jpg');
   background-size: 100vw;
   background-repeat: no-repeat;
+  overflow-x: hidden;
 }
+
+
 
 @import '~bootstrap/scss/bootstrap';

@@ -10,7 +10,12 @@ import Bin from '../bin'
 export default function(props) {
 
 
-  let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
+  let initialState = { tasks: {}, columns: { 'column-1': { taskIds: [] } } };
+  console.log('pre init', props.daysArr)
+  initialState.columns['column-1'].id = 'column-1'
+  initialState.columns['column-1'].title = 'Day list'
+  initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
+  initialState.columnOrder = ['column-1', 'column-2']
   props.daysArr.map(point => {
     initialState.tasks[point.id.toString()] = {
       trip_id: point.trip_id,
@@ -18,24 +23,22 @@ export default function(props) {
       name: point.name,
       latitude: point.latitude,
       longitude: point.longitude,
-      time:{start: point.start_time, end: point.end_time,},
+      time: { start: point.start_time, end: point.end_time, },
       region: point.region,
       activity: point.activity,
-      travel: {method: point.travel_method, duration: point.travel_duration}
+      travel: { method: point.travel_method, duration: point.travel_duration }
+    }
+    if(point.start_time && point.end_time) {
+      initialState.columns['column-1'].taskIds.push(point.id)}
+    else{
+      initialState.columns['column-2'].taskIds.push(point.id)
     }
 
-    initialState.columns['column-1'].taskIds.push(point.id)
-    
   })
-  initialState.columns['column-1'].id = 'column-1'
-  initialState.columns['column-1'].title = 'Day list'
-  initialState.columns['column-2'].id = 'column-2'
-  initialState.columns['column-2'].title = 'Bin'
-  initialState.columnOrder = ['column-1', 'column-2']
-  
   
 
-  
+  console.log('init', initialState)
+
 
 
 
@@ -86,10 +89,10 @@ export default function(props) {
 
   }
 
-  
+
 
   useEffect(() => {
-    for (let id of state.columns['column-1'].taskIds){
+    for (let id of state.columns['column-1'].taskIds) {
 
       axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
         name: state.tasks[id].name,
@@ -113,6 +116,7 @@ export default function(props) {
         onBeforeCapture={onBeforeCapture}>
         {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
+          console.log('column', column)
           const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
           return <Column
             key={column.id}

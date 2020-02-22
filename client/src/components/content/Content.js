@@ -57,7 +57,8 @@ export default function Content() {
           id: parseFloat(response.data.point.id),
           region: (location.name.region ? location.name.region : null),
           lat: location.coordinates.lat,
-          lng: location.coordinates.lng
+          lng: location.coordinates.lng,
+          trip_id: id
         }
         console.log('BIN OBJ', binObject)
         setState(state => ({
@@ -134,7 +135,8 @@ export default function Content() {
             id: parseFloat(point.id),
             region: (point.region ? point.region : null),
             lat: parseFloat(point.latitude),
-            lng: parseFloat(point.longitude)
+            lng: parseFloat(point.longitude),
+            trip_id: id
           }
           binArray.push(binObject);
         }
