@@ -36,7 +36,6 @@ export default function(props) {
   return (
     <div className="bin">
       <div className="in-bin">
-
         <div className={classes.root}>
 
           <ExpansionPanel>

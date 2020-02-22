@@ -39,8 +39,7 @@ class App extends Component {
 
         <div className="App">
           <div className="main">
-
-
+          <div style={{position: 'fixed',bottom: '0px' }}>sitcky</div>
 
 
             <Nav />
@@ -55,7 +54,7 @@ class App extends Component {
 
           </div>
 
-
+      
 
           {/* <Content /> */}
  
