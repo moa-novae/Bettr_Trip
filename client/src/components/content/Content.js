@@ -50,16 +50,23 @@ export default function Content() {
       longitude: location.coordinates.lng
     })
       .then(response => {
-        console.log("IS THE POINT HERE", response.data)
-        console.log('STATE POST', state)
+        console.log(response.data)
+        const data = response.data
         const binObject = {
           name: location.name.placeName,
-          id: parseFloat(response.data.point.id),
+          id: parseFloat(data.point.id),
           region: (location.name.region ? location.name.region : null),
           lat: location.coordinates.lat,
-          lng: location.coordinates.lng
+          lng: location.coordinates.lng,
+          start_time: data.point.start_time,
+          end_time: data.point.end_time,
+          created_at: data.point.created_at,
+          updated_at: data.point.updated_at,
+          trip_id: parseFloat(data.point.trip_id),
+          activity: data.point.activity,
+          travel_method: data.point.travel_method,
+          travel_duration: data.point.travel_duration
         }
-        console.log('BIN OBJ', binObject)
         setState(state => ({
           ...state,
           markers: [...state.markers, marker],
@@ -134,7 +141,15 @@ export default function Content() {
             id: parseFloat(point.id),
             region: (point.region ? point.region : null),
             lat: parseFloat(point.latitude),
-            lng: parseFloat(point.longitude)
+            lng: parseFloat(point.longitude),
+            start_time: point.start_time,
+            end_time: point.end_time,
+            created_at: point.created_at,
+            updated_at: point.updated_at,
+            trip_id: parseFloat(point.trip_id),
+            activity: point.activity,
+            travel_method: point.travel_method,
+            travel_duration: point.travel_duration
           }
           binArray.push(binObject);
         }
@@ -176,7 +191,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar />
+        <Calendar daysArr={state.bin}/>
       </div>
       <div className="map-container">
         <MapWithASearchBox

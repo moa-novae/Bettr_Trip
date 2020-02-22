@@ -23,12 +23,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ControlledExpansionPanels() {
+export default function ControlledExpansionPanels(props) {
   const [view, setView] = useState('week') //view determins to show either week or day
   let { id } = useParams();
   let daysArr = [];
-  const [weekViews, setWeeks] = useState([]);
   const [dayState, setDay] = useState([]);
+  const [weekViews, setWeeks] = useState([]);
   useEffect(() => {
     Promise.all([
     axios.get(`http://localhost:3001/api/trips/${id}/points`)
@@ -78,17 +78,15 @@ export default function ControlledExpansionPanels() {
     
     });
   }, []);
-
   
   const classes = useStyles()
-  console.log(daysArr, "<--- dayArr"); // should be nothing b/c axios has not resolved yet!
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
   
   return (
     <div className={classes.root}>
       {view === 'week' && weekViews}
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {view === 'day' && <ReactDnd daysArr={dayState}/>}
+      {view === 'day' && <ReactDnd daysArr={props.daysArr}/>}
       </MuiPickersUtilsProvider>
     </div>
   );
