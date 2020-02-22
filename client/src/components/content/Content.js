@@ -169,31 +169,32 @@ export default function Content() {
         if (!binArray || binArray.length === 0) {
           week.push(<Alert />);
         } else {
+          const binFilter = binArray.filter(item => item.start_time !== null)
           // for acculuating points data
           let pointDataArr = [];
-          for (let i = 0; i < binArray.length; i++) {
+          for (let i = 0; i < binFilter.length; i++) {
             if (i === 0) {
-              pointDataArr.push(binArray[i])
-            } else if (i === binArray.length - 1) {
-              if (binArray[i].start_time.slice(8, 10) !== binArray[i - 1].start_time.slice(8, 10)) {
+              pointDataArr.push(binFilter[i])
+            } else if (i === binFilter.length - 1) {
+              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
                 console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
-                pointDataArr.push(binArray[i]);
+                pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               } else {
                 console.log(pointDataArr, "<--- pointDataArr!!!!");
-                pointDataArr.push(binArray[i]);
+                pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               }
             } else {
-              if (binArray[i].start_time.slice(8, 10) !== binArray[i - 1].start_time.slice(8, 10)) {
+              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
                 console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
-                pointDataArr.push(binArray[i]);
+                pointDataArr.push(binFilter[i]);
               } else {
-                pointDataArr.push(binArray[i]);
+                pointDataArr.push(binFilter[i]);
               }
             }
           }
