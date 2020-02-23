@@ -33,7 +33,7 @@ export default function Content() {
     markerLibrary: [],
     weekViews: []
   })
-  const [view, setView] = useState('week')
+  const [view, setView] = useState('day')
 
   let { id } = useParams();
 
@@ -177,19 +177,19 @@ export default function Content() {
               pointDataArr.push(binFilter[i])
             } else if (i === binFilter.length - 1) {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               } else {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               }
             } else {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
@@ -199,7 +199,7 @@ export default function Content() {
             }
           }
         }
-      console.log('marker lib', markerArray)
+      //console.log('marker lib', markerArray)
       // setWeeks(week);
       setState(state => ({
         ...state,
@@ -249,12 +249,6 @@ export default function Content() {
           markers={state.markers}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
-        />
-      </div>
-      <div className="bin">
-        <Bin
-          bin={state.bin}
-          deletePoint={deletePoint}
         />
       </div>
 

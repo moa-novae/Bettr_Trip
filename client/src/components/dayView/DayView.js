@@ -7,44 +7,50 @@ import { useParams } from 'react-router-dom'
 
 
 export default function(props) {
-  let { id } = useParams();
- 
-  let initialState = {tasks:{}, columns:{'column-1': {taskIds: []}}};
+
+
+  let initialState = { tasks: {}, columns: { 'column-1': { taskIds: [] } } };
+  initialState.columns['column-1'].id = 'column-1'
+  initialState.columns['column-1'].title = 'Day list'
+  initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
+  initialState.columnOrder = ['column-1', 'column-2']
+
+  
+  
   props.daysArr.map(point => {
+    
     initialState.tasks[point.id.toString()] = {
       trip_id: point.trip_id,
       id: point.id,
       name: point.name,
       latitude: point.latitude,
       longitude: point.longitude,
-      time:{start: point.start_time, end: point.end_time,},
+      time: { start: point.start_time, end: point.end_time, },
       region: point.region,
       activity: point.activity,
-      travel: {method: point.travel_method, duration: point.travel_duration}
+      travel: { method: point.travel_method, duration: point.travel_duration }
+    }
+    if (point.start_time && point.end_time) {
+      initialState.columns['column-1'].taskIds.push(point.id)
+    }
+    else {
+      initialState.columns['column-2'].taskIds.push(point.id)
     }
 
-    initialState.columns['column-1'].taskIds.push(point.id)
-    
   })
-  initialState.columns['column-1'].id = 'column-1'
-  initialState.columns['column-1'].title = 'Day list'
-  initialState.columnOrder = ['column-1']
   
   
 
-  
-
-
-
-
+  console.log('daysarr', props.daysArr)
   const [state, setDayState] = useState(initialState);
+  console.log('state',state)
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
   }
-
+  
 
 
 
@@ -63,54 +69,117 @@ export default function(props) {
     ) {
       return
     }
-    const column = state.columns[source.droppableId];
-    const newTaskIds = Array.from(column.taskIds);
-    newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(destination.index, 0, draggableId)
+    const start = state.columns[source.droppableId];
+    const finish = state.columns[destination.droppableId]
+    if (start === finish) {
 
-    const newColumn = {
-      ...column,
-      taskIds: newTaskIds
+
+      const newTaskIds = Array.from(start.taskIds);
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(destination.index, 0, draggableId)
+
+      const newColumn = {
+        ...start,
+        taskIds: newTaskIds
+      }
+      const newState = {
+        ...state,
+        columns: {
+          ...state.columns,
+          [newColumn.id]: newColumn,
+        },
+      }
+      setDayState(prev => newState)
     }
-    const newState = {
-      ...state,
-      columns: {
-        ...state.columns,
-        [newColumn.id]: newColumn,
-      },
+
+    //move between lists
+    else {
+      const startTaskIds = Array.from(start.taskIds)
+      startTaskIds.slice(source.index, 1)
+      const newStart = {
+        ...start,
+        taskIds: startTaskIds,
+      }
+      const finishTaskIds = Array.from(finish.taskIds)
+      finishTaskIds.splice(destination.index, 0, draggableId);
+      const newFinish = {
+        ...finish,
+        taskIds: finishTaskIds,
+      };
+      let newState = {
+        ...state,
+        columns: {
+          ...state.columns,
+          [newStart.id]: newStart,
+          [newFinish.id]: newFinish,
+        },
+      };
+      newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
+      newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
+      setDayState(prev => newState)
+      //console.log(state.tasks)
+      
     }
-    setDayState(prev => newState)
 
-  }
-
-  
+  };
 
   useEffect(() => {
+    setDayState(prev => {
+      let newState = { ...prev }
+      newState.columns['column-1'].taskIds = [];
+      newState.columns['column-2'].taskIds = [];
+      props.daysArr.map(point => {
     
-    for (let [key, value] of Object.entries(state.tasks)) {
+        newState.tasks[point.id.toString()] = {
+          trip_id: point.trip_id,
+          id: point.id,
+          name: point.name,
+          latitude: point.latitude,
+          longitude: point.longitude,
+          time: { start: point.start_time, end: point.end_time, },
+          region: point.region,
+          activity: point.activity,
+          travel: { method: point.travel_method, duration: point.travel_duration }
+        }
+        if (point.start_time && point.end_time) {
+          newState.columns['column-1'].taskIds.push(point.id)
+        }
+        else {
+          newState.columns['column-2'].taskIds.push(point.id)
+        }
+    
+      })
+      return newState
+    })
+  }, [props.daysArr])
 
-      axios.put(`http://localhost:3001/api/trips/${value.trip_id}/points/${key}`, {
-        name: state.tasks[key].name,
-        start_time: state.tasks[key].time.start,
-        end_time: state.tasks[key].time.end,
-        activity: state.tasks[key].activity,
-        travel_method: state.tasks[key].travel.method,
-        travel_duration: state.tasks[key].travel.duration
+  useEffect(() => {
+    for (let id of state.columns['column-1'].taskIds) {
+
+      axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
+        name: state.tasks[id].name,
+        start_time: state.tasks[id].time.start,
+        end_time: state.tasks[id].time.end,
+        activity: state.tasks[id].activity,
+        travel_method: state.tasks[id].travel.method,
+        travel_duration: state.tasks[id].travel.duration
       }
       )
     }
-  }, [state])
-
+  }, [state]) 
+  
 
 
 
   return (
     <div>
+      
       <DragDropContext
         onDragEnd={onDragEnd}
         onBeforeCapture={onBeforeCapture}>
         {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
+
           const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
           return <Column
             key={column.id}
@@ -121,6 +190,8 @@ export default function(props) {
             exit={exit}
             setDayState={setDayState}
             state={state}
+        
+          
           />
         })}
       </DragDropContext>
