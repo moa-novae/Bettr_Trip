@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import axios from "axios";
 import './App.scss';
 import Content from '../content';
-// import Content from '../content.js';
 import Nav from '../nav';
 import Home from '../home';
 import About from '../about';
@@ -11,35 +10,54 @@ import Trip from '../trip';
 import Signup from '../signup';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-
 class App extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super();
     this.state = {
-      message: 'Click the button to load data!'
-    }
+      loggedInStatus: 'NOT_LOGGED_IN',
+      user: {}
+    };
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
-  fetchData = () => {
-    axios.get('/api/data') // You can simply make your requests to "/api/whatever you want"
-      .then((response) => {
-        // handle success
-        console.log(response.data) // The entire response from the Rails API
-
-        console.log(response.data.message) // Just the message
-        this.setState({
-          message: response.data.message
-        });
-      })
-  }
-
-  save = (email, password) => {
-    const user = { email, password };
-    axios.post('/users', user)
+  checkLoginStatus() {
+    axios.get('http://localhost:3001/logged_in', { withCredentials: true })
     .then(res => {
-      console.log(res, "<--- res after creating a new user");
+      console.log("logged in? ", res);
+      if (res.data.logged_in && this.state.loggedInStatus === 'NOT_LOGGED_IN') {
+        this.setState({
+          loggedInStatus: 'LOGGED_IN',
+          user: res.data.user
+        })
+      } else if (!res.data.logged_in && this.state.loggedInStatus === 'LOGGED_IN') {
+        this.setState({
+          loggedInStatus: 'NOT_LOGGED_IN', 
+          user: {}
+        })
+      }
+    }).catch(err => {
+      console.log('check login error: ', err);
     });
-  };
+  }
+
+  componentDidMount() {
+    this.checkLoginStatus();
+  }
+
+  handleLogout() {
+    this.setState({
+      loggedInStatus: 'NOT_LOGGED_IN', 
+      user: {}
+    });
+  }
+
+  handleLogin(data) {
+    this.setState({
+      loggedInStatus: 'LOGGED_IN',
+      user: data
+    });
+  }
 
   render() {
     return (
@@ -51,14 +69,14 @@ class App extends Component {
         
 
 
-            <Nav />
+            <Nav handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
             <Switch>
-              <Route path='/' exact component={Home} />
-              <Route path='/about' exact component={About} />
-              <Route path='/trips' exact component={Trip} />
-              <Route path='/login' exact component={Login} />
-              <Route path='/signup' exact component={Signup} />
-              <Route path='/trips/:id' component={Content} />
+              <Route path='/' exact render={props => (<Home {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/about' exact render={props => (<About {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/trips' exact render={props => (<Trip {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/login' exact render={props => (<Login {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/signup' exact render={props => (<Signup {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/trips/:id' render={props => (<Content {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
             </Switch>
 
         </div>

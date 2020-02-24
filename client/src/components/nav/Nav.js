@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Nav.css';
+import SigninButton from '../signinbutton';
+import SignoutButton from '../signoutbutton';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap'
+import axios from 'axios';
 
-export default function() {
+
+
+export default function(props) {
+
+  const handleLogoutClick = () => {
+    axios.delete("http://localhost:3001/logout", { withCredentials: true })
+    .then(res => {
+      props.handleLogout();
+    }).catch(err => {
+      console.log('logout error: ', err);
+    });
+  };
+
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand href="#home">LOGO</Navbar.Brand>
@@ -13,10 +28,17 @@ export default function() {
         <Nav.Link href="/signup">Sign Up</Nav.Link>
         <Nav.Link href="/login">Log In</Nav.Link>
         <Nav.Link href="/about">About</Nav.Link>
-
-
       </Nav>
-
+      {(() => {
+        switch (props.loggedInStatus) {
+          case 'LOGGED_IN':
+            return <SignoutButton logout={handleLogoutClick} />;
+          case 'NOT_LOGGED_IN':
+            return <SigninButton />;
+          default:
+            return null;
+        }
+      })()}
     </Navbar>
 
     // <nav className="container-fullwidth">
