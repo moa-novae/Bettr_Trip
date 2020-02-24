@@ -14,6 +14,7 @@ export default function(props) {
   const handleLogoutClick = () => {
     axios.delete("http://localhost:3001/logout", { withCredentials: true })
     .then(res => {
+      console.log(res, 'res after logout');
       props.handleLogout();
     }).catch(err => {
       console.log('logout error: ', err);

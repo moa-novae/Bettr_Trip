@@ -11,7 +11,6 @@ class UsersController < ApplicationController
       password: params['user']['password'],
       password_confirmation: params['user']['password_confirmation']
     )
-
     if user
       session[:user_id] = user.id
       render json: {
@@ -21,5 +20,10 @@ class UsersController < ApplicationController
     else
       render json: { status: 500 }
     end
+  end
+
+  def show
+    profile = TripUser.where(user_id: params[:user_id])
+    puts profile
   end
 end

@@ -241,7 +241,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} weekViews={state.weekViews} />
+        <Calendar daysArr={state.bin} view={view} setView={setView} weekViews={state.weekViews} />
       </div>
       <div className="map-container">
         <MapWithASearchBox

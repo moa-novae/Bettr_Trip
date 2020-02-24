@@ -46,7 +46,6 @@ class App extends Component {
   }
 
   handleLogout() {
-    console.log('im hereerererererre');
     this.setState({
       loggedInStatus: 'NOT_LOGGED_IN', 
       user: {}
