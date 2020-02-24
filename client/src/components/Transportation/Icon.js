@@ -22,7 +22,7 @@ export default function(props) {
   const iconDisplay = {
     bicycling: <DirectionsBikeIcon />,
     driving: <DirectionsCarIcon />,
-    Walking: <DirectionsWalkIcon />,
+    walking: <DirectionsWalkIcon />,
     transit: <DirectionsBusIcon />,
   }
   return (
