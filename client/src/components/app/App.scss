@@ -1,22 +1,45 @@
 $dark: #003559;
+.App {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  
+}
+.content {
+  background-color: #f2f2f2;
+}
 
+// .main::before {
+//   width: 100vw;
+//   height: 100vh;
+//   background-size: auto;
+//   background-image: url('../../images/landing_page.jpg');
+//   background-repeat: no-repeat;
+  
+// }
+
+// .main::before {
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   filter: blur(20px);
+//   z-index: -1;
+//   text-align: center;
+//   height: 105vh;
+//   width: 100vw;
+  
+// }
 
 .main {
   text-align: center;
-  content: '';
-  
-  backdrop-filter: blur(5px);
-  height: 100vh;
-  width: 100vw;
-  z-index: -1;
-  
-}
+  height: 100%;
+  width: 100%;
+  z-index: 0;
 
-.App {
-  
-  background-image: url('../../images/landing_page.jpg');
-  background-size: 100vw;
-  background-repeat: no-repeat;
 }
 
 @import '~bootstrap/scss/bootstrap';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Component } from 'react';
 import './Content.css';
 import MapWithASearchBox from '../map'
 import Calendar from '../calendar'
-import Bin from '../bin'
+import Recommend from '../recommend'
 import {
   BrowserRouter as Router,
   Switch,
@@ -34,7 +34,7 @@ export default function Content() {
     weekViews: [],
     daysFiltered: []
   })
-  const [view, setView] = useState('week')
+  const [view, setView] = useState('day')
 
   let { id } = useParams();
 
@@ -79,7 +79,7 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function (pointId, lat, lng) {
+  const deletePoint = function(pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
     axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
@@ -217,15 +217,17 @@ export default function Content() {
   }, [])
 
   useEffect(() => {
-    setTimeout(function () {
+    setTimeout(function() {
       const markerArray = [];
       if (state.markerLibrary) {
-        for (let marker of state.markerLibrary) {
-          const newMarker = new window.google.maps.Marker({
-            position: marker.position,
-            title: marker.title
-          });
-          markerArray.push(newMarker)
+        if (window.google) {
+          for (let marker of state.markerLibrary) {
+            const newMarker = new window.google.maps.Marker({
+              position: marker.position,
+              title: marker.title
+            });
+            markerArray.push(newMarker)
+          }
         }
         setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
       }
@@ -237,7 +239,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.daysFiltered} view={view} weekViews={state.weekViews} />
+        <Calendar daysArr={state.bin} view={view} setView={setView} weekViews={state.weekViews} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
@@ -249,11 +251,8 @@ export default function Content() {
           onMapMounted={onMapMounted}
         />
       </div>
-      <div className="bin">
-        <Bin
-          bin={state.bin}
-          deletePoint={deletePoint}
-        />
+      <div className="recommend">
+        <Recommend />
       </div>
 
     </div>

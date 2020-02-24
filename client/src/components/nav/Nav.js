@@ -1,22 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Nav.css';
+import SigninButton from '../signinbutton';
+import SignoutButton from '../signoutbutton';
+import UserButton from '../userbutton';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { LinkContainer } from "react-router-bootstrap";
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
-export default function() {
+
+
+export default function(props) {
+  let history = useHistory();
+
+  const handleLogoutClick = () => {
+    axios.delete("http://localhost:3001/logout", { withCredentials: true })
+    .then(res => {
+      console.log(res, 'res after logout');
+      props.handleLogout();
+      history.push('/');
+    }).catch(err => {
+      console.log('logout error: ', err);
+    });
+  };
+
   return (
     <Navbar bg="dark" variant="dark">
-      <Navbar.Brand href="#home">LOGO</Navbar.Brand>
+      <Navbar.Brand>
+        <Link to='/'>LOGO</Link>
+      </Navbar.Brand>
       <Nav className="mr-auto">
-        <Nav.Link href="/">Home</Nav.Link>
-        <Nav.Link href="/trips">Get Started</Nav.Link>
-        <Nav.Link href="/signup">Sign Up</Nav.Link>
-        <Nav.Link href="/login">Log In</Nav.Link>
-        <Nav.Link href="/about">About</Nav.Link>
-
-
+        <LinkContainer to='/about'>
+          <NavItem>About</NavItem>
+        </LinkContainer>
+        <LinkContainer to='/trips'>
+          <NavItem>Get Started</NavItem>
+        </LinkContainer>
+        <LinkContainer to='/signup'>
+          <NavItem>Sign Up</NavItem>
+        </LinkContainer>
       </Nav>
-
+      {(() => {
+        switch (props.loggedInStatus) {
+          case 'LOGGED_IN':
+            return [
+            <UserButton />, 
+            <SignoutButton logout={handleLogoutClick} />
+            ];
+          case 'NOT_LOGGED_IN':
+            return <SigninButton />;
+          default:
+            return null;
+        }
+      })()}
     </Navbar>
 
     // <nav className="container-fullwidth">

@@ -28,3 +28,7 @@ Point.create(name: "Vancouver", latitude: 49.2827, longitude: 123.1207, start_ti
 
 # Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41', end_time: '2020-02-20 03:15:41', trip_id: 2)
 # Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 04:00:41', end_time: '2020-02-20 05:15:41', trip_id: 2)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 02:15:41', end_time: '2020-02-20 03:15:41', trip_id: 2)
+Point.create(name: "Houston", latitude: 29.7604267, longitude: -95.3698028, start_time: '2020-02-20 04:00:41', end_time: '2020-02-20 05:15:41', trip_id: 2)
+
+User.create!(email: "abc@yahoo.com.tw", password: "1", password_confirmation: "1")

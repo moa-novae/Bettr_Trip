@@ -4,7 +4,7 @@ import DatePicker from '../datepicker/DatePicker';
 import axios from 'axios'
 import { useHistory } from "react-router-dom";
 
-export default function() {
+export default function(props) {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [date, setDate] = useState({});
@@ -18,18 +18,19 @@ export default function() {
       return;
     }
     setError("");
-
+    console.log(props.appState.user.id, "USER_IDDDDDD");
     const trip = {
       name: name, 
       start_date: date.value.start._i, 
-      end_date: date.value.end._i
+      end_date: date.value.end._i, 
+      user_id: props.appState.user.id
     };
 
     axios
       .post('http://localhost:3001/api/trips', trip)
       .then(response => {
-        console.log(response, "<---look at me!");
-        console.log(response.data.trip_id, "<---look at me again!");
+        // console.log(response, "<---look at me!");
+        // console.log(response.data.trip_id, "<---look at me again!");
         let tripID = response.data.trip_id;
         history.push(`trips/${tripID}`);
       });

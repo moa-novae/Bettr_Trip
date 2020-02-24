@@ -1,20 +1,37 @@
+
 .content {
-  display:flex;
-  justify-content: space-evenly;
+  display:grid;
+  grid-template-columns: 2em 40% 50%;
+  grid-template-rows: 8vh [calendar-start] 1em 1em [map-start] 70vh [recommend-start] 100vh;
+  grid-column-gap: 2em;
+  grid-row-gap: 2em;
 }
 
 .map-container {
-  height: '100px';
-  width: 50%;
+  height: 100%;
+  width: 100%;
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: map-start;
 }
 
 .calendar-container {
-  width: 40%;
-  height: 100vh;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: calendar-start;
+  grid-row-end: recommend-start;
   overflow-y: auto;
+  height: 100%;
+  width: 100%;
 }
 
-.bin {
-  width: 1%;
-  height: 50vh;
+
+.recommend {
+  grid-column-start: 3;
+  grid-column-end: end;
+  grid-row-start: recommend-start;
+  z-index: 10;
+  width: 40vh;
+  height: 30vh;
+
 }

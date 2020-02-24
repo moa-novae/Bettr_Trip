@@ -6,7 +6,7 @@ import zIndex from '@material-ui/core/styles/zIndex'
 
 export default function(props) {
 
-  const transportMethods = ['bicycling', 'Walking', 'transit', 'driving']
+  const transportMethods = ['bicycling', 'walking', 'transit', 'driving']
   //relocates selected to 0 index
 
   transportMethods.splice(transportMethods.indexOf(props.travel.method), 1)
