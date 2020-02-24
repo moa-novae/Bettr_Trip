@@ -7,16 +7,19 @@ import { Link } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from "react-router-bootstrap";
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 
 
 export default function(props) {
+  let history = useHistory();
 
   const handleLogoutClick = () => {
     axios.delete("http://localhost:3001/logout", { withCredentials: true })
     .then(res => {
       console.log(res, 'res after logout');
       props.handleLogout();
+      history.push('/');
     }).catch(err => {
       console.log('logout error: ', err);
     });
