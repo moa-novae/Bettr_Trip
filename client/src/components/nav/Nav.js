@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Nav.css';
 import SigninButton from '../signinbutton';
 import SignoutButton from '../signoutbutton';
+import UserButton from '../userbutton';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from "react-router-bootstrap";
@@ -40,7 +41,10 @@ export default function(props) {
       {(() => {
         switch (props.loggedInStatus) {
           case 'LOGGED_IN':
-            return <SignoutButton logout={handleLogoutClick} />;
+            return [
+            <UserButton />, 
+            <SignoutButton logout={handleLogoutClick} />
+            ];
           case 'NOT_LOGGED_IN':
             return <SigninButton />;
           default:

@@ -69,7 +69,7 @@ class App extends Component {
         
 
 
-            <Nav handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
+            <Nav handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} appState={this.state} />
             <Switch>
               <Route path='/' exact render={props => (<Home {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/about' exact render={props => (<About {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
