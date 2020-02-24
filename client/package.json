@@ -21,6 +21,7 @@
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
     "react": "^16.8.6",
+    "react-animated-weather": "^4.0.0",
     "react-beautiful-dnd": "^12.2.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-daterange-picker": "^2.0.1",
@@ -31,6 +32,7 @@
     "react-motion": "^0.5.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^2.1.8",
+    "react-skycons": "^0.7.0",
     "react-spring": "^8.0.27",
     "react-time-picker": "^3.9.0",
     "styled-components": "^5.0.1"

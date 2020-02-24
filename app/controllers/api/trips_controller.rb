@@ -32,6 +32,5 @@ module API
     def trip_params
       params.require(:trip).permit(:name, :start_date, :end_date)
     end
-
   end
 end

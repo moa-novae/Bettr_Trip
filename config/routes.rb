@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resource :home, only: [:index]
 
   namespace :api, defaults: { format: 'json' } do
-    resources :trips, only: [:index, :create] do
+    resources :trips, only: [:index, :create, :show] do
       resources :points
     end
   end
@@ -17,8 +17,8 @@ Rails.application.routes.draw do
 
   get '/signup' => 'users#new'
   post '/users' => 'users#create'
-  # post '/points/create' => 'points#create'
-  # get '/points/index' => 'points#index'
+  post '/weather/new' => 'weather#index'
+  post '/weather/old' => 'weather#show'
 
   get '*path', to: "static_pages#fallback_index_html", constraints: ->(request) do
     !request.xhr? && request.format.html?

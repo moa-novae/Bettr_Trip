@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -9,6 +9,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import List from '@material-ui/core/List';
 import WeekItemTask from '../weekItemTask';
 import TravelTime from '../traveltime';
+import axios from 'axios';
+import Weather from '../weather';
+
+// import Skycons from 'react-skycons'
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,8 +40,10 @@ const useStyles = makeStyles(theme => ({
 // }
 
 export default function weekItem(props) {
+  console.log('point data week item', props.pointData)
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [weather, setWeather] = useState({})
 
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -79,21 +86,61 @@ export default function weekItem(props) {
     let listArr = [];
     for (let i = 0; i < pointData.length; i++) {
       if (i === pointData.length - 1) {
-        listArr.push(<WeekItemTask pointData={pointData[i]} setView={props.setView}/>)
+        listArr.push(<WeekItemTask pointData={pointData[i]} setView={props.setView} />)
       } else {
-        listArr.push(<WeekItemTask pointData={pointData[i]} setView={props.setView}/>);
-        listArr.push(<TravelTime pointData={[ pointData[i], pointData[i + 1] ]}/>);
+        listArr.push(<WeekItemTask pointData={pointData[i]} setView={props.setView} />);
+        listArr.push(<TravelTime pointData={[pointData[i], pointData[i + 1]]} />);
       }
     }
     return listArr;
   };
+
+  const coordOfFirst = { latitude: props.pointData[0].latitude, longitude: props.pointData[0].longitude }
+  const startTimeOfFirst = props.pointData[0].start_time
+  const today = Date.now() / 1000
+  const startTimeLinux = new Date(startTimeOfFirst).getTime() / 1000
+  
+    useEffect(() => {
+    async function fetchData() {
+      try {
+        //if start time is less than 7 days in the future - make forecast request
+        //if start time is grater than 7 days - make historical request 
+        if (startTimeLinux - today < 604800 && startTimeLinux - today >= 0) { //1 week in seconds is 604800
+          const weekWeatherResponse = await axios.post(`http://localhost:3001/weather/new`, {
+            latitude: coordOfFirst.latitude.toFixed(3),
+            longitude: coordOfFirst.longitude.toFixed(3)
+          })
+          const weekWeather = JSON.parse(weekWeatherResponse.data.data)
+          const weekSelectDays = weekWeather.daily.data.filter(item => item.time > startTimeLinux)
+          // console.log('right day?', weekSelectDays[0])
+          setWeather(state => ({icon: weekSelectDays[0].icon, high: weekSelectDays[0].temperatureHigh, low: weekSelectDays[0].temperatureLow}))
+         } else if (startTimeLinux - today > 604800) {
+          const historicalWeatherResponse = await axios.post(`http://localhost:3001/weather/old`, {
+            latitude: coordOfFirst.latitude.toFixed(3),
+            longitude: coordOfFirst.longitude.toFixed(3),
+            time: startTimeLinux
+          })
+          const historicalWeather = JSON.parse(historicalWeatherResponse.data.data)
+          console.log('his his weather?', historicalWeather)
+          setWeather(state => ({high: historicalWeather.daily.data[0].temperatureHigh, low: historicalWeather.daily.data[0].temperatureLow}))
+        } else {
+          console.log('date in past')
+        }
+
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchData()
+  }, [])
+
 
   return (
     //this is mostly material UI copy pasta
     <React.Fragment>
       <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon/>}
+          expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
@@ -101,7 +148,7 @@ export default function weekItem(props) {
           <Typography className={classes.secondaryHeading}>I show general info</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-        <div className={classes.demo}>
+          <div className={classes.demo}>
             <List>
               {addTravelTime(props.pointData)}
               {/* {props.pointData.map(p => <WeekItemTask pointData={p} setView={props.setView}/>)}                         */}
@@ -109,6 +156,7 @@ export default function weekItem(props) {
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
+      {(weather.high ? <Weather data={weather} /> : console.log('weather null'))}
     </React.Fragment>
   )
 }

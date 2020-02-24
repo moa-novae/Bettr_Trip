@@ -31,7 +31,8 @@ export default function Content() {
     location: {},
     bin: [],
     markerLibrary: [],
-    weekViews: []
+    weekViews: [],
+    daysFiltered: []
   })
   const [view, setView] = useState('week')
 
@@ -156,15 +157,7 @@ export default function Content() {
           }
           binArray.push(binObject);
         }
-        // setState(state => ({
-        //   ...state,
-        //   bounds: null,
-        //   center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-        //   markers: [...state.markers],
-        //   location: {},
-        //   bin: [...binArray],
-        //   markerLibrary: [...markerArray] //sets new markers data into marker library to later be turned into markers 
-        // }))
+
         let week = [];
         if (!binArray || binArray.length === 0) {
           week.push(<Alert />);
@@ -198,18 +191,26 @@ export default function Content() {
               }
             }
           }
+          console.log('marker lib', markerArray)
+          if (binArray[0]) { //if theres a point in 
+            setState(state => ({
+              ...state,
+              bin: [...binArray],
+              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+              weekViews: week,
+              center: { lat: binArray[0].latitude, lng: binArray[0].longitude }, 
+              daysFiltered: [...binFilter]
+            }))
+          } else {
+            setState(state => ({
+              ...state,
+              bin: [...binArray],
+              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+              weekViews: week,
+              daysFiltered: [...binFilter]
+            }))
+          }
         }
-      console.log('marker lib', markerArray)
-      // setWeeks(week);
-      setState(state => ({
-        ...state,
-        bounds: null,
-        center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-        location: {},
-        bin: [...binArray],
-        markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-        weekViews: week
-      }))
 
       } catch (error) {
         console.error(error)
@@ -231,7 +232,7 @@ export default function Content() {
         }
         setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
       }
-    }, 1000)
+    }, 1250)
 
   }, [state.markerLibrary])
 
@@ -239,7 +240,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} weekViews={state.weekViews}/>
+        <Calendar daysArr={state.daysFiltered} view={view} weekViews={state.weekViews} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
