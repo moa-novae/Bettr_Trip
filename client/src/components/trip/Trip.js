@@ -29,8 +29,8 @@ export default function(props) {
     axios
       .post('http://localhost:3001/api/trips', trip)
       .then(response => {
-        console.log(response, "<---look at me!");
-        console.log(response.data.trip_id, "<---look at me again!");
+        // console.log(response, "<---look at me!");
+        // console.log(response.data.trip_id, "<---look at me again!");
         let tripID = response.data.trip_id;
         history.push(`trips/${tripID}`);
       });

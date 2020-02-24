@@ -28,6 +28,8 @@ const Container = styled.div`
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+    marginTop: '1em',
+    marginBottom: '1em',
   },
   media: {
     height: 0,
@@ -108,6 +110,7 @@ export default function(props) {
             //add pictures
             />
             <CardContent>
+        
               <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
             </CardContent>
             <CardActions disableSpacing>
