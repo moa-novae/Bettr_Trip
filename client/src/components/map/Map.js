@@ -39,7 +39,7 @@ const Input = () => {
         boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
         fontSize: `14px`,
         outline: `none`,
-        textOverflow: `ellipses`,
+        // textOverflow: `ellipses`,
       }}
     />
   )

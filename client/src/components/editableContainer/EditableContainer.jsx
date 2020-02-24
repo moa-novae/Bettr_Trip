@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 
 import Field from './FieldStyle.jsx'
-
+import './editableContainer.css'
 
 
 
@@ -42,7 +42,7 @@ export default class EditableContainer extends React.Component {
 
       // reset count
       this.count = 0
-    }, 250) // 250 ms
+    }, 1000) // 250 ms
   }
 
   handleBlur (e) {
@@ -74,7 +74,7 @@ export default class EditableContainer extends React.Component {
     } else {
       // view mode
       return (
-        <span
+        <span className='edit-box'
           onClick={this.handleClick.bind(this)}
           {...rest}
         >

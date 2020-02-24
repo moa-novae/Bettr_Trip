@@ -46,7 +46,6 @@ export default function(props) {
   initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
   initialState.columnOrder = ['column-1', 'column-2']
 
-
   props.daysArr.map(point => {
     initialState.tasks[point.id.toString()] = {
       trip_id: point.trip_id,
@@ -203,7 +202,7 @@ export default function(props) {
   }, [state]) 
   
   return (
-    <div>
+    <div className='detailed-view'>
       
       <DragDropContext
         onDragEnd={onDragEnd}
