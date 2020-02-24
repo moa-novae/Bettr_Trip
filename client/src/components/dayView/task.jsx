@@ -97,11 +97,11 @@ export default function(props) {
             <div>
 
               <p>
-                {moment(startTime).format('hh:mm')}
+                {moment(startTime).format('MM-DD hh:mm')}
 
               </p>
               <p>
-                {moment(endTime).format('hh:mm')}
+                {moment(endTime).format('MM-DD hh:mm')}
 
               </p>
             </div>

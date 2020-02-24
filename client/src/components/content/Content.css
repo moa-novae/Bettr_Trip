@@ -2,9 +2,9 @@
 .content {
   display:grid;
   grid-template-columns: 2em 40% 50%;
-  grid-template-rows: [calendar-start] 2em [map-start] 1em [map-end] 70vh [recommend-start] 100vh;
-  grid-column-gap: 3em;
-  grid-row-gap: 3em;
+  grid-template-rows: 8vh [calendar-start] 1em 1em [map-start] 70vh [recommend-start] 100vh;
+  grid-column-gap: 2em;
+  grid-row-gap: 2em;
 }
 
 .map-container {
@@ -12,13 +12,17 @@
   width: 100%;
   grid-column-start: 3;
   grid-column-end: 4;
-  grid-row-start: map-end;
+  grid-row-start: map-start;
 }
 
 .calendar-container {
   grid-column-start: 2;
   grid-column-end: 3;
   grid-row-start: calendar-start;
+  grid-row-end: recommend-start;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
 }
 
 
