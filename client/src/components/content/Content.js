@@ -2,7 +2,7 @@ import React, { useState, useEffect, Component } from 'react';
 import './Content.css';
 import MapWithASearchBox from '../map'
 import Calendar from '../calendar'
-import Bin from '../bin'
+import Recommend from '../recommend'
 import {
   BrowserRouter as Router,
   Switch,
@@ -33,7 +33,7 @@ export default function Content() {
     markerLibrary: [],
     weekViews: []
   })
-  const [view, setView] = useState('week')
+  const [view, setView] = useState('day')
 
   let { id } = useParams();
 
@@ -78,7 +78,7 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function (pointId, lat, lng) {
+  const deletePoint = function(pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
     axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
@@ -177,19 +177,19 @@ export default function Content() {
               pointDataArr.push(binFilter[i])
             } else if (i === binFilter.length - 1) {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               } else {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               }
             } else {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
+                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
@@ -199,17 +199,17 @@ export default function Content() {
             }
           }
         }
-      console.log('marker lib', markerArray)
-      // setWeeks(week);
-      setState(state => ({
-        ...state,
-        bounds: null,
-        center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-        location: {},
-        bin: [...binArray],
-        markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-        weekViews: week
-      }))
+        //console.log('marker lib', markerArray)
+        // setWeeks(week);
+        setState(state => ({
+          ...state,
+          bounds: null,
+          center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
+          location: {},
+          bin: [...binArray],
+          markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+          weekViews: week
+        }))
 
       } catch (error) {
         console.error(error)
@@ -219,19 +219,21 @@ export default function Content() {
   }, [])
 
   useEffect(() => {
-    setTimeout(function () {
+    setTimeout(function() {
       const markerArray = [];
       if (state.markerLibrary) {
-        for (let marker of state.markerLibrary) {
-          const newMarker = new window.google.maps.Marker({
-            position: marker.position,
-            title: marker.title
-          });
-          markerArray.push(newMarker)
+        if (window.google) {
+          for (let marker of state.markerLibrary) {
+            const newMarker = new window.google.maps.Marker({
+              position: marker.position,
+              title: marker.title
+            });
+            markerArray.push(newMarker)
+          }
         }
         setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
       }
-    }, 1000)
+    }, 100)
 
   }, [state.markerLibrary])
 
@@ -239,7 +241,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} weekViews={state.weekViews}/>
+        <Calendar daysArr={state.bin} view={view} weekViews={state.weekViews} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
@@ -251,11 +253,8 @@ export default function Content() {
           onMapMounted={onMapMounted}
         />
       </div>
-      <div className="bin">
-        <Bin
-          bin={state.bin}
-          deletePoint={deletePoint}
-        />
+      <div className="recommend">
+        <Recommend />
       </div>
 
     </div>
