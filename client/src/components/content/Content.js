@@ -249,6 +249,7 @@ export default function Content() {
           markers={state.markers}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
+          bin={state.bin}
         />
       </div>
       <div className="recommend">
