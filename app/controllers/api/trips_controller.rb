@@ -1,5 +1,6 @@
 module API
   class TripsController < ApplicationController
+    
     CAR = 'CAR'
     WALK = 'WALK'
     BICYCLE = 'BICYCLE'
@@ -23,7 +24,9 @@ module API
 
     def create
       trip = Trip.new(trip_params)
-      trip.save
+      trip.save!
+      trip_user = TripUser.new(trip_id: trip.id, user_id: params[:user_id])
+      trip_user.save
       render json: { trip_id: trip.id }
     end
 
@@ -32,6 +35,5 @@ module API
     def trip_params
       params.require(:trip).permit(:name, :start_date, :end_date)
     end
-
   end
 end

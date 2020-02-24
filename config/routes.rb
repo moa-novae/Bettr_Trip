@@ -11,17 +11,18 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'login' => 'sessions#new'
-  post '/login' => 'sessions#create'
-  get '/logout' => 'sessions#destroy'
+  resources :sessions, only: [:create]
+  delete :logout, to: 'sessions#logout'
+  get :logged_in, to: 'sessions#logged_in'
 
   get '/signup' => 'users#new'
   post '/users' => 'users#create'
+  get '/profile' => 'users#show'
+
   # post '/points/create' => 'points#create'
   # get '/points/index' => 'points#index'
 
   get '*path', to: "static_pages#fallback_index_html", constraints: ->(request) do
     !request.xhr? && request.format.html?
   end
-
 end

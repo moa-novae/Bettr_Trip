@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Signup.css';
+import axios from 'axios';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -104,7 +105,21 @@ export default function(props) {
     setErrorText2("");
     setErrorText3("");
 
-    props.onSave(email, password);
+    save(email, password, confirmPS);
+  };
+
+  const save = (email, password, password_confirmation) => {
+    const user = { email, password, password_confirmation };
+    axios.post(`http://localhost:3001/users`, { user }, { withCredentials: true })
+    .then(res => {
+      console.log(res, "<--- res after creating a new user");
+      if (res.data.status === 'created') {
+        props.handleLogin(res.data.user);
+        props.history.push('/');
+      }
+    }).catch(err => {
+      console.log("registration error", err);
+    });
   };
 
 

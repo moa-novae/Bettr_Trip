@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_20_233115) do
+ActiveRecord::Schema.define(version: 2020_02_24_210246) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,13 @@ ActiveRecord::Schema.define(version: 2020_02_20_233115) do
     t.index ["trip_id"], name: "index_points_on_trip_id"
   end
 
+  create_table "trip_users", id: false, force: :cascade do |t|
+    t.bigint "trip_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["trip_id", "user_id"], name: "index_trip_users_on_trip_id_and_user_id"
+    t.index ["user_id", "trip_id"], name: "index_trip_users_on_user_id_and_trip_id"
+  end
+
   create_table "trips", force: :cascade do |t|
     t.date "start_date"
     t.date "end_date"
@@ -39,15 +46,11 @@ ActiveRecord::Schema.define(version: 2020_02_20_233115) do
     t.string "name"
   end
 
-  create_table "trips_users", id: false, force: :cascade do |t|
-    t.bigint "trip_id", null: false
-    t.bigint "user_id", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "password_digest"
   end
 
   add_foreign_key "points", "trips"
