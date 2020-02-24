@@ -46,6 +46,7 @@ class App extends Component {
   }
 
   handleLogout() {
+    console.log('im hereerererererre');
     this.setState({
       loggedInStatus: 'NOT_LOGGED_IN', 
       user: {}
@@ -73,7 +74,7 @@ class App extends Component {
             <Switch>
               <Route path='/' exact render={props => (<Home {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/about' exact render={props => (<About {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
-              <Route path='/trips' exact render={props => (<Trip {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/trips' exact render={props => (<Trip {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} />)} />
               <Route path='/login' exact render={props => (<Login {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/signup' exact render={props => (<Signup {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/trips/:id' render={props => (<Content {...props} loggedInStatus={this.state.loggedInStatus}/>)} />

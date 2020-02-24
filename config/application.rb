@@ -32,7 +32,7 @@ module RailsBackEnd
     config.api_only = true
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origin 'http://localhost:3000'
+        origins 'http://localhost:3000'
         resource '*', headers: :any, methods: [:get, :post, :put, :options, :delete, :show],
         credentials: true
       end
