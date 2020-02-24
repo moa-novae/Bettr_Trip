@@ -21,8 +21,8 @@ const manageTime = (dayState) => {
       const prevEndMoment = moment(newState.tasks[prevPointId].time.end)
       if (startMoment.isBefore(prevEndMoment)){
         const duration = moment.duration(prevEndMoment.diff(startMoment))
-        startMoment.add(duration)
-        endMoment.add(duration)
+        startMoment = prevEndMoment.add(10, 'minute')
+        endMoment = startMoment.add(duration)
         newState.tasks[pointId].time = {
           start: startMoment.format('YYYY-MM-DD HH:mm:ss'),
           end: endMoment.format('YYYY-MM-DD HH:mm:ss')

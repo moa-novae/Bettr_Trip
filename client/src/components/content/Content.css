@@ -18,3 +18,11 @@
   width: 1%;
   height: 50vh;
 }
+
+.recommend {
+  transform-origin: bottom right;
+  z-index: 10;
+  width: 40vh;
+  height: 30vh;
+
+}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Component } from 'react';
 import './Content.css';
 import MapWithASearchBox from '../map'
 import Calendar from '../calendar'
-import Bin from '../bin'
+import Recommend from '../recommend'
 import {
   BrowserRouter as Router,
   Switch,
@@ -250,6 +250,9 @@ export default function Content() {
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
         />
+      </div>
+      <div className="recommend">
+        <Recommend/>
       </div>
 
     </div>
