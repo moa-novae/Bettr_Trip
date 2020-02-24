@@ -112,7 +112,6 @@ export default function weekItem(props) {
           })
           const weekWeather = JSON.parse(weekWeatherResponse.data.data)
           const weekSelectDays = weekWeather.daily.data.filter(item => item.time > startTimeLinux)
-          // console.log('right day?', weekSelectDays[0])
           setWeather(state => ({icon: weekSelectDays[0].icon, high: weekSelectDays[0].temperatureHigh, low: weekSelectDays[0].temperatureLow}))
          } else if (startTimeLinux - today > 604800) {
           const historicalWeatherResponse = await axios.post(`http://localhost:3001/weather/old`, {
@@ -121,7 +120,6 @@ export default function weekItem(props) {
             time: startTimeLinux
           })
           const historicalWeather = JSON.parse(historicalWeatherResponse.data.data)
-          console.log('his his weather?', historicalWeather)
           setWeather(state => ({high: historicalWeather.daily.data[0].temperatureHigh, low: historicalWeather.daily.data[0].temperatureLow}))
         } else {
           console.log('date in past')

@@ -3,8 +3,7 @@ import BinItem from '../binItem'
 
 
 export default function (props) {
-  const binFilter = props.bin.filter(item => item.start_time === null)
-  const binItems = binFilter.map(function(binObj, index) {
+  const binItems = props.bin.map(function(binObj, index) {
     return (<BinItem key={index}
     name={binObj.name}
     region={(binObj.region? binObj.region : null)}

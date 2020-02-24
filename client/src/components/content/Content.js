@@ -163,26 +163,23 @@ export default function Content() {
           week.push(<Alert />);
         } else {
           const binFilter = binArray.filter(item => item.start_time !== null)
-          // for acculuating points data
+          // for accumuluating points data
           let pointDataArr = [];
           for (let i = 0; i < binFilter.length; i++) {
             if (i === 0) {
               pointDataArr.push(binFilter[i])
             } else if (i === binFilter.length - 1) {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               } else {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
                 pointDataArr.push(binFilter[i]);
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
               }
             } else {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                console.log(pointDataArr, "<--- pointDataArr!!!!");
                 week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
@@ -192,7 +189,7 @@ export default function Content() {
             }
           }
           console.log('marker lib', markerArray)
-          if (binArray[0]) { //if theres a point in 
+          if (binArray[0]) { //if theres a point in the database - set that center 
             setState(state => ({
               ...state,
               bin: [...binArray],

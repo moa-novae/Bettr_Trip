@@ -25,14 +25,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ControlledExpansionPanels(props) {  
+  const [pointState, setPointState] = useState({})
   const classes = useStyles()
-  // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview 
   
   return (
     <div className={classes.root}>
       {props.view === 'week' && props.weekViews}
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {props.view === 'day' && <ReactDnd daysArr={props.daysArr}/>}
+      {props.view === 'day' && <ReactDnd setPointState={setPointState} daysArr={props.daysArr}/>}
       </MuiPickersUtilsProvider>
     </div>
   );
