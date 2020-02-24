@@ -118,7 +118,10 @@ export default function(props) {
     //move between lists
     else {
       const startTaskIds = Array.from(start.taskIds)
-      startTaskIds.slice(source.index, 1)
+      console.log('start', startTaskIds)
+      console.log('source.index', source.index)
+      startTaskIds.splice(source.index, 1)
+      console.log('finish', startTaskIds)
       const newStart = {
         ...start,
         taskIds: startTaskIds,
