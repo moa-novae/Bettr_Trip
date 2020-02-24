@@ -4,21 +4,50 @@ import Column from './column.jsx';
 import { DragDropContext } from 'react-beautiful-dnd';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'
+import MomentAdapter from '@date-io/moment'
+const Moment = new MomentAdapter();
+const { moment, humanize } = Moment
+
+
+
+const manageTime = (dayState) => {
+  let newState = {...dayState}
+  newState.columns['column-1'].taskIds.map((pointId, index) => {
+    //if subsequent overlaps
+    const prevPointId = newState.columns['column-1'].taskIds[index - 1]
+    if (prevPointId) {
+      let startMoment = moment(newState.tasks[pointId].time.start)
+      let endMoment = moment(newState.tasks[pointId].time.end)
+      const prevEndMoment = moment(newState.tasks[prevPointId].time.end)
+      if (startMoment.isBefore(prevEndMoment)){
+        const duration = moment.duration(prevEndMoment.diff(startMoment))
+        startMoment = prevEndMoment.add(10, 'minute')
+        endMoment = startMoment.add(duration)
+        newState.tasks[pointId].time = {
+          start: startMoment.format('YYYY-MM-DD HH:mm:ss'),
+          end: endMoment.format('YYYY-MM-DD HH:mm:ss')
+        }
+      }
+    }
+  })
+  return newState
+}
+
+
+
 
 
 export default function(props) {
 
-
+  //generate inital state
   let initialState = { tasks: {}, columns: { 'column-1': { taskIds: [] } } };
   initialState.columns['column-1'].id = 'column-1'
   initialState.columns['column-1'].title = 'Day list'
   initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
   initialState.columnOrder = ['column-1', 'column-2']
 
-  
-  
+
   props.daysArr.map(point => {
-    
     initialState.tasks[point.id.toString()] = {
       trip_id: point.trip_id,
       id: point.id,
@@ -41,9 +70,8 @@ export default function(props) {
   
   
 
-  console.log('daysarr', props.daysArr)
+  
   const [state, setDayState] = useState(initialState);
-  console.log('state',state)
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
@@ -51,11 +79,6 @@ export default function(props) {
     setExpanded(false) //collapses tab before drag starts
   }
   
-
-
-
-
-
   //manages logic when drag finishes
   const onDragEnd = result => {
     setExpanded(true)
@@ -89,13 +112,16 @@ export default function(props) {
           [newColumn.id]: newColumn,
         },
       }
-      setDayState(prev => newState)
+      setDayState(manageTime(newState))
     }
 
     //move between lists
     else {
       const startTaskIds = Array.from(start.taskIds)
-      startTaskIds.slice(source.index, 1)
+      console.log('start', startTaskIds)
+      console.log('source.index', source.index)
+      startTaskIds.splice(source.index, 1)
+      console.log('finish', startTaskIds)
       const newStart = {
         ...start,
         taskIds: startTaskIds,
@@ -116,13 +142,12 @@ export default function(props) {
       };
       newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
       newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
-      setDayState(prev => newState)
+      setDayState(prev => manageTime(newState))
       //console.log(state.tasks)
-      
     }
-
+    
   };
-
+// update state when daysArr updates
   useEffect(() => {
     setDayState(prev => {
       let newState = { ...prev }
@@ -153,7 +178,16 @@ export default function(props) {
     })
   }, [props.daysArr])
 
-  useEffect(() => {
+
+    
+
+
+  //update to database when state changes 
+  useEffect(() => { 
+
+
+    // setDayState(prev => manageTime(prev))
+
     for (let id of state.columns['column-1'].taskIds) {
 
       axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
@@ -168,9 +202,6 @@ export default function(props) {
     }
   }, [state]) 
   
-
-
-
   return (
     <div>
       
