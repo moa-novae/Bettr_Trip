@@ -20,9 +20,10 @@ const manageTime = (dayState) => {
       let endMoment = moment(newState.tasks[pointId].time.end)
       const prevEndMoment = moment(newState.tasks[prevPointId].time.end)
       if (startMoment.isBefore(prevEndMoment)){
-        const duration = moment.duration(prevEndMoment.diff(startMoment))
-        startMoment = prevEndMoment.add(10, 'minute')
-        endMoment = startMoment.add(duration)
+        const duration = moment.duration(endMoment.diff(startMoment))
+        startMoment = prevEndMoment.clone()
+        startMoment.add(10, 'minute')
+        endMoment = startMoment.clone().add(duration)
         newState.tasks[pointId].time = {
           start: startMoment.format('YYYY-MM-DD HH:mm:ss'),
           end: endMoment.format('YYYY-MM-DD HH:mm:ss')
@@ -30,6 +31,7 @@ const manageTime = (dayState) => {
       }
     }
   })
+  console.log('newState', newState)
   return newState
 }
 
@@ -80,6 +82,7 @@ export default function(props) {
   
   //manages logic when drag finishes
   const onDragEnd = result => {
+    console.log('draend')
     setExpanded(true)
     const { destination, source, draggableId } = result;
     if (!destination) {

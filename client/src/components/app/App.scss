@@ -1,35 +1,45 @@
 $dark: #003559;
-
-
-.main::before {
-  background-image: url('../../images/landing_page.jpg');
-  background-size: auto;
-  background-repeat: no-repeat;
+.App {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
   
 }
-
-.main::before {
-  content: '';
-  margin: -35px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  filter: blur(20px);
-  z-index: -1;
-  text-align: center;
-  height: 110%;
-  width: 110%;
-  
+.content {
+  background-color: #f2f2f2;
 }
+
+// .main::before {
+//   width: 100vw;
+//   height: 100vh;
+//   background-size: auto;
+//   background-image: url('../../images/landing_page.jpg');
+//   background-repeat: no-repeat;
+  
+// }
+
+// .main::before {
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   filter: blur(20px);
+//   z-index: -1;
+//   text-align: center;
+//   height: 105vh;
+//   width: 100vw;
+  
+// }
 
 .main {
   text-align: center;
   height: 100%;
   width: 100%;
   z-index: 0;
-  overflow-x: hidden;
+
 }
 
 @import '~bootstrap/scss/bootstrap';
