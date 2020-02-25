@@ -1,7 +1,8 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { AiOutlineLogout } from 'react-icons/ai';
+import { useHistory } from "react-router-dom";
+import CardTravelIcon from '@material-ui/icons/CardTravel';
 
 
 
@@ -13,17 +14,24 @@ const useStyles = makeStyles(theme => ({
 
 export default function IconLabelButtons(props) {
   const classes = useStyles();
+  let history = useHistory();
+
+  const redirect = () => {
+    history.push('/profile');
+  };
 
   return (
     <div>
       <Button
         variant="contained"
         color="primary"
-        size="small"
+        size="medium"
         className={classes.button}
-        startIcon={<AiOutlineLogout />}
-        onClick={props.logout}
+        endIcon={<CardTravelIcon />}
+        onClick={redirect}
       >
+        <div>Welcome Back!</div>
+        <div>James</div>
       </Button>
     </div>
   );

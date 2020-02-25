@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resource :home, only: [:index]
 
   namespace :api, defaults: { format: 'json' } do
-    resources :trips, only: [:index, :create] do
+    resources :trips, only: [:index, :create, :destroy] do
       resources :points
     end
   end
@@ -17,7 +17,8 @@ Rails.application.routes.draw do
 
   get '/signup' => 'users#new'
   post '/users' => 'users#create'
-  get '/profile' => 'users#show'
+  post '/profile' => 'users#show'
+  post '/profile_trip' => 'users#trip'
 
   # post '/points/create' => 'points#create'
   # get '/points/index' => 'points#index'
