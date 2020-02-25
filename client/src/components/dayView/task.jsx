@@ -68,15 +68,25 @@ export default function(props) {
   const handleExpandClick = () => {
     props.setExpanded(!props.expanded);
   };
-  let startTime =(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss'))
-  let endTime = (moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss'))
-  const onTimeChange = (start, end) => {
+  const onTimeChange = (time, type) => {
+    if (type === 'start') {
+      props.setDayState(prev => {
+        let newState = { ...prev }
+        newState.tasks[props.task.id].time.start= time 
+        console.log('setDayState')
+        return newState
+      })
+    }
+    else if (type === 'end') {
 
-    return props.setDayState(prev => {
-      let newState = { ...prev }
-      newState.tasks[props.task.id].time = { start: start, end: end }
-      return newState
-    })
+      props.setDayState(prev => {
+        let newState = { ...prev }
+        newState.tasks[props.task.id].time.end = time 
+        console.log('setDayState')
+        return newState
+      })
+
+    }
 
   }
 
@@ -102,13 +112,13 @@ export default function(props) {
               <CardContent>
                 <p className="card-header">Time</p>
                 {'Start:'}
-                <TimePicker value={startTime} 
-                onChange={ () => onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))} 
-                format={'HH:mm MMM DD'} className={classes.textField} />
+                <TimePicker value={moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss')}
+                  onChange={(start) => onTimeChange(moment(start).format('YYYY-MM-DD HH:mm:ss'), 'start')}
+                  format={'HH:mm MMM DD'} className={classes.textField} />
                 {'End:'}
-                <TimePicker value={endTime}
-                onChange={ () => onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))} 
-                format={'HH:mm MMM DD'} className={classes.textField} />
+                <TimePicker value={moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss')}
+                 onChange={(end) => onTimeChange(moment(end).format('YYYY-MM-DD HH:mm:ss'), 'end')}
+                  format={'HH:mm MMM DD'} className={classes.textField} />
 
                 <i onClick={() => props.setDayState(prev => {
                   let newState = { ...prev }
@@ -129,11 +139,11 @@ export default function(props) {
                     onClick={handleExpandClick}
                     aria-expanded={props.expanded}
                     aria-label="show more"
-                    >
+                  >
                     <ExpandMoreIcon />
                   </IconButton>
-                
-              </p>
+
+                </p>
               </CardActions>
               <Collapse in={props.expanded} timeout="auto" unmountOnExit exit={props.exit}>
                 <CardContent>
