@@ -12,17 +12,22 @@ const { moment, humanize } = Moment
 
 const manageTime = (input) => {
   let modifyTime = { ...input }
+
+  console.log('taskid', modifyTime.columns['column-1'].taskIds)
   modifyTime.columns['column-1'].taskIds.map((pointId, index) => {
     //if subsequent overlaps
     const prevPointId = modifyTime.columns['column-1'].taskIds[index - 1]
     if (prevPointId) {
-      let startMoment = moment(modifyTime.tasks[pointId].time.start)
-      let endMoment = moment(modifyTime.tasks[pointId].time.end)
-      const prevEndMoment = moment(modifyTime.tasks[prevPointId].time.end)
+      let startMoment = moment(modifyTime.tasks[pointId].time.start, 'YYYY-MM-DD HH:mm:ss')
+      let endMoment = moment(modifyTime.tasks[pointId].time.end, 'YYYY-MM-DD HH:mm:ss')
+
+      // console.log('endMoment', endMoment.format('YYYY-MM-DD HH:mm:ss'))
+      
+      const prevEndMoment = moment(modifyTime.tasks[prevPointId].time.end, 'YYYY-MM-DD HH:mm:ss')
       if (startMoment.isBefore(prevEndMoment)) {
-        // const duration = moment.duration(startMoment.diff(endMoment))
+        const duration = moment.duration(endMoment.diff(startMoment))
         startMoment = prevEndMoment.clone().add(10, 'minute')
-        // endMoment = startMoment.clone().add(duration)
+        endMoment = startMoment.clone().add(duration)
         modifyTime.tasks[pointId].time = {
           start: startMoment.format('YYYY-MM-DD HH:mm:ss'),
           end: endMoment.format('YYYY-MM-DD HH:mm:ss')
@@ -59,10 +64,10 @@ export default function(props) {
       travel: { method: point.travel_method, duration: point.travel_duration }
     }
     if (point.start_time && point.end_time) {
-      initialState.columns['column-1'].taskIds.push(point.id)
+      initialState.columns['column-1'].taskIds.push(point.id.toString())
     }
     else {
-      initialState.columns['column-2'].taskIds.push(point.id)
+      initialState.columns['column-2'].taskIds.push(point.id.toString())
     }
 
   })
@@ -80,7 +85,6 @@ export default function(props) {
 
   //manages logic when drag finishes
   const onDragEnd = result => {
-    console.log('draend')
     setExpanded(true)
     const { destination, source, draggableId } = result;
     if (!destination) {
@@ -93,62 +97,63 @@ export default function(props) {
       return
     }
     setDayState(prev => {
-      
+
       const start = prev.columns[source.droppableId];
       const finish = prev.columns[destination.droppableId]
       if (start === finish) {
-        
-        
-      const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId)
 
-      const newColumn = {
-        ...start,
-        taskIds: newTaskIds
+
+        const newTaskIds = Array.from(start.taskIds);
+        newTaskIds.splice(source.index, 1);
+        newTaskIds.splice(destination.index, 0, draggableId)
+
+        const newColumn = {
+          ...start,
+          taskIds: newTaskIds
+        }
+        const newState = {
+          ...prev,
+          columns: {
+            ...prev.columns,
+            [newColumn.id]: newColumn,
+          },
+        }
+        console.log('newTasks in dropend', newState.tasks)
+        return (manageTime(newState))
       }
-      const newState = {
-        ...prev,
-        columns: {
-          ...prev.columns,
-          [newColumn.id]: newColumn,
-        },
+
+      //move between lists
+      else {
+        const startTaskIds = Array.from(start.taskIds)
+        console.log('start', startTaskIds)
+        console.log('source.index', source.index)
+        startTaskIds.splice(source.index, 1)
+        console.log('finish', startTaskIds)
+        const newStart = {
+          ...start,
+          taskIds: startTaskIds,
+        }
+        const finishTaskIds = Array.from(finish.taskIds)
+        finishTaskIds.splice(destination.index, 0, draggableId);
+        const newFinish = {
+          ...finish,
+          taskIds: finishTaskIds,
+        };
+        let newState = {
+          ...prev,
+          columns: {
+            ...prev.columns,
+            [newStart.id]: newStart,
+            [newFinish.id]: newFinish,
+          },
+        };
+        newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
+        newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
+        return manageTime(newState)
+        //console.log(state.tasks)
       }
-      return (manageTime(newState))
-    }
-    
-    //move between lists
-    else {
-      const startTaskIds = Array.from(start.taskIds)
-      console.log('start', startTaskIds)
-      console.log('source.index', source.index)
-      startTaskIds.splice(source.index, 1)
-      console.log('finish', startTaskIds)
-      const newStart = {
-        ...start,
-        taskIds: startTaskIds,
-      }
-      const finishTaskIds = Array.from(finish.taskIds)
-      finishTaskIds.splice(destination.index, 0, draggableId);
-      const newFinish = {
-        ...finish,
-        taskIds: finishTaskIds,
-      };
-      let newState = {
-        ...prev,
-        columns: {
-          ...prev.columns,
-          [newStart.id]: newStart,
-          [newFinish.id]: newFinish,
-        },
-      };
-      newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
-      newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
-      return manageTime(newState)
-      //console.log(state.tasks)
-    }
-  })
-    
+    })
+
   };
   // update state when daysArr updates
   useEffect(() => {
@@ -170,10 +175,10 @@ export default function(props) {
           travel: { method: point.travel_method, duration: point.travel_duration }
         }
         if (point.start_time && point.end_time) {
-          newState.columns['column-1'].taskIds.push(point.id)
+          newState.columns['column-1'].taskIds.push(point.id.toString())
         }
         else {
-          newState.columns['column-2'].taskIds.push(point.id)
+          newState.columns['column-2'].taskIds.push(point.id.toString())
         }
 
       })

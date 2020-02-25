@@ -256,7 +256,7 @@ export default function Content() {
         />
       </div>
       <div className="recommend">
-        <Recommend />
+        {/* <Recommend /> */}
       </div>
 
     </div>

@@ -104,11 +104,11 @@ export default function(props) {
                 {'Start:'}
                 <TimePicker value={startTime} 
                 onChange={ () => onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))} 
-                format={'HH:MM MMM DD'} className={classes.textField} />
+                format={'HH:mm MMM DD'} className={classes.textField} />
                 {'End:'}
                 <TimePicker value={endTime}
                 onChange={ () => onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))} 
-                format={'HH:MM MMM DD'} className={classes.textField} />
+                format={'HH:mm MMM DD'} className={classes.textField} />
 
                 <i onClick={() => props.setDayState(prev => {
                   let newState = { ...prev }

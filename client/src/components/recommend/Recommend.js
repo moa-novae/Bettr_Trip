@@ -30,8 +30,8 @@ export default function(props) {
         }
         setLocation(output)
         // console.log(output)
-        console.log(res.data.results)
-        console.log('made a location api call')
+        // console.log(res.data.results)
+        // console.log('made a location api call')
       })
   }, [initalCoors])
   return springProps.map(({ xys }, index) => {
