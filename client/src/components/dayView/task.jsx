@@ -20,6 +20,7 @@ import Transportation from '../Transportation'
 import EditableContainer from '../editableContainer'
 import MomentAdapter from '@date-io/moment'
 import './task.scss'
+import manageTime from './helper'
 const Moment = new MomentAdapter();
 const { moment } = Moment
 
@@ -74,7 +75,7 @@ export default function(props) {
         let newState = { ...prev }
         newState.tasks[props.task.id].time.start= time 
         console.log('setDayState')
-        return newState
+        return manageTime(newState)
       })
     }
     else if (type === 'end') {
@@ -83,7 +84,7 @@ export default function(props) {
         let newState = { ...prev }
         newState.tasks[props.task.id].time.end = time 
         console.log('setDayState')
-        return newState
+        return manageTime(newState)
       })
 
     }
