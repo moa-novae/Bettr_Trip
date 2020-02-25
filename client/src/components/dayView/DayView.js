@@ -11,7 +11,7 @@ const { moment, humanize } = Moment
 
 
 const manageTime = (dayState) => {
-  let newState = {...dayState}
+  let newState = { ...dayState }
   newState.columns['column-1'].taskIds.map((pointId, index) => {
     //if subsequent overlaps
     const prevPointId = newState.columns['column-1'].taskIds[index - 1]
@@ -19,7 +19,7 @@ const manageTime = (dayState) => {
       let startMoment = moment(newState.tasks[pointId].time.start)
       let endMoment = moment(newState.tasks[pointId].time.end)
       const prevEndMoment = moment(newState.tasks[prevPointId].time.end)
-      if (startMoment.isBefore(prevEndMoment)){
+      if (startMoment.isBefore(prevEndMoment)) {
         const duration = moment.duration(endMoment.diff(startMoment))
         startMoment = prevEndMoment.clone()
         startMoment.add(10, 'minute')
@@ -68,10 +68,10 @@ export default function(props) {
     }
 
   })
-  
-  
 
-  
+
+
+
   const [state, setDayState] = useState(initialState);
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
@@ -79,7 +79,7 @@ export default function(props) {
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
   }
-  
+
   //manages logic when drag finishes
   const onDragEnd = result => {
     console.log('draend')
@@ -147,16 +147,16 @@ export default function(props) {
       setDayState(prev => manageTime(newState))
       //console.log(state.tasks)
     }
-    
+
   };
-// update state when daysArr updates
+  // update state when daysArr updates
   useEffect(() => {
     setDayState(prev => {
       let newState = { ...prev }
       newState.columns['column-1'].taskIds = [];
       newState.columns['column-2'].taskIds = [];
       props.daysArr.map(point => {
-    
+
         newState.tasks[point.id.toString()] = {
           trip_id: point.trip_id,
           id: point.id,
@@ -174,20 +174,41 @@ export default function(props) {
         else {
           newState.columns['column-2'].taskIds.push(point.id)
         }
-    
+
       })
       return newState
     })
   }, [props.daysArr])
 
 
-    
+
 
 
   //update to database when state changes 
-  useEffect(() => { 
+  useEffect(() => {
 
+    props.setUpdatedState(prev => {
+      let newState = { ...state }
+      newState.bin = []
+      for (let [key, value] of Object.entries(newState.tasks)) {
+        newState.bin.push({
+          name: value.name,
+          id: value.id,
+          regions: value.region,
+          latitude: value.latitude,
+          longitude: value.longitude,
+          start_time: value.time.start,
+          end_time: value.time.end,
+          trip_id: value.trip_id,
+          activity: value.activity,
+          travel_method: value.travel.method,
+          travel_duration: value.travel.duration,
 
+        })
+      }
+      return newState
+
+    })
     // setDayState(prev => manageTime(prev))
 
     for (let id of state.columns['column-1'].taskIds) {
@@ -202,11 +223,11 @@ export default function(props) {
       }
       )
     }
-  }, [state]) 
-  
+  }, [state])
+
   return (
     <div className='detailed-view'>
-      
+
       <DragDropContext
         onDragEnd={onDragEnd}
         onBeforeCapture={onBeforeCapture}>
@@ -223,8 +244,8 @@ export default function(props) {
             exit={exit}
             setDayState={setDayState}
             state={state}
-        
-          
+
+
           />
         })}
       </DragDropContext>

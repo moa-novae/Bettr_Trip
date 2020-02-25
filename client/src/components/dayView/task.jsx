@@ -95,10 +95,10 @@ export default function(props) {
           ref={provided.innerRef}
         >
           <Card className={classes.root}>
-            <CardMedia
+            {/* <CardMedia
               image={require('../../images/bosnia.jpg')}
               className={classes.media}
-            />
+            /> */}
             <CardHeader
               title={props.task.name}
             />

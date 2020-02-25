@@ -7,10 +7,13 @@ const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
   border-radius: 2px;
+  height: 70vh;
+  overflow: auto;
   
   `;
 const Title = styled.h3`
-  padding: 8px`;
+  padding: 8px
+  position: fixed`;
 const TaskList = styled.div`
 padding: 8px`
 
@@ -19,8 +22,9 @@ export default function(props) {
   return (
     <>
       {column.title === "Day list" &&
-        <Container>
-          <Title> {props.column.title} </Title>
+      <>
+        <Title> {props.column.title} </Title>
+          <Container>
           <Droppable droppableId={props.column.id}>
             {(provided) => (
               <TaskList
@@ -50,6 +54,7 @@ export default function(props) {
             )}
           </Droppable>
         </Container>
+        </>
       }
     
       {column.title === 'Bin' &&
