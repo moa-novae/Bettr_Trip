@@ -16,13 +16,13 @@ export default function(props) {
 
   const handleLogoutClick = () => {
     axios.delete("http://localhost:3001/logout", { withCredentials: true })
-    .then(res => {
-      console.log(res, 'res after logout');
-      props.handleLogout();
-      history.push('/');
-    }).catch(err => {
-      console.log('logout error: ', err);
-    });
+      .then(res => {
+        console.log(res, 'res after logout');
+        props.handleLogout();
+        history.push('/');
+      }).catch(err => {
+        console.log('logout error: ', err);
+      });
   };
 
   return (
@@ -30,30 +30,34 @@ export default function(props) {
       <Navbar.Brand>
         <Link to='/'>LOGO</Link>
       </Navbar.Brand>
-      <Nav className="mr-auto">
-        <LinkContainer to='/about'>
-          <NavItem>About</NavItem>
-        </LinkContainer>
-        <LinkContainer to='/trips'>
-          <NavItem>Get Started</NavItem>
-        </LinkContainer>
-        <LinkContainer to='/signup'>
-          <NavItem>Sign Up</NavItem>
-        </LinkContainer>
-      </Nav>
-      {(() => {
-        switch (props.loggedInStatus) {
-          case 'LOGGED_IN':
-            return [
-            <UserButton />, 
-            <SignoutButton logout={handleLogoutClick} />
-            ];
-          case 'NOT_LOGGED_IN':
-            return <SigninButton />;
-          default:
-            return null;
-        }
-      })()}
+      <div className='nav-larger'>
+
+        <div className='nav-options'>
+          <LinkContainer to='/trips'>
+            <NavItem className='nav-option'>Get Started</NavItem>
+          </LinkContainer>
+          <LinkContainer to='/about'>
+            <NavItem className='nav-option'>About</NavItem>
+          </LinkContainer>
+          <LinkContainer to='/signup'>
+            <NavItem className='nav-option'>Sign Up</NavItem>
+          </LinkContainer>
+        </div>
+
+        {(() => {
+          switch (props.loggedInStatus) {
+            case 'LOGGED_IN':
+              return [
+                <UserButton />,
+                <SignoutButton logout={handleLogoutClick} />
+              ];
+            case 'NOT_LOGGED_IN':
+              return <SigninButton />;
+            default:
+              return null;
+          }
+        })()}
+      </div>
     </Navbar>
 
     // <nav className="container-fullwidth">
