@@ -68,8 +68,8 @@ export default function(props) {
   const handleExpandClick = () => {
     props.setExpanded(!props.expanded);
   };
-  const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss'))
-  const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss'))
+  let startTime =(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss'))
+  let endTime = (moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss'))
   const onTimeChange = (start, end) => {
 
     return props.setDayState(prev => {
@@ -79,11 +79,7 @@ export default function(props) {
     })
 
   }
-  useEffect(() => {
 
-    onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'),
-      moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
-  }, [startTime, endTime])
 
 
   return (
@@ -106,9 +102,13 @@ export default function(props) {
               <CardContent>
                 <p className="card-header">Time</p>
                 {'Start:'}
-                <TimePicker value={startTime} onChange={setStartTime} format={'HH:MM MMM DD'} className={classes.textField} />
+                <TimePicker value={startTime} 
+                onChange={ () => onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))} 
+                format={'HH:MM MMM DD'} className={classes.textField} />
                 {'End:'}
-                <TimePicker value={endTime} onChange={setEndTime} format={'HH:MM MMM DD'} className={classes.textField} />
+                <TimePicker value={endTime}
+                onChange={ () => onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'), moment(endTime).format('YYYY-MM-DD HH:mm:ss'))} 
+                format={'HH:MM MMM DD'} className={classes.textField} />
 
                 <i onClick={() => props.setDayState(prev => {
                   let newState = { ...prev }

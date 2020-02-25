@@ -10,29 +10,27 @@ const { moment, humanize } = Moment
 
 
 
-const manageTime = (dayState) => {
-  let newState = { ...dayState }
-  newState.columns['column-1'].taskIds.map((pointId, index) => {
+const manageTime = (input) => {
+  let modifyTime = { ...input }
+  modifyTime.columns['column-1'].taskIds.map((pointId, index) => {
     //if subsequent overlaps
-    const prevPointId = newState.columns['column-1'].taskIds[index - 1]
+    const prevPointId = modifyTime.columns['column-1'].taskIds[index - 1]
     if (prevPointId) {
-      let startMoment = moment(newState.tasks[pointId].time.start)
-      let endMoment = moment(newState.tasks[pointId].time.end)
-      const prevEndMoment = moment(newState.tasks[prevPointId].time.end)
+      let startMoment = moment(modifyTime.tasks[pointId].time.start)
+      let endMoment = moment(modifyTime.tasks[pointId].time.end)
+      const prevEndMoment = moment(modifyTime.tasks[prevPointId].time.end)
       if (startMoment.isBefore(prevEndMoment)) {
-        const duration = moment.duration(endMoment.diff(startMoment))
-        startMoment = prevEndMoment.clone()
-        startMoment.add(10, 'minute')
-        endMoment = startMoment.clone().add(duration)
-        newState.tasks[pointId].time = {
+        // const duration = moment.duration(startMoment.diff(endMoment))
+        startMoment = prevEndMoment.clone().add(10, 'minute')
+        // endMoment = startMoment.clone().add(duration)
+        modifyTime.tasks[pointId].time = {
           start: startMoment.format('YYYY-MM-DD HH:mm:ss'),
           end: endMoment.format('YYYY-MM-DD HH:mm:ss')
         }
       }
     }
   })
-  console.log('newState', newState)
-  return newState
+  return modifyTime
 }
 
 
@@ -94,11 +92,13 @@ export default function(props) {
     ) {
       return
     }
-    const start = state.columns[source.droppableId];
-    const finish = state.columns[destination.droppableId]
-    if (start === finish) {
-
-
+    setDayState(prev => {
+      
+      const start = prev.columns[source.droppableId];
+      const finish = prev.columns[destination.droppableId]
+      if (start === finish) {
+        
+        
       const newTaskIds = Array.from(start.taskIds);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId)
@@ -108,15 +108,15 @@ export default function(props) {
         taskIds: newTaskIds
       }
       const newState = {
-        ...state,
+        ...prev,
         columns: {
-          ...state.columns,
+          ...prev.columns,
           [newColumn.id]: newColumn,
         },
       }
-      setDayState(manageTime(newState))
+      return (manageTime(newState))
     }
-
+    
     //move between lists
     else {
       const startTaskIds = Array.from(start.taskIds)
@@ -135,19 +135,20 @@ export default function(props) {
         taskIds: finishTaskIds,
       };
       let newState = {
-        ...state,
+        ...prev,
         columns: {
-          ...state.columns,
+          ...prev.columns,
           [newStart.id]: newStart,
           [newFinish.id]: newFinish,
         },
       };
       newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
       newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
-      setDayState(prev => manageTime(newState))
+      return manageTime(newState)
       //console.log(state.tasks)
     }
-
+  })
+    
   };
   // update state when daysArr updates
   useEffect(() => {
