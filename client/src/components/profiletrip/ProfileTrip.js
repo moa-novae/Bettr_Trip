@@ -30,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function(props) {
+  let history = useHistory();
   const classes = useStyles();
   const [singleTrip, setSingleTrip] = useState({});
   let data = {};
@@ -48,6 +49,10 @@ export default function(props) {
       })
   }, []);
 
+  const toTrip = (id) => {
+    history.push(`/trips/${id}`);
+  };
+
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={2}>
@@ -58,7 +63,7 @@ export default function(props) {
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
-            <Grid item xs>
+            <Grid item xs onClick={() => toTrip(singleTrip.id)} >
 
               <Typography gutterBottom variant="subtitle1">
                 {singleTrip.name}
@@ -71,7 +76,7 @@ export default function(props) {
             </Grid>
           </Grid>
           <Grid item>
-            <button onClick={() => props.onDelete(singleTrip.id)} >
+            <button onClick={() => props.onDelete(singleTrip.id, props.index)} >
               <DeleteIcon />
             </button>
           </Grid>
