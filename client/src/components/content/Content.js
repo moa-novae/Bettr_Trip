@@ -33,6 +33,8 @@ export default function Content() {
     markerLibrary: [],
     weekViews: []
   })
+
+  const [updatedState, setUpdatedState] = useState({})
   const [view, setView] = useState('day')
 
   let { id } = useParams();
@@ -241,7 +243,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weekViews={state.weekViews} />
+        <Calendar daysArr={state.bin} view={view} setView={setView} weekViews={state.weekViews} setUpdatedState={setUpdatedState}/>
       </div>
       <div className="map-container">
         <MapWithASearchBox

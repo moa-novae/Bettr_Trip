@@ -10,7 +10,8 @@ const Container = styled.div`
   
   `;
 const Title = styled.h3`
-  padding: 8px`;
+  padding: 8px
+  position: fixed`;
 const TaskList = styled.div`
 padding: 8px`
 
@@ -20,7 +21,7 @@ export default function(props) {
     <>
       {column.title === "Day list" &&
         <Container>
-          <Title> {props.column.title} </Title>
+        <Title> {props.column.title} </Title>
           <Droppable droppableId={props.column.id}>
             {(provided) => (
               <TaskList
