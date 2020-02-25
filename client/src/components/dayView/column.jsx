@@ -45,7 +45,8 @@ export default function(props) {
                         setExpanded={props.setExpanded}
                         exit={props.exit}
                         setDayState={props.setDayState}
-                        state={props.state} />
+                        state={props.state} 
+                        setDelete={props.setDelete}/>
                     )
                   }
                 })}

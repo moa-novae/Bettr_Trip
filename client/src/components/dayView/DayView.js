@@ -48,8 +48,7 @@ export default function(props) {
   })
 
 
-
-
+  const [deleteId, setDelete] = useState([]);
   const [state, setDayState] = useState(initialState);
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
@@ -161,7 +160,23 @@ export default function(props) {
     })
   }, [props.daysArr])
 
-
+  //delete locations
+  useEffect(() => {
+    deleteId.forEach(id => {
+      axios.delete(`http://localhost:3000/trips/1/points/${id}`)
+      .then(setDayState(prev => {
+        let newState = {...prev}
+        delete newState.tasks[id]
+        const idIndex = newState.columns['column-1'].taskIds.indexOf(id.toString())
+        console.log('idIndex',idIndex)
+        newState.columns['column-1'].taskIds.splice(idIndex, 1)
+        console.log(newState.columns['column-1'].taskIds)
+        setDelete([])
+        return newState
+        
+      }))
+    })
+  },[deleteId])
 
 
 
@@ -191,9 +206,8 @@ export default function(props) {
 
     })
     // setDayState(prev => manageTime(prev))
-
+    console.log('before put', state)
     for (let id of state.columns['column-1'].taskIds) {
-
       axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
         name: state.tasks[id].name,
         start_time: state.tasks[id].time.start,
@@ -225,7 +239,7 @@ export default function(props) {
             exit={exit}
             setDayState={setDayState}
             state={state}
-
+            setDelete={setDelete}
 
           />
         })}

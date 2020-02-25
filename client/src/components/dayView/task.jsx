@@ -21,6 +21,7 @@ import EditableContainer from '../editableContainer'
 import MomentAdapter from '@date-io/moment'
 import './task.scss'
 import manageTime from './helper'
+import axios from 'axios'
 const Moment = new MomentAdapter();
 const { moment } = Moment
 
@@ -73,7 +74,7 @@ export default function(props) {
     if (type === 'start') {
       props.setDayState(prev => {
         let newState = { ...prev }
-        newState.tasks[props.task.id].time.start= time 
+        newState.tasks[props.task.id].time.start = time
         console.log('setDayState')
         return manageTime(newState)
       })
@@ -82,7 +83,7 @@ export default function(props) {
 
       props.setDayState(prev => {
         let newState = { ...prev }
-        newState.tasks[props.task.id].time.end = time 
+        newState.tasks[props.task.id].time.end = time
         console.log('setDayState')
         return manageTime(newState)
       })
@@ -106,9 +107,25 @@ export default function(props) {
               image={require('../../images/bosnia.jpg')}
               className={classes.media}
             /> */}
-            <CardHeader
-              title={props.task.name}
-            />
+            <div className='header'>
+              <CardHeader
+                title={props.task.name}
+              />
+              <i className='delete-icon'
+                onClick={() => {
+                  axios.delete(`http://localhost:3001/api/trips/1/points/${props.task.id}`)
+                    .then(props.setDayState(prev => {
+                      let newState = { ...prev }
+                      delete newState.tasks[props.task.id]
+                      const idIndex = newState.columns['column-1'].taskIds.indexOf(props.task.id.toString())
+                      newState.columns['column-1'].taskIds.splice(idIndex, 1)
+                      return newState
+
+                    }))
+                }}>
+                <DeleteForeverIcon />
+              </i>
+            </div>
             <div className={classes.info}>
               <CardContent>
                 <p className="card-header">Time</p>
@@ -118,16 +135,10 @@ export default function(props) {
                   format={'HH:mm MMM DD'} className={classes.textField} />
                 {'End:'}
                 <TimePicker value={moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss')}
-                 onChange={(end) => onTimeChange(moment(end).format('YYYY-MM-DD HH:mm:ss'), 'end')}
+                  onChange={(end) => onTimeChange(moment(end).format('YYYY-MM-DD HH:mm:ss'), 'end')}
                   format={'HH:mm MMM DD'} className={classes.textField} />
 
-                <i onClick={() => props.setDayState(prev => {
-                  let newState = { ...prev }
-                  delete newState.tasks[props.task.id]
-                  return (newState)
-                })}>
-                  <DeleteForeverIcon />
-                </i>
+
                 <p className="card-header">Activity</p>
                 <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
               </CardContent>
