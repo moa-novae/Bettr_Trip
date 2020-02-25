@@ -218,7 +218,7 @@ export default function Content() {
       }
     }
     fetchData();
-  }, [])
+  }, [ view ])
 
   useEffect(() => {
     setTimeout(function() {

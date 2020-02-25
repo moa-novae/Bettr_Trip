@@ -11,6 +11,7 @@ const { moment, humanize } = Moment
 
 
 const manageTime = (dayState) => {
+  console.log(dayState, "<=====dayState");
   let newState = { ...dayState }
   newState.columns['column-1'].taskIds.map((pointId, index) => {
     //if subsequent overlaps
