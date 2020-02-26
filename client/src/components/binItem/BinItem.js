@@ -18,9 +18,9 @@ export default function(props) {
     <>
       <Draggable draggableId={props.id.toString()} index={props.index}>
         {(provided, snapshot) => (
-          // <Card>
+          <Card>
 
-          <ul className={"bin-item"}
+          <div className={"bin-item"}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}
@@ -39,8 +39,8 @@ export default function(props) {
                 <Button lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint} />
               </Card.Body>
             </Card>
-          </ul>
-          // </Card>
+          </div>
+          </Card>
         )}
       </Draggable>
     </>

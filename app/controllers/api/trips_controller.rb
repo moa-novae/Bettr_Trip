@@ -18,6 +18,13 @@ module API
       @trip.destroy
     end
 
+    def show
+      @trip = Trip.find_by(id: params[:id])
+      render :json => {
+        trip: @trip
+      }
+    end
+
     private
 
     def trip_params

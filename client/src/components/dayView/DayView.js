@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom'
 import MomentAdapter from '@date-io/moment'
 import manageTime from './helper'
+import './dayView.css'
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
 
@@ -93,7 +94,7 @@ export default function(props) {
           },
         }
         console.log('newTasks in dropend', newState.tasks)
-        return (manageTime(newState))
+        return (manageTime(newState, source.index, destination.index))
       }
 
       //move between lists
@@ -123,7 +124,7 @@ export default function(props) {
         };
         newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
         newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
-        return manageTime(newState)
+        return manageTime(newState, source.index, destination.index)
         //console.log(state.tasks)
       }
     })

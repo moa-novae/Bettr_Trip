@@ -14,6 +14,12 @@ import axios from 'axios';
 import _ from 'lodash';
 import Alert from '../alert'
 import WeekItem from '../weekItem'
+import MomentAdapter from '@date-io/moment'
+import { Button } from 'react-bootstrap'
+import { useSpring, animated } from 'react-spring'
+const Moment = new MomentAdapter();
+const { moment, humanize } = Moment
+
 
 const refs = {}; //google map element 
 const onSearchBoxMounted = (ref) => {
@@ -24,6 +30,7 @@ const onMapMounted = (ref) => {
 }
 
 export default function Content() {
+  const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [suggested, setSuggested] = useState(false);
   const [state, setState] = useState({
@@ -33,7 +40,8 @@ export default function Content() {
     location: {},
     bin: [],
     markerLibrary: [],
-    weekViews: []
+    weekViews: [],
+    daysFiltered: []
   })
 
   const [updatedState, setUpdatedState] = useState({})
@@ -83,7 +91,7 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function(pointId, lat, lng) {
+  const deletePoint = function (pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
     axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
@@ -102,33 +110,36 @@ export default function Content() {
   const onPlacesChanged = () => {
     const places = refs.searchBox.getPlaces(); //gets place of thing searched 
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
+    if (places[0].geometry) {
 
-    places.forEach(place => {
-      if (place.geometry.viewport) {
-        bounds.union(place.geometry.viewport)
-      } else {
-        bounds.extend(place.geometry.location)
+      places.forEach(place => {
+
+        if (place.geometry.viewport) {
+          bounds.union(place.geometry.viewport)
+        } else {
+          bounds.extend(place.geometry.location)
+        }
+      })
+
+      if (places.length === 0) {
+        return;
       }
-    })
 
-    if (places.length === 0) {
-      return;
+      const nextMarkers = places.map(place => ({
+        position: place.geometry.location,
+      }));
+
+      const nextCenter = _.get(nextMarkers, '0.position', state.center);
+      setState(state => ({
+        ...state,
+        center: nextCenter,
+        markers: [...state.markers, nextMarkers],
+        location: {
+          name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
+          coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
+        }
+      }))
     }
-
-    const nextMarkers = places.map(place => ({
-      position: place.geometry.location,
-    }));
-
-    const nextCenter = _.get(nextMarkers, '0.position', state.center);
-    setState(state => ({
-      ...state,
-      center: nextCenter,
-      markers: [...state.markers, nextMarkers],
-      location: {
-        name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
-        coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
-      }
-    }))
   }
 
   //loads data and sets state when page rendered
@@ -136,6 +147,7 @@ export default function Content() {
     async function fetchData() {
       try {
         const response = await axios.get(`http://localhost:3001/api/trips/${id}/points/`)
+        const tripResponse = await axios.get(`http://localhost:3001/api/trips/${id}`)
         const markerArray = [];
         const binArray = [];
         for (let point of response.data.points) {
@@ -161,41 +173,40 @@ export default function Content() {
           }
           binArray.push(binObject);
         }
-        // setState(state => ({
-        //   ...state,
-        //   bounds: null,
-        //   center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-        //   markers: [...state.markers],
-        //   location: {},
-        //   bin: [...binArray],
-        //   markerLibrary: [...markerArray] //sets new markers data into marker library to later be turned into markers 
-        // }))
+        setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
+        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000
+        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
+        console.log('trip data', tripStart, tripEnd)
+        const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
+        console.log('day difference', daysInTrip)
         let week = [];
+        // const momentStartDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY")
+        // for (let i = 0; i <= daysInTrip; i++) {
+        //   let newDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY").add(i, "days")
+        //   console.log('new date', newDate)
+        // }
         if (!binArray || binArray.length === 0) {
           week.push(<Alert />);
         } else {
           const binFilter = binArray.filter(item => item.start_time !== null)
-          // for acculuating points data
+          // for accumuluating points data
           let pointDataArr = [];
           for (let i = 0; i < binFilter.length; i++) {
             if (i === 0) {
               pointDataArr.push(binFilter[i])
             } else if (i === binFilter.length - 1) {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                // console.log(pointDataArr, "<--- pointDataArr!!!!");
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
               } else {
-                // console.log(pointDataArr, "<--- pointDataArr!!!!");
                 pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
               }
             } else {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                // console.log(pointDataArr, "<--- pointDataArr!!!!");
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
               } else {
@@ -203,28 +214,34 @@ export default function Content() {
               }
             }
           }
+          if (binArray[0]) { //if theres a point in the database - set that center 
+            setState(state => ({
+              ...state,
+              bin: [...binArray],
+              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+              weekViews: week,
+              center: { lat: binArray[0].latitude, lng: binArray[0].longitude },
+              daysFiltered: [...binFilter]
+            }))
+          } else {
+            setState(state => ({
+              ...state,
+              bin: [...binArray],
+              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+              weekViews: week,
+              daysFiltered: [...binFilter]
+            }))
+          }
         }
-        //console.log('marker lib', markerArray)
-        // setWeeks(week);
-        setState(state => ({
-          ...state,
-          bounds: null,
-          center: { lat: -34.397, lng: 150.644 }, //set center from parent by passing props into this default function
-          location: {},
-          bin: [...binArray],
-          markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-          weekViews: week
-        }))
-
       } catch (error) {
         console.error(error)
       }
     }
     fetchData();
-  }, [ view ])
+  }, [view])
 
   useEffect(() => {
-    setTimeout(function() {
+    setTimeout(function () {
       const markerArray = [];
       if (state.markerLibrary) {
         if (window.google) {
@@ -238,7 +255,7 @@ export default function Content() {
         }
         setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
       }
-    }, 100)
+    }, 2000)
 
   }, [state.markerLibrary])
 
@@ -251,11 +268,12 @@ export default function Content() {
     setSuggestMarkerState(suggestMarker);
   };
 
+  const springProp = useSpring(({ left: recommendToggle ? '0vh' : '-84vh' }))
   return (
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weekViews={state.weekViews} setUpdatedState={setUpdatedState}/>
+        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
@@ -267,11 +285,16 @@ export default function Content() {
           suggestedState={suggested}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
+          updatedState={(updatedState.bin ? updatedState : "not rendered yet")}
         />
       </div>
-      <div className="recommend">
-        <Recommend currentState={state} addPointToMap={addPointToMap} />
-      </div>
+      <animated.div className="recommend" style={springProp}>
+  
+
+          <Button className='expand-recommend' variant="Info" onClick={() => setRecommendToggle(prev => !prev)}>Recommend </Button>
+          <Recommend currentState={state} addPointToMap={addPointToMap} />
+      
+      </animated.div>
 
     </div>
   );

@@ -1,0 +1,4 @@
+.detailed-view {
+  display: grid;
+  grid-template-rows: 5vh 45vh;
+}

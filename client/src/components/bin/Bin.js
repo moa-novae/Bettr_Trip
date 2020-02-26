@@ -42,40 +42,34 @@ export default function(props) {
   })
 
   return (
-    <div className="bin">
-      <div className="in-bin">
-        <div className={classes.root}>
+    <div className='in-bin'>
+
+    <Droppable droppableId={props.column.id} direction='horizontal'>
+      {(provided) => (
+        
+
+        <ExpansionPanel
+          provided={provided}
+          ref={provided.innerRef}
+          {...provided.droppableProps}>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography className={classes.heading}>Saved Searches</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            {binItems}
+          </ExpansionPanelDetails>
+          {provided.placeholder}
+        </ExpansionPanel>
+
+)}
 
 
-          <Droppable droppableId={props.column.id}>
-            {(provided) => (
-              <TaskList
-                provided={provided}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <ExpansionPanel>
-                  <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography className={classes.heading}>Expansion Panel 1</Typography>
-                  </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
-                    {"Bin"}
-                    {binItems}
+    </Droppable>
+</div>
 
-                  </ExpansionPanelDetails>
-                </ExpansionPanel>
-
-                {provided.placeholder}
-              </TaskList>
-            )}
-          </Droppable>
-
-        </div>
-      </div>
-    </div>
   )
 }

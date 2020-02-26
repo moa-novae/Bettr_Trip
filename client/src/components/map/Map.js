@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, DirectionsRenderer } from "react-google-maps"
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 import _ from 'lodash';
 import axios from 'axios';
+import {Button} from 'react-bootstrap'
 import { componentDidMount } from 'react-google-maps/lib/utils/MapChildHelper';
 import {
   BrowserRouter as Router,
@@ -13,15 +14,8 @@ import {
 } from "react-router-dom";
 import Bin from '../bin'
 
-const Button = (props) => {
-  return (
-    <button
-      className={"saveButton"}
-      onClick={() => { console.log('button clicked'); props.saveLocation() }}
-    >Save
-    </button>
-  )
-}
+
+
 
 const Input = (props) => {
   return (
@@ -39,39 +33,106 @@ const Input = (props) => {
         boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
         fontSize: `14px`,
         outline: `none`,
-        // textOverflow: `ellipses`,
       }}
       // value={props.}
     />
   )
 }
 
-const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
-  <GoogleMap
-    defaultZoom={10}
-    center={props.center}
-    ref={props.onMapMounted}
-  >
-    <SearchBox
-      ref={props.onSearchBoxMounted}
-      defaultZoom={15}
-      controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
-      onPlacesChanged={props.onPlacesChanged}
+function compare(a, b) {
+  const time1 = a.start_time
+  const time2 = b.start_time
+  const time1Linux = new Date(time1).getTime()
+  const time2Linux = new Date(time2).getTime()
+
+  let comparison = 0;
+  if (time1Linux > time2Linux) {
+    comparison = 1;
+  } else if (time1Linux < time2Linux) {
+    comparison = -1;
+  }
+  return comparison
+}
+const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
+  return (
+    <GoogleMap
+      defaultZoom={10}
+      center={props.center}
+      ref={props.onMapMounted}
     >
+      <SearchBox
+        ref={props.onSearchBoxMounted}
+        defaultZoom={15}
+        controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
+        onPlacesChanged={props.onPlacesChanged}
+      >
       <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
-    </SearchBox>
-    <Button saveLocation={() => props.saveLocation()} />
+      </SearchBox>
+       {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
+        props.directions.directionsArray.map((item) => <DirectionsRenderer directions={item} />)
+      )}
+       <Button className={"saveButton"} onClick={() => props.saveLocation() }>Save</Button>
+      {(props.markers ? props.markers.map((marker, index) =>
+        <Marker key={index} position={marker.position} title={marker.title} />
+      ) : console.log('no marker'))}
 
-    {(props.markers ? props.markers.map((marker, index) =>
-      <Marker key={index} position={marker.position} title={marker.title} />
-    ) : console.log('no marker'))}
+      {props.suggestedState? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
 
-    {props.suggestedState? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
-
-  </GoogleMap>
-));
+    </GoogleMap>
+  )
+}
+))
 
 export default (props) => {
+  const [directions, setDirections] = useState({ directionsArray: [] });
+  const [loaded, setLoaded] = useState("false")
+  const google = window.google
+  useEffect(() => {
+    setTimeout(function () {
+      setLoaded("true")
+      if (props.updatedState.bin && props.updatedState.bin.length > 0 && loaded === "true") {
+          const directionsService = new google.maps.DirectionsService()
+          const updatedBin = props.updatedState.bin.filter(item => item.start_time !== null)
+          const sorted = updatedBin.sort(compare)
+          for (let i = 0; i < sorted.length - 1; i++) {
+            if (sorted[i].latitude === sorted[i + 1].latitude && sorted[i].longitude === sorted[i + 1].longitude) {
+              i++
+            } else {
+              let travelMethod = sorted[i].travel_method.toUpperCase()
+              if (travelMethod === "CAR") {
+                travelMethod = "DRIVING"
+              }
+              if (travelMethod === "DRIVING") {
+                travelMethod = google.maps.TravelMode.DRIVING
+              } else if (travelMethod === "BICYCLING") {
+                travelMethod = google.maps.TravelMode.BICYCLING
+              } else if (travelMethod === "WALKING") {
+                travelMethod = google.maps.TravelMode.WALKING
+              } else if (travelMethod === "TRANSIT") {
+                travelMethod = google.maps.TravelMode.TRANSIT
+              }
+              directionsService.route({
+                origin: { lat: sorted[i].latitude, lng: sorted[i].longitude },
+                destination: { lat: sorted[i + 1].latitude, lng: sorted[i + 1].longitude },
+                travelMode: travelMethod,
+                avoidFerries: true,
+                provideRouteAlternatives: false
+              },
+                (result, status) => {
+                  if (status === google.maps.DirectionsStatus.OK) {
+                    directions.directionsArray.push(result)
+                    let array = directions.directionsArray
+                    setDirections(state => ({ ...state, directions: array }))
+                  } else {
+                    console.error(`error fetching directions ${result} ${status}`)
+                  }
+                })
+            }
+          }
+        }
+      
+    }, 3000)
+  }, [props.updatedState, loaded])
 
   return (<>
     <MapWithASearchBox
@@ -87,8 +148,43 @@ export default (props) => {
       markers={props.markers}
       onSearchBoxMounted={props.onSearchBoxMounted}
       onMapMounted={props.onMapMounted}
+      directions={directions}
       suggestMarker={props.suggestMarker}
       suggestedState={props.suggestedState}
     />
   </>)
 }
+
+
+
+
+
+
+
+
+
+
+// const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
+//   <GoogleMap
+//     defaultZoom={10}
+//     center={props.center}
+//     ref={props.onMapMounted}
+//   >
+//     <SearchBox
+//       ref={props.onSearchBoxMounted}
+//       defaultZoom={15}
+//       controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
+//       onPlacesChanged={props.onPlacesChanged}
+//     >
+//       <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
+//     </SearchBox>
+//     <Button saveLocation={() => props.saveLocation()} />
+
+//     {(props.markers ? props.markers.map((marker, index) =>
+//       <Marker key={index} position={marker.position} title={marker.title} />
+//     ) : console.log('no marker'))}
+
+//     {props.suggestedState? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
+
+//   </GoogleMap>
+// ));
