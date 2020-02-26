@@ -159,7 +159,8 @@ export default function Content() {
           }
           binArray.push(binObject);
         }
-
+        setUpdatedState(state => ({...state, bin: [...state.bin, ...binArray]}))
+        console.log('first--', updatedState)
         let week = [];
         if (!binArray || binArray.length === 0) {
           week.push(<Alert />);
@@ -172,17 +173,17 @@ export default function Content() {
               pointDataArr.push(binFilter[i])
             } else if (i === binFilter.length - 1) {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
               } else {
                 pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
               }
             } else {
               if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                week.push(<WeekItem pointData={pointDataArr} setView={setView} />);
+                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
                 pointDataArr = [];
                 pointDataArr.push(binFilter[i]);
               } else {
@@ -218,6 +219,8 @@ export default function Content() {
     fetchData();
   }, [])
 
+  console.log('UPDATED STATE', updatedState)
+
   useEffect(() => {
     setTimeout(function() {
       const markerArray = [];
@@ -233,7 +236,7 @@ export default function Content() {
         }
         setState(state => ({ ...state, markers: [...state.markers, ...markerArray] }))
       }
-    }, 1250)
+    }, 2000)
 
   }, [state.markerLibrary])
 
@@ -241,17 +244,17 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weekViews={state.weekViews} setUpdatedState={setUpdatedState}/>
+        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState}/>
       </div>
       <div className="map-container">
         <MapWithASearchBox
-          saveLocation={saveLocation}
+          saveLocation={saveLocation} 
           onPlacesChanged={onPlacesChanged}
           center={state.center}
           markers={state.markers}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
-          bin={state.bin}
+          updatedState={(updatedState.bin? updatedState : "not rendered yet")}
         />
       </div>
       <div className="recommend">

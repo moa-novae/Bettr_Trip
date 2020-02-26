@@ -15,7 +15,7 @@ const setIcon = function (icon) {
 export default function Weather(props) {
   if (props.data.icon) {
     let iconName = props.data.icon.toUpperCase()
-    let replacedName = iconName.replace("-", "_")
+    let replacedName = iconName.replace(/-/g, "_")
     const iconObject = setIcon(replacedName)
 
     return (
