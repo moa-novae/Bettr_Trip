@@ -7,6 +7,8 @@ const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
   border-radius: 2px;
+  height: 70vh;
+  overflow: auto;
   
   `;
 const Title = styled.h3`
@@ -20,8 +22,9 @@ export default function(props) {
   return (
     <>
       {column.title === "Day list" &&
-        <Container>
+      <>
         <Title> {props.column.title} </Title>
+          <Container>
           <Droppable droppableId={props.column.id}>
             {(provided) => (
               <TaskList
@@ -42,7 +45,8 @@ export default function(props) {
                         setExpanded={props.setExpanded}
                         exit={props.exit}
                         setDayState={props.setDayState}
-                        state={props.state} />
+                        state={props.state} 
+                        setDelete={props.setDelete}/>
                     )
                   }
                 })}
@@ -51,6 +55,7 @@ export default function(props) {
             )}
           </Droppable>
         </Container>
+        </>
       }
     
       {column.title === 'Bin' &&

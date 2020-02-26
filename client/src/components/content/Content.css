@@ -2,9 +2,9 @@
 .content {
   display:grid;
   grid-template-columns: 2em 40% 50%;
-  grid-template-rows: 8vh [calendar-start] 1em 1em [map-start] 70vh [recommend-start] 100vh;
+  grid-template-rows: 8vh [calendar-start] 0em [map-start] 70vh 100vh [recommend-start];
   grid-column-gap: 2em;
-  grid-row-gap: 2em;
+  grid-row-gap: 0.5em;
 }
 
 .map-container {
@@ -18,20 +18,22 @@
 .calendar-container {
   grid-column-start: 2;
   grid-column-end: 3;
-  grid-row-start: calendar-start;
+  grid-row-start: 1;
   grid-row-end: recommend-start;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   height: 100%;
   width: 100%;
 }
 
 
 .recommend {
-  grid-column-start: 3;
-  grid-column-end: end;
+  grid-column-start: 2;
+  grid-column-end: 3;
   grid-row-start: recommend-start;
   z-index: 10;
-  width: 40vh;
+  width: 80vh;
   height: 30vh;
+  display: flex;
+  flex-wrap: wrap;
 
 }

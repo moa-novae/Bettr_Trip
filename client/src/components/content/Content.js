@@ -24,6 +24,7 @@ const onMapMounted = (ref) => {
 }
 
 export default function Content() {
+  const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [state, setState] = useState({
     bounds: null,
     center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
@@ -81,7 +82,7 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function(pointId, lat, lng) {
+  const deletePoint = function (pointId, lat, lng) {
     //axios delete with lat and long to find point in database 
     //then filter bin and markers to find those objects and remove them from state
     axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
@@ -100,13 +101,15 @@ export default function Content() {
   const onPlacesChanged = () => {
     const places = refs.searchBox.getPlaces(); //gets place of thing searched 
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
+    if (places[0].geometry) {
 
     places.forEach(place => {
-      if (place.geometry.viewport) {
-        bounds.union(place.geometry.viewport)
-      } else {
-        bounds.extend(place.geometry.location)
-      }
+
+        if (place.geometry.viewport) {
+          bounds.union(place.geometry.viewport)
+        } else {
+          bounds.extend(place.geometry.location)
+        }
     })
 
     if (places.length === 0) {
@@ -127,6 +130,7 @@ export default function Content() {
         coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
       }
     }))
+    }
   }
 
   //loads data and sets state when page rendered
@@ -159,7 +163,7 @@ export default function Content() {
           }
           binArray.push(binObject);
         }
-        setUpdatedState(state => ({...state, bin: [...state.bin, ...binArray]}))
+        setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
         console.log('first--', updatedState)
         let week = [];
         if (!binArray || binArray.length === 0) {
@@ -198,7 +202,7 @@ export default function Content() {
               bin: [...binArray],
               markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
               weekViews: week,
-              center: { lat: binArray[0].latitude, lng: binArray[0].longitude }, 
+              center: { lat: binArray[0].latitude, lng: binArray[0].longitude },
               daysFiltered: [...binFilter]
             }))
           } else {
@@ -217,12 +221,12 @@ export default function Content() {
       }
     }
     fetchData();
-  }, [])
+  }, [view])
 
   console.log('UPDATED STATE', updatedState)
 
   useEffect(() => {
-    setTimeout(function() {
+    setTimeout(function () {
       const markerArray = [];
       if (state.markerLibrary) {
         if (window.google) {
@@ -240,25 +244,35 @@ export default function Content() {
 
   }, [state.markerLibrary])
 
+  const addPointToMap = (locationObj) => {
+
+    const suggestMarker = new window.google.maps.Marker({
+      position: locationObj,
+    });
+
+    setSuggestMarkerState(suggestMarker);
+  };
+
   return (
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState}/>
+        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
-          saveLocation={saveLocation} 
+          saveLocation={saveLocation}
           onPlacesChanged={onPlacesChanged}
           center={state.center}
           markers={state.markers}
+          suggestMarker={suggestMarkerState}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
-          updatedState={(updatedState.bin? updatedState : "not rendered yet")}
+          updatedState={(updatedState.bin ? updatedState : "not rendered yet")}
         />
       </div>
       <div className="recommend">
-        <Recommend />
+        <Recommend currentState={state} addPointToMap={addPointToMap} />
       </div>
 
     </div>

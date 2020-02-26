@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Trip.css';
 import DatePicker from '../datepicker/DatePicker';
-import axios from 'axios'
+import axios from 'axios';
 import { useHistory } from "react-router-dom";
 
 export default function(props) {

@@ -1,0 +1,9 @@
+.edit-box {
+  padding: 0.2em;
+  display: inline-block;
+  min-height: 2em;
+  min-width: 100%;
+}
+.edit-box:hover {
+  background-color: lightgray;
+}

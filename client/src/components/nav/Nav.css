@@ -21,3 +21,27 @@
   align-items: center;
   list-style: none;
 }
+.nav-option {
+ 
+  height: 100%;
+  color: white;
+  margin-top: auto;
+}
+.nav-option:hover {
+  transition: all .2s ease-in-out;
+  transform: scale3d(1.1, 1.1, 1.1);
+}
+.nav-options {
+  display: flex;
+  width: 15vw;
+  margin-left: 5vw;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.nav-larger {
+  align-items: center;
+  height: 100%;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}

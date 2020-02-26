@@ -20,8 +20,10 @@ import Transportation from '../Transportation'
 import EditableContainer from '../editableContainer'
 import MomentAdapter from '@date-io/moment'
 import './task.scss'
+import manageTime from './helper'
+import axios from 'axios'
 const Moment = new MomentAdapter();
-const { moment } = Moment
+const { moment, humanize } = Moment
 
 const Container = styled.div`
 
@@ -31,7 +33,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     marginTop: '1em',
-    marginBottom: '1em',
     textAlign: 'left',
   },
   media: {
@@ -58,6 +59,9 @@ const useStyles = makeStyles(theme => ({
   header: {
     paddingLeft: '0em',
     paddingRight: '0em',
+  },
+  content: {
+    paddingBottom: '0.1em',
   }
 }));
 
@@ -68,22 +72,28 @@ export default function(props) {
   const handleExpandClick = () => {
     props.setExpanded(!props.expanded);
   };
-  const [startTime, setStartTime] = useState(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss'))
-  const [endTime, setEndTime] = useState(moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss'))
-  const onTimeChange = (start, end) => {
+  const onTimeChange = (time, type) => {
+    if (type === 'start') {
+      props.setDayState(prev => {
+        let newState = { ...prev }
+        newState.tasks[props.task.id].time.start = time
+        console.log('setDayState')
+        return manageTime(newState)
+      })
+    }
+    else if (type === 'end') {
 
-    return props.setDayState(prev => {
-      let newState = { ...prev }
-      newState.tasks[props.task.id].time = { start: start, end: end }
-      return newState
-    })
+      props.setDayState(prev => {
+        let newState = { ...prev }
+        newState.tasks[props.task.id].time.end = time
+        console.log('setDayState')
+        return manageTime(newState)
+      })
+
+    }
 
   }
-  useEffect(() => {
 
-    onTimeChange(moment(startTime).format('YYYY-MM-DD HH:mm:ss'),
-      moment(endTime).format('YYYY-MM-DD HH:mm:ss'))
-  }, [startTime, endTime])
 
 
   return (
@@ -99,41 +109,61 @@ export default function(props) {
               image={require('../../images/bosnia.jpg')}
               className={classes.media}
             /> */}
-            <CardHeader
-              title={props.task.name}
-            />
-            <div className={classes.info}>
-              <CardContent>
-                <p className="card-header">Time</p>
-                {'Start:'}
-                <TimePicker value={startTime} onChange={setStartTime} format={'HH:MM MMM DD'} className={classes.textField} />
-                {'End:'}
-                <TimePicker value={endTime} onChange={setEndTime} format={'HH:MM MMM DD'} className={classes.textField} />
+            <div className='header'>
+              <CardHeader
+                title={props.task.name}
+              />
+              <i className='delete-icon'
+                onClick={() => {
+                  axios.delete(`http://localhost:3001/api/trips/1/points/${props.task.id}`)
+                    .then(props.setDayState(prev => {
+                      let newState = { ...prev }
+                      delete newState.tasks[props.task.id]
+                      const idIndex = newState.columns['column-1'].taskIds.indexOf(props.task.id.toString())
+                      newState.columns['column-1'].taskIds.splice(idIndex, 1)
+                      return newState
 
-                <i onClick={() => props.setDayState(prev => {
-                  let newState = { ...prev }
-                  delete newState.tasks[props.task.id]
-                  return (newState)
-                })}>
-                  <DeleteForeverIcon />
-                </i>
+                    }))
+                }}>
+                <DeleteForeverIcon />
+              </i>
+            </div>
+            <div className={classes.info}>
+              <CardContent className={classes.content} >
+                <p className="card-header">Time</p>
+                <div className='card-time'>
+
+                  {'Start:'}
+                  <TimePicker value={moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss')}
+                    onChange={(start) => onTimeChange(moment(start).format('YYYY-MM-DD HH:mm:ss'), 'start')}
+                    format={'HH:mm MMM DD'} className={classes.textField} />
+                  {'End:'}
+                  <TimePicker value={moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss')}
+                    onChange={(end) => onTimeChange(moment(end).format('YYYY-MM-DD HH:mm:ss'), 'end')}
+                    format={'HH:mm MMM DD'} className={classes.textField} />
+                  <span className='card-body'>Duration: {moment.duration(
+                    moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss').diff(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss')))
+                    .humanize()}
+                  </span>
+                </div>
+
                 <p className="card-header">Activity</p>
                 <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
               </CardContent>
               <CardActions disableSpacing>
-                <p className='card-header'>Travel Information
+                <p className='card-footer'>Travel Information
+                </p>
                 <IconButton
-                    className={clsx(classes.expand, {
-                      [classes.expandOpen]: props.expanded,
-                    })}
-                    onClick={handleExpandClick}
-                    aria-expanded={props.expanded}
-                    aria-label="show more"
-                    >
-                    <ExpandMoreIcon />
-                  </IconButton>
-                
-              </p>
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: props.expanded,
+                  })}
+                  onClick={handleExpandClick}
+                  aria-expanded={props.expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+
               </CardActions>
               <Collapse in={props.expanded} timeout="auto" unmountOnExit exit={props.exit}>
                 <CardContent>

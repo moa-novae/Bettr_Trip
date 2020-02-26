@@ -8,6 +8,7 @@ import About from '../about';
 import Login from '../login';
 import Trip from '../trip';
 import Signup from '../signup';
+import Profile from '../profile';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 class App extends Component {
@@ -77,6 +78,7 @@ class App extends Component {
               <Route path='/login' exact render={props => (<Login {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/signup' exact render={props => (<Signup {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/trips/:id' render={props => (<Content {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
+              <Route path='/profile' exact render={props => (<Profile {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} />)} />
             </Switch>
 
         </div>

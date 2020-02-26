@@ -23,7 +23,7 @@ const Button = (props) => {
   )
 }
 
-const Input = () => {
+const Input = (props) => {
   return (
     <input
       type="text"
@@ -59,91 +59,80 @@ function compare(a, b) {
   return comparison
 }
 const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
-    
-    console.log("Props.directions", props.directions)
-    
-    return (
-      <GoogleMap
-        defaultZoom={10}
-        center={props.center}
-        ref={props.onMapMounted}
+  return (
+    <GoogleMap
+      defaultZoom={10}
+      center={props.center}
+      ref={props.onMapMounted}
+    >
+      <SearchBox
+        ref={props.onSearchBoxMounted}
+        defaultZoom={15}
+        controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
+        onPlacesChanged={props.onPlacesChanged}
       >
-        <SearchBox
-          ref={props.onSearchBoxMounted}
-          defaultZoom={15}
-          controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
-          onPlacesChanged={props.onPlacesChanged}
-        >
-          <Input />
-        </SearchBox>
-        {/* {(props.direcitons ? props.directions.directions.map((item, index) =>
-          <DirectionsRenderer key={index} direction={item} />
-        ) : console.log('no directions'))} */}
-        {/* {(props.directions.directions ?  <DirectionsRenderer directions={props.directions.directions} /> : console.log('no directions'))} */}
-
-        {((props.directions.directions.directions && props.directions.directions.directions.length > 0) && 
-          props.directions.directions.directions.map((item) => <DirectionsRenderer directions={item}/>)
-        )}
-        <Button saveLocation={() => props.saveLocation()} />
-        {(props.markers ? props.markers.map((marker, index) =>
-          <Marker key={index} position={marker.position} title={marker.title} />
-        ) : console.log('no marker'))}
-      </GoogleMap>
-    )
-  }
+        <Input />
+      </SearchBox>
+       {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
+        props.directions.directionsArray.map((item) => <DirectionsRenderer directions={item} />)
+      )}
+      <Button saveLocation={() => props.saveLocation()} />
+      {(props.markers ? props.markers.map((marker, index) =>
+        <Marker key={index} position={marker.position} title={marker.title} />
+      ) : console.log('no marker'))}
+    </GoogleMap>
+  )
+}
 ))
 
 export default (props) => {
-  const [directions, setDirections] = useState({directions: []});
+  const [directions, setDirections] = useState({ directionsArray: [] });
   const [loaded, setLoaded] = useState("false")
   const google = window.google
-  const directionsArray = [];
   useEffect(() => {
     setTimeout(function () {
       setLoaded("true")
       if (props.updatedState.bin && props.updatedState.bin.length > 0 && loaded === "true") {
-        const directionsService = new google.maps.DirectionsService()
-        const updatedBin = props.updatedState.bin
-        const sorted = updatedBin.sort(compare)
-        console.log('sorted array', sorted)
-        for (let i = 0; i < sorted.length - 1; i++) {
-          if (sorted[i].latitude === sorted[i+1].latitude && sorted[i].longitude === sorted[i+1].longitude) {
-            i++
-          } else {
-          let travelMethod = sorted[i].travel_method.toUpperCase()
-          if (travelMethod === "CAR") {
-            travelMethod = "DRIVING"
-          }
-          if (travelMethod === "DRIVING") {
-            travelMethod = google.maps.TravelMode.DRIVING
-          } else if (travelMethod === "BICYCLING") {
-            travelMethod = google.maps.TravelMode.BICYCLING
-          } else if (travelMethod === "WALKING") {
-            travelMethod = google.maps.TravelMode.WALKING
-          } else if (travelMethod === "TRANSIT") {
-            travelMethod = google.maps.TravelMode.TRANSIT
-          }
-          console.log('travel method', travelMethod)
-          directionsService.route({
-            origin: { lat: sorted[i].latitude, lng: sorted[i].longitude },
-            destination: { lat: sorted[i+1].latitude, lng: sorted[i+1].longitude },
-            travelMode: travelMethod,
-            avoidFerries: true,
-            provideRouteAlternatives: false
-          },
-            (result, status) => {
-              console.log('response', { result }, status)
-              if (status === google.maps.DirectionsStatus.OK) {
-                directions.directions.push(result)
-                setDirections(state => ({ ...state, directions: directions }))
-                console.log({ directionsArray })
-              } else {
-                console.error(`error fetching directions ${result} ${status}`)
+          const directionsService = new google.maps.DirectionsService()
+          const updatedBin = props.updatedState.bin.filter(item => item.start_time !== null)
+          const sorted = updatedBin.sort(compare)
+          for (let i = 0; i < sorted.length - 1; i++) {
+            if (sorted[i].latitude === sorted[i + 1].latitude && sorted[i].longitude === sorted[i + 1].longitude) {
+              i++
+            } else {
+              let travelMethod = sorted[i].travel_method.toUpperCase()
+              if (travelMethod === "CAR") {
+                travelMethod = "DRIVING"
               }
-            })
+              if (travelMethod === "DRIVING") {
+                travelMethod = google.maps.TravelMode.DRIVING
+              } else if (travelMethod === "BICYCLING") {
+                travelMethod = google.maps.TravelMode.BICYCLING
+              } else if (travelMethod === "WALKING") {
+                travelMethod = google.maps.TravelMode.WALKING
+              } else if (travelMethod === "TRANSIT") {
+                travelMethod = google.maps.TravelMode.TRANSIT
+              }
+              directionsService.route({
+                origin: { lat: sorted[i].latitude, lng: sorted[i].longitude },
+                destination: { lat: sorted[i + 1].latitude, lng: sorted[i + 1].longitude },
+                travelMode: travelMethod,
+                avoidFerries: true,
+                provideRouteAlternatives: false
+              },
+                (result, status) => {
+                  if (status === google.maps.DirectionsStatus.OK) {
+                    directions.directionsArray.push(result)
+                    let array = directions.directionsArray
+                    setDirections(state => ({ ...state, directions: array }))
+                  } else {
+                    console.error(`error fetching directions ${result} ${status}`)
+                  }
+                })
+            }
+          }
         }
-      }
-    }
+      
     }, 3000)
   }, [props.updatedState, loaded])
 
@@ -162,7 +151,7 @@ export default (props) => {
       onSearchBoxMounted={props.onSearchBoxMounted}
       onMapMounted={props.onMapMounted}
       directions={directions}
-      // directionsArray={directionsArray}
+      suggestMarker={props.suggestMarker}
     />
   </>)
 }

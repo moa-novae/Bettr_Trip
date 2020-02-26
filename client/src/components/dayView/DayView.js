@@ -5,35 +5,13 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'
 import MomentAdapter from '@date-io/moment'
+import manageTime from './helper'
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
 
 
 
-const manageTime = (dayState) => {
-  let newState = { ...dayState }
-  newState.columns['column-1'].taskIds.map((pointId, index) => {
-    //if subsequent overlaps
-    const prevPointId = newState.columns['column-1'].taskIds[index - 1]
-    if (prevPointId) {
-      let startMoment = moment(newState.tasks[pointId].time.start)
-      let endMoment = moment(newState.tasks[pointId].time.end)
-      const prevEndMoment = moment(newState.tasks[prevPointId].time.end)
-      if (startMoment.isBefore(prevEndMoment)) {
-        const duration = moment.duration(endMoment.diff(startMoment))
-        startMoment = prevEndMoment.clone()
-        startMoment.add(10, 'minute')
-        endMoment = startMoment.clone().add(duration)
-        newState.tasks[pointId].time = {
-          start: startMoment.format('YYYY-MM-DD HH:mm:ss'),
-          end: endMoment.format('YYYY-MM-DD HH:mm:ss')
-        }
-      }
-    }
-  })
-  console.log('newState', newState)
-  return newState
-}
+
 
 
 
@@ -61,17 +39,16 @@ export default function(props) {
       travel: { method: point.travel_method, duration: point.travel_duration }
     }
     if (point.start_time && point.end_time) {
-      initialState.columns['column-1'].taskIds.push(point.id)
+      initialState.columns['column-1'].taskIds.push(point.id.toString())
     }
     else {
-      initialState.columns['column-2'].taskIds.push(point.id)
+      initialState.columns['column-2'].taskIds.push(point.id.toString())
     }
 
   })
 
 
-
-
+  const [deleteId, setDelete] = useState([]);
   const [state, setDayState] = useState(initialState);
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
@@ -82,7 +59,6 @@ export default function(props) {
 
   //manages logic when drag finishes
   const onDragEnd = result => {
-    console.log('draend')
     setExpanded(true)
     const { destination, source, draggableId } = result;
     if (!destination) {
@@ -94,59 +70,63 @@ export default function(props) {
     ) {
       return
     }
-    const start = state.columns[source.droppableId];
-    const finish = state.columns[destination.droppableId]
-    if (start === finish) {
+    setDayState(prev => {
+
+      const start = prev.columns[source.droppableId];
+      const finish = prev.columns[destination.droppableId]
+      if (start === finish) {
 
 
-      const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId)
+        const newTaskIds = Array.from(start.taskIds);
+        newTaskIds.splice(source.index, 1);
+        newTaskIds.splice(destination.index, 0, draggableId)
 
-      const newColumn = {
-        ...start,
-        taskIds: newTaskIds
+        const newColumn = {
+          ...start,
+          taskIds: newTaskIds
+        }
+        const newState = {
+          ...prev,
+          columns: {
+            ...prev.columns,
+            [newColumn.id]: newColumn,
+          },
+        }
+        console.log('newTasks in dropend', newState.tasks)
+        return (manageTime(newState))
       }
-      const newState = {
-        ...state,
-        columns: {
-          ...state.columns,
-          [newColumn.id]: newColumn,
-        },
-      }
-      setDayState(manageTime(newState))
-    }
 
-    //move between lists
-    else {
-      const startTaskIds = Array.from(start.taskIds)
-      console.log('start', startTaskIds)
-      console.log('source.index', source.index)
-      startTaskIds.splice(source.index, 1)
-      console.log('finish', startTaskIds)
-      const newStart = {
-        ...start,
-        taskIds: startTaskIds,
+      //move between lists
+      else {
+        const startTaskIds = Array.from(start.taskIds)
+        console.log('start', startTaskIds)
+        console.log('source.index', source.index)
+        startTaskIds.splice(source.index, 1)
+        console.log('finish', startTaskIds)
+        const newStart = {
+          ...start,
+          taskIds: startTaskIds,
+        }
+        const finishTaskIds = Array.from(finish.taskIds)
+        finishTaskIds.splice(destination.index, 0, draggableId);
+        const newFinish = {
+          ...finish,
+          taskIds: finishTaskIds,
+        };
+        let newState = {
+          ...prev,
+          columns: {
+            ...prev.columns,
+            [newStart.id]: newStart,
+            [newFinish.id]: newFinish,
+          },
+        };
+        newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
+        newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
+        return manageTime(newState)
+        //console.log(state.tasks)
       }
-      const finishTaskIds = Array.from(finish.taskIds)
-      finishTaskIds.splice(destination.index, 0, draggableId);
-      const newFinish = {
-        ...finish,
-        taskIds: finishTaskIds,
-      };
-      let newState = {
-        ...state,
-        columns: {
-          ...state.columns,
-          [newStart.id]: newStart,
-          [newFinish.id]: newFinish,
-        },
-      };
-      newState.tasks[draggableId].time = { start: '2020-02-20 02:17:41', end: '2020-02-20 03:17:41' }
-      newState.tasks[draggableId].travel = { method: 'driving', duration: 3 }
-      setDayState(prev => manageTime(newState))
-      //console.log(state.tasks)
-    }
+    })
 
   };
   // update state when daysArr updates
@@ -169,10 +149,10 @@ export default function(props) {
           travel: { method: point.travel_method, duration: point.travel_duration }
         }
         if (point.start_time && point.end_time) {
-          newState.columns['column-1'].taskIds.push(point.id)
+          newState.columns['column-1'].taskIds.push(point.id.toString())
         }
         else {
-          newState.columns['column-2'].taskIds.push(point.id)
+          newState.columns['column-2'].taskIds.push(point.id.toString())
         }
 
       })
@@ -180,7 +160,9 @@ export default function(props) {
     })
   }, [props.daysArr])
 
+  //delete locations
 
+  
 
 
 
@@ -210,9 +192,8 @@ export default function(props) {
 
     })
     // setDayState(prev => manageTime(prev))
-
+    console.log('before put', state)
     for (let id of state.columns['column-1'].taskIds) {
-
       axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
         name: state.tasks[id].name,
         start_time: state.tasks[id].time.start,
@@ -244,7 +225,7 @@ export default function(props) {
             exit={exit}
             setDayState={setDayState}
             state={state}
-
+            setDelete={setDelete}
 
           />
         })}

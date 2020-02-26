@@ -6,8 +6,9 @@ module CurrentUserConcern
   end
 
   def set_current_user
-    if session[:user_id]
-      @current_user = User.find(session[:user_id])
+    puts "'#{self.session[:user_id].inspect}'' !!!!!!!!!!!!!!!!!!!"
+    if self.session[:user_id]
+      @current_user = User.find(self.session[:user_id])
     end
   end
 end

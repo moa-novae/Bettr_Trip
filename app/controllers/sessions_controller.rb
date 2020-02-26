@@ -16,6 +16,8 @@ class SessionsController < ApplicationController
   end
 
   def logged_in
+    puts 'NEXT LINE IS @CURRENT USER'
+    puts @current_user
     if @current_user
       render json: {
         logged_in: true, 
@@ -29,6 +31,7 @@ class SessionsController < ApplicationController
   end
 
   def logout
+    puts session
     reset_session
     render json: {
       status: 200, logged_out: true
