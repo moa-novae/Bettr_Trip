@@ -21,7 +21,7 @@
   grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: recommend-start;
-  /* overflow-y: auto; */
+  overflow-y: auto;
   height: 100%;
   width: 100%;
 }
@@ -51,7 +51,7 @@
   text-align: center;
   width: 3em;
   height: 7em;
-  writing-mode: vertical-rl;
+  writing-mode: vertical-lr;
   text-orientation: mixed;
   background-color: lightseagreen;
   color: white;
