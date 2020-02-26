@@ -23,7 +23,7 @@ import './task.scss'
 import manageTime from './helper'
 import axios from 'axios'
 const Moment = new MomentAdapter();
-const { moment } = Moment
+const { moment, humanize } = Moment
 
 const Container = styled.div`
 
@@ -33,7 +33,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     marginTop: '1em',
-    marginBottom: '1em',
     textAlign: 'left',
   },
   media: {
@@ -60,6 +59,9 @@ const useStyles = makeStyles(theme => ({
   header: {
     paddingLeft: '0em',
     paddingRight: '0em',
+  },
+  content: {
+    paddingBottom: '0.1em',
   }
 }));
 
@@ -127,35 +129,41 @@ export default function(props) {
               </i>
             </div>
             <div className={classes.info}>
-              <CardContent>
+              <CardContent className={classes.content} >
                 <p className="card-header">Time</p>
-                {'Start:'}
-                <TimePicker value={moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss')}
-                  onChange={(start) => onTimeChange(moment(start).format('YYYY-MM-DD HH:mm:ss'), 'start')}
-                  format={'HH:mm MMM DD'} className={classes.textField} />
-                {'End:'}
-                <TimePicker value={moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss')}
-                  onChange={(end) => onTimeChange(moment(end).format('YYYY-MM-DD HH:mm:ss'), 'end')}
-                  format={'HH:mm MMM DD'} className={classes.textField} />
+                <div className='card-time'>
 
+                  {'Start:'}
+                  <TimePicker value={moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss')}
+                    onChange={(start) => onTimeChange(moment(start).format('YYYY-MM-DD HH:mm:ss'), 'start')}
+                    format={'HH:mm MMM DD'} className={classes.textField} />
+                  {'End:'}
+                  <TimePicker value={moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss')}
+                    onChange={(end) => onTimeChange(moment(end).format('YYYY-MM-DD HH:mm:ss'), 'end')}
+                    format={'HH:mm MMM DD'} className={classes.textField} />
+                  <span className='card-body'>Duration: {moment.duration(
+                    moment(props.state.tasks[props.task.id].time.end, 'YYYY-MM-DD HH:mm:ss').diff(moment(props.state.tasks[props.task.id].time.start, 'YYYY-MM-DD HH:mm:ss')))
+                    .humanize()}
+                  </span>
+                </div>
 
                 <p className="card-header">Activity</p>
                 <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
               </CardContent>
               <CardActions disableSpacing>
-                <p className='card-header'>Travel Information
-                <IconButton
-                    className={clsx(classes.expand, {
-                      [classes.expandOpen]: props.expanded,
-                    })}
-                    onClick={handleExpandClick}
-                    aria-expanded={props.expanded}
-                    aria-label="show more"
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
-
+                <p className='card-footer'>Travel Information
                 </p>
+                <IconButton
+                  className={clsx(classes.expand, {
+                    [classes.expandOpen]: props.expanded,
+                  })}
+                  onClick={handleExpandClick}
+                  aria-expanded={props.expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+
               </CardActions>
               <Collapse in={props.expanded} timeout="auto" unmountOnExit exit={props.exit}>
                 <CardContent>

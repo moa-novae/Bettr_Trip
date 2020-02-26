@@ -161,22 +161,8 @@ export default function(props) {
   }, [props.daysArr])
 
   //delete locations
-  useEffect(() => {
-    deleteId.forEach(id => {
-      axios.delete(`http://localhost:3000/trips/1/points/${id}`)
-      .then(setDayState(prev => {
-        let newState = {...prev}
-        delete newState.tasks[id]
-        const idIndex = newState.columns['column-1'].taskIds.indexOf(id.toString())
-        console.log('idIndex',idIndex)
-        newState.columns['column-1'].taskIds.splice(idIndex, 1)
-        console.log(newState.columns['column-1'].taskIds)
-        setDelete([])
-        return newState
-        
-      }))
-    })
-  },[deleteId])
+
+  
 
 
 

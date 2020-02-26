@@ -1,6 +1,6 @@
 
 
-.card {
+.recommend-card {
   min-width: 15vh;
   min-height: 15vh;
   max-width: 15vh;
@@ -16,7 +16,7 @@
   border: 15px solid white;
 }
 
-.card:hover {
+.recommend-card:hover {
   box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.4);
 }
 

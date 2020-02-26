@@ -43,7 +43,7 @@ export default function(props) {
       // ref={divRef}
 
       <animated.div
-        class="card"
+        class="recommend-card"
         ref={divRef}
         onMouseOver={() => set(i => { if (i === index) return { xys: [0, 0, 1.2] } })}
         onMouseLeave={() => set(i => { if (i === index) return { xys: [0, 0, 1] } })}

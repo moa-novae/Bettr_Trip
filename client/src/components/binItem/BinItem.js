@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
+import { Card } from 'react-bootstrap'
 import './BinItem.css'
 
 const Button = (props) => {
@@ -15,19 +16,33 @@ const Button = (props) => {
 export default function(props) {
   return (
     <>
-    <Draggable draggableId={props.id.toString()} index={props.index}>
-      {(provided, snapshot) => (
-        <ul className={"bin-item"}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
+      <Draggable draggableId={props.id.toString()} index={props.index}>
+        {(provided, snapshot) => (
+          // <Card>
+
+          <ul className={"bin-item"}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
           >
-          {props.name}
-          {props.region}
-        </ul>
-      )}
-    </Draggable>
-      <Button lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint} />
-      </>
+            <Card style={{ width: '10rem' }}>
+              <Card.Body>
+                <Card.Title>
+
+                  {props.name}
+                </Card.Title>
+                <Card.Subtitle>
+
+                  {props.region}
+                </Card.Subtitle>
+
+                <Button lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint} />
+              </Card.Body>
+            </Card>
+          </ul>
+          // </Card>
+        )}
+      </Draggable>
+    </>
   )
 }
