@@ -14,6 +14,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import Alert from '../alert'
 import WeekItem from '../weekItem'
+import {Button} from 'react-bootstrap'
 
 const refs = {}; //google map element 
 const onSearchBoxMounted = (ref) => {
@@ -267,6 +268,7 @@ export default function Content() {
         />
       </div>
       <div className="recommend">
+        <Button variant="Info">Recommend</Button>
         <Recommend currentState={state} addPointToMap={addPointToMap} />
       </div>
 

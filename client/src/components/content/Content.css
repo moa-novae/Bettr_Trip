@@ -1,8 +1,9 @@
 
 .content {
   display:grid;
+  height: 200vh;
   grid-template-columns: 2em 40% 50%;
-  grid-template-rows: 8vh [calendar-start] 0em [map-start] 70vh 100vh [recommend-start];
+  grid-template-rows: 8vh [calendar-start] 0em [map-start] 70vh 20vh [recommend-start];
   grid-column-gap: 2em;
   grid-row-gap: 0.5em;
 }
@@ -28,12 +29,11 @@
 
 .recommend {
   grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-end: 4;
   grid-row-start: recommend-start;
   z-index: 10;
   width: 80vh;
   height: 30vh;
   display: flex;
   flex-wrap: wrap;
-
 }

@@ -3,6 +3,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-map
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 import _ from 'lodash';
 import axios from 'axios';
+import {Button} from 'react-bootstrap'
 import { componentDidMount } from 'react-google-maps/lib/utils/MapChildHelper';
 import {
   BrowserRouter as Router,
@@ -13,15 +14,8 @@ import {
 } from "react-router-dom";
 import Bin from '../bin'
 
-const Button = (props) => {
-  return (
-    <button
-      className={"saveButton"}
-      onClick={() => { console.log('button clicked'); props.saveLocation() }}
-    >Save
-    </button>
-  )
-}
+
+
 
 const Input = (props) => {
   return (
@@ -59,7 +53,7 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
     >
       <Input />
     </SearchBox>
-    <Button saveLocation={() => props.saveLocation()} />
+    <Button className={"saveButton"} onClick={() => props.saveLocation() }>Save</Button>
 
     {(props.markers ? props.markers.map((marker, index) =>
       <Marker key={index} position={marker.position} title={marker.title} />
