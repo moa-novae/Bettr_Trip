@@ -27,11 +27,13 @@ export default function(props) {
           let output = [];
           for (let i = 0; i < res.data.results.length; i++) {
             let nearByLocation = {};
-            nearByLocation["photo_reference"] = res.data.results[i].photos[0].photo_reference;
-            nearByLocation["location"] = res.data.results[i].geometry.location;
-            console.log(nearByLocation);
+            if (res.data.results[i].photos) {
+              nearByLocation["photo_reference"] = res.data.results[i].photos[0].photo_reference;
+              nearByLocation["location"] = res.data.results[i].geometry.location;
+              console.log(nearByLocation);
 
-            output.push(nearByLocation);
+              output.push(nearByLocation);
+            }
           }
           setLocation(output)
 
@@ -41,7 +43,7 @@ export default function(props) {
   }, [props.currentState]);
 
   return springProps.map(({ xys }, index) => {
-    console.log('springprops',springProps[index])
+    console.log('springprops', springProps[index])
     return (
       // ref={divRef}
       <animated.div
