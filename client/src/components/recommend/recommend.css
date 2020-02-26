@@ -1,11 +1,12 @@
 
 
 .recommend-card {
+  opacity: 1;
   min-width: 15vh;
   min-height: 15vh;
   max-width: 15vh;
   max-height: 15vh;
-  margin: 1em;
+  margin: 0.7em;
   background: grey;
   border-radius: 5px;
   background-size: cover;
@@ -13,10 +14,11 @@
   box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.5s;
   will-change: transform;
-  border: 15px solid white;
+  border: 8px solid white;
 }
 
 .recommend-card:hover {
   box-shadow: 0px 30px 100px -10px rgba(0, 0, 0, 0.4);
 }
+
 

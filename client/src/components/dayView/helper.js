@@ -1,7 +1,7 @@
 import MomentAdapter from '@date-io/moment'
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
-export default (input) => {
+export default (input, dragId, dropId) => {
   let modifyTime = { ...input }
 
   console.log('taskid', modifyTime.columns['column-1'].taskIds)

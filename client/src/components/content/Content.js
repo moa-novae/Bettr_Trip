@@ -15,6 +15,8 @@ import _ from 'lodash';
 import Alert from '../alert'
 import WeekItem from '../weekItem'
 import MomentAdapter from '@date-io/moment'
+import { Button } from 'react-bootstrap'
+import { useSpring, animated } from 'react-spring'
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
 
@@ -28,6 +30,7 @@ const onMapMounted = (ref) => {
 }
 
 export default function Content() {
+  const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [state, setState] = useState({
     bounds: null,
@@ -263,6 +266,7 @@ export default function Content() {
     setSuggestMarkerState(suggestMarker);
   };
 
+  const springProp = useSpring(({ left: recommendToggle ? '0vh' : '-84vh' }))
   return (
     <div className="content">
 
@@ -281,9 +285,13 @@ export default function Content() {
           updatedState={(updatedState.bin ? updatedState : "not rendered yet")}
         />
       </div>
-      <div className="recommend">
-        <Recommend currentState={state} addPointToMap={addPointToMap} />
-      </div>
+      <animated.div className="recommend" style={springProp}>
+  
+
+          <Button className='expand-recommend' variant="Info" onClick={() => setRecommendToggle(prev => !prev)}>Recommend </Button>
+          <Recommend currentState={state} addPointToMap={addPointToMap} />
+      
+      </animated.div>
 
     </div>
   );

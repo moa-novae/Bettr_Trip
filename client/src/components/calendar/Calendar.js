@@ -11,7 +11,7 @@ import MomentUtils from '@date-io/moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    
+
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ControlledExpansionPanels(props) {  
+export default function ControlledExpansionPanels(props) {
   const [switchValue, setSwitchValue] = useState(null);
 
   useEffect(() => {
@@ -41,13 +41,13 @@ export default function ControlledExpansionPanels(props) {
     } else {
       props.setView('week');
     }
-    
+
   }, [switchValue]);
 
   // console.log('props.daysArr',props.daysArr)
 
   const classes = useStyles()
-
+  
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview
 
   return (
@@ -55,9 +55,12 @@ export default function ControlledExpansionPanels(props) {
       <div>
         <Switch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
       </div>
+      <div style={{marginTop: props.view === 'week' ? '3.2em' : '0em'}}>
+
       {props.view === 'week' && props.weekViews}
+      </div>
       <MuiPickersUtilsProvider utils={MomentUtils}>
-      {props.view === 'day' && <ReactDnd daysArr={props.daysArr} setUpdatedState={props.setUpdatedState}/>}
+        {props.view === 'day' && <ReactDnd daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
       </MuiPickersUtilsProvider>
     </div>
   );
