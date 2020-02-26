@@ -23,7 +23,7 @@ const Button = (props) => {
   )
 }
 
-const Input = () => {
+const Input = (props) => {
   return (
     <input
       type="text"
@@ -44,6 +44,7 @@ const Input = () => {
     />
   )
 }
+
 const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
   <GoogleMap
     defaultZoom={10}
@@ -59,11 +60,15 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
       <Input />
     </SearchBox>
     <Button saveLocation={() => props.saveLocation()} />
+
     {(props.markers ? props.markers.map((marker, index) =>
       <Marker key={index} position={marker.position} title={marker.title} />
     ) : console.log('no marker'))}
+
+    {<Marker position={props.suggestMarker.position} />}
+
   </GoogleMap>
-))
+));
 
 export default (props) => {
 
@@ -81,6 +86,7 @@ export default (props) => {
       markers={props.markers}
       onSearchBoxMounted={props.onSearchBoxMounted}
       onMapMounted={props.onMapMounted}
+      suggestMarker={props.suggestMarker}
     />
   </>)
 }

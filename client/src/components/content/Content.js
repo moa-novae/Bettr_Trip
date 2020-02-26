@@ -24,6 +24,7 @@ const onMapMounted = (ref) => {
 }
 
 export default function Content() {
+  const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [state, setState] = useState({
     bounds: null,
     center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
@@ -239,6 +240,15 @@ export default function Content() {
 
   }, [state.markerLibrary])
 
+  const addPointToMap = (locationObj) => {
+
+    const suggestMarker = new window.google.maps.Marker({
+      position: locationObj,
+    });
+
+    setSuggestMarkerState(suggestMarker);
+  };
+
   return (
     <div className="content">
 
@@ -251,12 +261,13 @@ export default function Content() {
           onPlacesChanged={onPlacesChanged}
           center={state.center}
           markers={state.markers}
+          suggestMarker={suggestMarkerState}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
         />
       </div>
       <div className="recommend">
-        {/* <Recommend /> */}
+        <Recommend currentState={state} addPointToMap={addPointToMap} />
       </div>
 
     </div>
