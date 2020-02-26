@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resource :home, only: [:index]
 
   namespace :api, defaults: { format: 'json' } do
-    resources :trips, only: [:index, :create, :destroy] do
+    resources :trips, only: [:index, :create, :destroy, :show] do
       resources :points
     end
   end

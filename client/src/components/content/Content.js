@@ -14,6 +14,10 @@ import axios from 'axios';
 import _ from 'lodash';
 import Alert from '../alert'
 import WeekItem from '../weekItem'
+import MomentAdapter from '@date-io/moment'
+const Moment = new MomentAdapter();
+const { moment, humanize } = Moment
+
 
 const refs = {}; //google map element 
 const onSearchBoxMounted = (ref) => {
@@ -103,33 +107,33 @@ export default function Content() {
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
     if (places[0].geometry) {
 
-    places.forEach(place => {
+      places.forEach(place => {
 
         if (place.geometry.viewport) {
           bounds.union(place.geometry.viewport)
         } else {
           bounds.extend(place.geometry.location)
         }
-    })
+      })
 
-    if (places.length === 0) {
-      return;
-    }
-
-    const nextMarkers = places.map(place => ({
-      position: place.geometry.location,
-    }));
-
-    const nextCenter = _.get(nextMarkers, '0.position', state.center);
-    setState(state => ({
-      ...state,
-      center: nextCenter,
-      markers: [...state.markers, nextMarkers],
-      location: {
-        name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
-        coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
+      if (places.length === 0) {
+        return;
       }
-    }))
+
+      const nextMarkers = places.map(place => ({
+        position: place.geometry.location,
+      }));
+
+      const nextCenter = _.get(nextMarkers, '0.position', state.center);
+      setState(state => ({
+        ...state,
+        center: nextCenter,
+        markers: [...state.markers, nextMarkers],
+        location: {
+          name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
+          coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
+        }
+      }))
     }
   }
 
@@ -138,6 +142,7 @@ export default function Content() {
     async function fetchData() {
       try {
         const response = await axios.get(`http://localhost:3001/api/trips/${id}/points/`)
+        const tripResponse = await axios.get(`http://localhost:3001/api/trips/${id}`)
         const markerArray = [];
         const binArray = [];
         for (let point of response.data.points) {
@@ -164,8 +169,17 @@ export default function Content() {
           binArray.push(binObject);
         }
         setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
-        console.log('first--', updatedState)
+        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000
+        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
+        console.log('trip data', tripStart, tripEnd)
+        const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
+        console.log('day difference', daysInTrip)
         let week = [];
+        // const momentStartDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY")
+        // for (let i = 0; i <= daysInTrip; i++) {
+        //   let newDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY").add(i, "days")
+        //   console.log('new date', newDate)
+        // }
         if (!binArray || binArray.length === 0) {
           week.push(<Alert />);
         } else {
@@ -195,7 +209,6 @@ export default function Content() {
               }
             }
           }
-          console.log('marker lib', markerArray)
           if (binArray[0]) { //if theres a point in the database - set that center 
             setState(state => ({
               ...state,
@@ -215,15 +228,12 @@ export default function Content() {
             }))
           }
         }
-
       } catch (error) {
         console.error(error)
       }
     }
     fetchData();
   }, [view])
-
-  console.log('UPDATED STATE', updatedState)
 
   useEffect(() => {
     setTimeout(function () {
