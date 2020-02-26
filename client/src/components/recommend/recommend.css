@@ -1,6 +1,7 @@
 
 
 .recommend-card {
+  opacity: 1;
   min-width: 15vh;
   min-height: 15vh;
   max-width: 15vh;

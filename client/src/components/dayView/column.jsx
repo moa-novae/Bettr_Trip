@@ -15,7 +15,10 @@ const Title = styled.h3`
   padding: 8px
   position: fixed`;
 const TaskList = styled.div`
-padding: 8px`
+padding: 8px
+height: 300px
+width: 300px`
+
 
 export default function(props) {
   const { column } = props
@@ -25,11 +28,12 @@ export default function(props) {
       <>
         <Title> {props.column.title} </Title>
           <Container>
-          <Droppable droppableId={props.column.id}>
+          <Droppable droppableId={props.column.id} style={{minHeight: '30vh'}}>
             {(provided) => (
               <TaskList
                 provided={provided}
                 ref={provided.innerRef}
+                style={{minHeight: '70vh'}}
                 {...provided.droppableProps}
                 >
                 {props.tasks.map((task, index) => {
