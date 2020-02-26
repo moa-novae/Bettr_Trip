@@ -76,7 +76,11 @@ export default function MediaControlCard(props) {
         const travelData = res.data;
        // console.log(travelData, "<--- travelData pls work!!!");
         let time = "";
-        time = travelData.rows[0].elements[0].duration.text;
+        if (travelData.rows[0].elements[0].duration){
+        time = travelData.rows[0].elements[0].duration.text ; 
+        } else {
+          time = 'Too far'
+        }
         setTravel(time);
       });
     });
