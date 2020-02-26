@@ -41,6 +41,7 @@ const Input = (props) => {
         outline: `none`,
         // textOverflow: `ellipses`,
       }}
+      // value={props.}
     />
   )
 }
@@ -57,7 +58,7 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
       controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
       onPlacesChanged={props.onPlacesChanged}
     >
-      <Input />
+      <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
     </SearchBox>
     <Button saveLocation={() => props.saveLocation()} />
 
@@ -65,7 +66,7 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
       <Marker key={index} position={marker.position} title={marker.title} />
     ) : console.log('no marker'))}
 
-    {<Marker position={props.suggestMarker.position} />}
+    {props.suggestedState? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
 
   </GoogleMap>
 ));
@@ -87,6 +88,7 @@ export default (props) => {
       onSearchBoxMounted={props.onSearchBoxMounted}
       onMapMounted={props.onMapMounted}
       suggestMarker={props.suggestMarker}
+      suggestedState={props.suggestedState}
     />
   </>)
 }
