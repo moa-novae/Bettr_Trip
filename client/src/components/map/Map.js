@@ -15,6 +15,8 @@ import {
 import Bin from '../bin'
 import './Map.css';
 import CustomMarker from '../custommarker';
+import picMarker from "../../images/custom_marker.png";
+
 
 
 
@@ -78,7 +80,7 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
         <Marker key={index} position={marker.position} title={marker.title} />
       ) : console.log('no marker'))}
 
-      {props.suggestedState ? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
+      {props.suggestedState ? (<Marker position={props.suggestMarker.position} icon={{ url: picMarker, anchor: new window.google.maps.Point(5, 58)}} />) : console.log('no suggested marker')}
 
     </GoogleMap>
   )
