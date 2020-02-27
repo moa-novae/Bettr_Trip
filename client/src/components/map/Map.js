@@ -71,7 +71,7 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
        {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
         props.directions.directionsArray.map((item) => <DirectionsRenderer directions={item} />)
       )}
-       <Button className={"saveButton"} onClick={() => props.saveLocation() }>Save</Button>
+       <Button className={"saveButton"} onClick={() =>  {props.saveLocation()} }>Save</Button>
       {(props.markers ? props.markers.map((marker, index) =>
         <Marker key={index} position={marker.position} title={marker.title} />
       ) : console.log('no marker'))}

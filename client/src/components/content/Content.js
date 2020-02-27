@@ -20,7 +20,6 @@ import { useSpring, animated } from 'react-spring'
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
 
-
 const refs = {}; //google map element 
 const onSearchBoxMounted = (ref) => {
   refs.searchBox = ref;
@@ -30,6 +29,7 @@ const onMapMounted = (ref) => {
 }
 
 export default function Content() {
+  const [tripTime, setTripTime] = useState();
   const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [suggested, setSuggested] = useState(false);
@@ -91,21 +91,7 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function (pointId, lat, lng) {
-    //axios delete with lat and long to find point in database 
-    //then filter bin and markers to find those objects and remove them from state
-    axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
-      .then(() => {
-        const binArray = state.bin.filter(item => item.id !== pointId)
-        const markerArray = state.markerLibrary.filter(item => (item.position.latitude !== lat && item.position.longitude !== lng))
-        setState(state => ({
-          ...state,
-          markers: markerArray,
-          bin: binArray
-        }))
-      })
-  }
-
+  
   //manages logic when place is searched 
   const onPlacesChanged = () => {
     const places = refs.searchBox.getPlaces(); //gets place of thing searched 
@@ -141,6 +127,10 @@ export default function Content() {
       }))
     }
   }
+  // useEffect(() => {
+  
+  // },[updatedState])
+
 
   //loads data and sets state when page rendered
   useEffect(() => {
@@ -176,6 +166,7 @@ export default function Content() {
         setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
         const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000
         const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
+        setTripTime({start: tripStart, end: tripEnd})
         console.log('trip data', tripStart, tripEnd)
         const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
         console.log('day difference', daysInTrip)
@@ -273,7 +264,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
+        <Calendar tripTime={tripTime} daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
       </div>
       <div className="map-container">
         <MapWithASearchBox

@@ -60,7 +60,7 @@ export default function ControlledExpansionPanels(props) {
       {props.view === 'week' && props.weekViews}
       </div>
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        {props.view === 'day' && <ReactDnd daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
+        {props.view === 'day' && <ReactDnd tripTime={props.tripTime} daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
       </MuiPickersUtilsProvider>
     </div>
   );

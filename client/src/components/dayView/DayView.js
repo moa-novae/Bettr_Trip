@@ -57,7 +57,7 @@ export default function(props) {
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
   }
-
+  // console.log('trip time', props.tripTime)
   //manages logic when drag finishes
   const onDragEnd = result => {
     setExpanded(true)
@@ -131,25 +131,34 @@ export default function(props) {
 
   };
   // update state when daysArr updates
+
   useEffect(() => {
+    console.log('daysarr useeffect!!!!!!!!!!')
     setDayState(prev => {
       let newState = { ...prev }
       newState.columns['column-1'].taskIds = [];
       newState.columns['column-2'].taskIds = [];
       props.daysArr.map(point => {
 
-        newState.tasks[point.id.toString()] = {
-          trip_id: point.trip_id,
-          id: point.id,
-          name: point.name,
-          latitude: point.latitude,
-          longitude: point.longitude,
-          time: { start: point.start_time, end: point.end_time, },
-          region: point.region,
-          activity: point.activity,
-          travel: { method: point.travel_method, duration: point.travel_duration }
-        }
+        // if (!point.time.start && newState.tasks[point.id.toString()].time.start) {
+
+        // } else {
+          newState.tasks[point.id.toString()] = {
+            trip_id: point.trip_id,
+            id: point.id,
+            name: point.name,
+            latitude: point.latitude,
+            longitude: point.longitude,
+            time: { start: point.start_time, end: point.end_time, },
+            region: point.region,
+            activity: point.activity,
+            travel: { method: point.travel_method, duration: point.travel_duration }
+          }
+        // }
+
+
         if (point.start_time && point.end_time) {
+          console.log('point.id', point.id)
           newState.columns['column-1'].taskIds.push(point.id.toString())
         }
         else {
@@ -161,9 +170,10 @@ export default function(props) {
     })
   }, [props.daysArr])
 
+
   //delete locations
 
-  
+
 
 
 
@@ -171,6 +181,7 @@ export default function(props) {
   useEffect(() => {
 
     props.setUpdatedState(prev => {
+
       let newState = { ...state }
       newState.bin = []
       for (let [key, value] of Object.entries(newState.tasks)) {
@@ -189,6 +200,7 @@ export default function(props) {
 
         })
       }
+      console.log('return up', newState)
       return newState
 
     })
@@ -206,7 +218,7 @@ export default function(props) {
       )
     }
   }, [state])
-
+  console.log('state', state)
   return (
     <div className='detailed-view'>
 
