@@ -127,13 +127,22 @@ export default function(props) {
           // console.log('forloop test', m.format('YYYY-MM-DD'))
           newState.columns[m.format('YYYY-MM-DD')] = { id: m.format('YYYY-MM-DD'), title: m.format('YYYY-MM-DD'), taskIds: [] }
           newState.columnOrder.push(m.format('YYYY-MM-DD'))
-          
+
         }
         // console.log('newState1', newState)
 
-        newState.columns['bin'].taskids=[]
-        
+        newState.columns['bin'].taskids = []
+
         props.daysArr.map(point => {
+          let run = true;
+          if (!point.start_time) {
+            if (newState.tasks[point.id]) { 
+            if (newState.tasks[point.id].time.start) {
+              run = false
+            }
+          }
+        }
+          if (run) {
           newState.tasks[point.id.toString()] = {
             trip_id: point.trip_id,
             id: point.id,
@@ -145,104 +154,105 @@ export default function(props) {
             activity: point.activity,
             travel: { method: point.travel_method, duration: point.travel_duration }
           }
-          // console.log('newState2', newState)
-          if (newState.tasks[point.id.toString()].time.start && newState.tasks[point.id.toString()].time.end) {
-            console.log('newState.column', newState.columns, point.start_time)
-            newState.columns[moment(point.start_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')].taskIds.push(point.id.toString())
-          }
-          else {
-            if (newState.columns['bin'].taskIds.indexOf(point.id.toString()) < 0){
+        }
+        // console.log('newState2', newState)
+        if (newState.tasks[point.id.toString()].time.start && newState.tasks[point.id.toString()].time.end) {
+          console.log('newState.column', newState.columns, point.start_time)
+          newState.columns[moment(newState.tasks[point.id].time.start, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')].taskIds.push(point.id.toString())
+        }
+        else {
+          if (newState.columns['bin'].taskIds.indexOf(point.id.toString()) < 0) {
 
-              newState.columns['bin'].taskIds.push(point.id.toString())
-            }
+            newState.columns['bin'].taskIds.push(point.id.toString())
           }
-        })
-        
-        console.log('newState', newState)
+        }
+      })
 
-      }
+    console.log('newState', newState)
+
+  }
       console.log('newstate after', newState)
       return newState
-    })
+})
   }, [props.daysArr, props.tripTime])
 
 
-  //delete locations
+//delete locations
 
 
 
 
 
-  //update to database when state changes 
-  useEffect(() => {
-    // console.log('for', state)
+//update to database when state changes 
+useEffect(() => {
+  // console.log('for', state)
 
-    props.setUpdatedState(prev => {
-      console.log('useeffectcheck', state)
-      let newState = { ...state }
-      newState.bin = []
-      for (let [key, value] of Object.entries(newState.tasks)) {
-        newState.bin.push({
-          name: value.name,
-          id: value.id,
-          regions: value.region,
-          latitude: value.latitude,
-          longitude: value.longitude,
-          start_time: value.time.start,
-          end_time: value.time.end,
-          trip_id: value.trip_id,
-          activity: value.activity,
-          travel_method: value.travel.method,
-          travel_duration: value.travel.duration,
+  props.setUpdatedState(prev => {
+    console.log('useeffectcheck', state)
+    let newState = { ...state }
+    newState.bin = []
+    for (let [key, value] of Object.entries(newState.tasks)) {
+      newState.bin.push({
+        name: value.name,
+        id: value.id,
+        regions: value.region,
+        latitude: value.latitude,
+        longitude: value.longitude,
+        start_time: value.time.start,
+        end_time: value.time.end,
+        trip_id: value.trip_id,
+        activity: value.activity,
+        travel_method: value.travel.method,
+        travel_duration: value.travel.duration,
 
-        })
-      }
-      // console.log('newState', newState)
-      return newState
-    })
-    // setDayState(prev => manageTime(prev))
-    for (let columnId of state.columnOrder) {
-      for (let id of state.columns[columnId].taskIds) {
-        axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
-          name: state.tasks[id].name,
-          start_time: state.tasks[id].time.start,
-          end_time: state.tasks[id].time.end,
-          activity: state.tasks[id].activity,
-          travel_method: state.tasks[id].travel.method,
-          travel_duration: state.tasks[id].travel.duration
-        }
-        )
-      }
+      })
     }
-    // setDayState(prev => {console.log('prev', prev);
-    // return prev})
+    // console.log('newState', newState)
+    return newState
+  })
+  // setDayState(prev => manageTime(prev))
+  for (let columnId of state.columnOrder) {
+    for (let id of state.columns[columnId].taskIds) {
+      axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
+        name: state.tasks[id].name,
+        start_time: state.tasks[id].time.start,
+        end_time: state.tasks[id].time.end,
+        activity: state.tasks[id].activity,
+        travel_method: state.tasks[id].travel.method,
+        travel_duration: state.tasks[id].travel.duration
+      }
+      )
+    }
+  }
+  // setDayState(prev => {console.log('prev', prev);
+  // return prev})
 
-  }, [state])
+}, [state])
 
-  console.log('dayview state', state)
-  return (
-    <div className='detailed-view'>
-      <DragDropContext
-        onDragEnd={onDragEnd}
-        onBeforeCapture={onBeforeCapture}>
-        {state.columnOrder.map(columnId => { //currently only one column
-          const column = state.columns[columnId];
+console.log('dayview state', state)
+return (
+  <div className='detailed-view'>
+    <DragDropContext
+      onDragEnd={onDragEnd}
+      onBeforeCapture={onBeforeCapture}>
+      {state.columnOrder.map(columnId => { //currently only one column
+        const column = state.columns[columnId];
 
-          const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
-          return <Column
-            key={column.id}
-            column={column}
-            tasks={tasks}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            exit={exit}
-            setDayState={setDayState}
-            state={state}
-            setDelete={setDelete}
+        const tasks = column.taskIds.map(taskId => state.tasks[taskId]) //individual stops are collected in array
+        return <Column
+          key={column.id}
+          column={column}
+          tasks={tasks}
+          expanded={expanded}
+          setExpanded={setExpanded}
+          exit={exit}
+          setDayState={setDayState}
+          state={state}
+          setDelete={setDelete}
 
-          />
-        })}
-      </DragDropContext>
-    </div>
-  )
+        />
+      })}
+    </DragDropContext>
+  </div>
+)
 }
