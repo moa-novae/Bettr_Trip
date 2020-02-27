@@ -117,6 +117,7 @@ export default function(props) {
 
 
     setDayState(prev => {
+      console.log('THIS IS DAY STATE UE 1', state)
       let newState = { ...prev }
 
       // console.log('useeffect trip',tripTime.start)

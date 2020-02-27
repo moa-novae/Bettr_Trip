@@ -34,7 +34,6 @@ export default function(props) {
 
             if (res.data.results[i].photos) {
               nearByLocation["photo_reference"] = res.data.results[i].photos[0].photo_reference;
-              console.log(nearByLocation.photo_reference, "AAAAAAA");
               nearByLocation["location"] = res.data.results[i].geometry.location;
               locationInfoArr.push({ name: res.data.results[i].name, vicinity: res.data.results[i].vicinity })
 

@@ -29,10 +29,26 @@ const onMapMounted = (ref) => {
   refs.map = ref;
 }
 
+function compare(a, b) {
+  const time1 = a.start_time
+  const time2 = b.start_time
+  const time1Linux = new Date(time1).getTime()
+  const time2Linux = new Date(time2).getTime()
+
+  let comparison = 0;
+  if (time1Linux > time2Linux) {
+    comparison = 1;
+  } else if (time1Linux < time2Linux) {
+    comparison = -1;
+  }
+  return comparison
+}
+
 export default function Content(props) {
   const [tripTime, setTripTime] = useState();
   const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
+  const [savedState, setSavedState] = useState({})
   const [suggested, setSuggested] = useState(false);
   const [state, setState] = useState({
     bounds: null,
@@ -83,7 +99,6 @@ export default function Content(props) {
       longitude: location.coordinates.lng
     })
       .then(response => {
-        console.log(response.data)
         const data = response.data
         const binObject = {
           name: location.name.placeName,
@@ -105,6 +120,8 @@ export default function Content(props) {
           bin: [...state.bin, binObject]
         }));
         setSuggested(false);
+        // setUpdatedState(state => ({ ...state, bin: [...state.bin, binObject] }))
+        setSavedState(state => ({saved: binObject}))
       })
   }
 
@@ -197,73 +214,63 @@ export default function Content(props) {
           }
           binArray.push(binObject);
         }
-        setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
+        // setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
         const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000 + 86400
         const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000 + 86400
         setTripTime({start: tripStart, end: tripEnd})
         console.log('trip data', tripStart, tripEnd)
         const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
-        console.log('day difference', daysInTrip)
-        let week = [];
-        // const momentStartDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY")
-        // for (let i = 0; i <= daysInTrip; i++) {
-        //   let newDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY").add(i, "days")
-        //   console.log('new date', newDate)
-        // }
-        if (!binArray || binArray.length === 0) {
-          week.push(<Alert />);
+        const binFilter = binArray.filter(item => item.start_time !== null)
+        if (binArray[0]) { //if theres a point in the database - set that center 
+          setState(state => ({
+            ...state,
+            bin: [...binArray],
+            markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+            center: { lat: binArray[0].latitude, lng: binArray[0].longitude },
+            daysFiltered: [...binFilter]
+          }))
         } else {
-          const binFilter = binArray.filter(item => item.start_time !== null)
-          // for accumuluating points data
-          let pointDataArr = [];
-          for (let i = 0; i < binFilter.length; i++) {
-            if (i === 0) {
-              pointDataArr.push(binFilter[i])
-            } else if (i === binFilter.length - 1) {
-              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-                pointDataArr = [];
-                pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-              } else {
-                pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-              }
-            } else {
-              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-                pointDataArr = [];
-                pointDataArr.push(binFilter[i]);
-              } else {
-                pointDataArr.push(binFilter[i]);
-              }
-            }
-          }
-          if (binArray[0]) { //if theres a point in the database - set that center 
-            setState(state => ({
-              ...state,
-              bin: [...binArray],
-              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-              weekViews: week,
-              center: { lat: binArray[0].latitude, lng: binArray[0].longitude },
-              daysFiltered: [...binFilter]
-            }))
-          } else {
-            setState(state => ({
-              ...state,
-              bin: [...binArray],
-              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-              weekViews: week,
-              daysFiltered: [...binFilter]
-            }))
-          }
+          setState(state => ({
+            ...state,
+            bin: [...binArray],
+            markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+            daysFiltered: [...binFilter]
+          }))
         }
+        // }
       } catch (error) {
         console.error(error)
       }
     }
     fetchData();
   }, [view])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const tripResponse = await axios.get(`http://localhost:3001/api/trips/${id}`)
+        const week = [];
+        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() / 1000
+        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
+        const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
+        const sorted = updatedState.bin.sort(compare);
+        console.log('SORTED!!!!!', sorted)
+        for (let i = 0; i <= daysInTrip; i++) {
+          let newDate = moment(tripResponse.data.trip.start_date, "YYYY-MM-DD").add(i, "days")
+          let formatedDate = newDate.format("dddd, MMMM Do YYYY") 
+          week.push(<WeekItem key={i} formatedDate={formatedDate} date={newDate} weatherState={updatedState} pointData={sorted} setView={setView} />)
+        }
+        setState(state => ({
+          ...state,
+          weekViews: week,
+          markerLibrary: updatedState.bin
+        }))
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchData();
+  }, [updatedState])
 
   useEffect(() => {
     setTimeout(function () {
@@ -327,11 +334,11 @@ export default function Content(props) {
         />
       </div>
       <animated.div className="recommend" style={springProp}>
-  
 
-          <Button className='expand-recommend' variant="Info" onClick={() => setRecommendToggle(prev => !prev)}>Recommend </Button>
-          <Recommend currentState={state} addPointToMap={addPointToMap} />
-      
+
+        <Button className='expand-recommend' variant="Info" onClick={() => setRecommendToggle(prev => !prev)}>Recommend </Button>
+        <Recommend currentState={state} addPointToMap={addPointToMap} />
+
       </animated.div>
 
     </div>

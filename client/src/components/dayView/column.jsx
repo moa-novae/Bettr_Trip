@@ -24,6 +24,7 @@ padding-top: 2em;
 color: lightgrey;`
 
 export default function(props) {
+  console.log('column props', props)
   const { column } = props
   return (
     <>
