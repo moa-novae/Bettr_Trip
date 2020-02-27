@@ -68,7 +68,7 @@ export default function(props) {
             onChange={(event, expanded) => { if (expanded) { setTrail({ opacity: 1 , backgroundColor: 'lightblue', config: config.slow}) } else { setTrail({ opacity: 0, backgroundColor:'white', config: config.slow}) } }}
             provided={provided}
             ref={provided.innerRef}
-            expanded={ props.binExpanded }
+            // expanded={ props.binExpanded }
             
             
             {...provided.droppableProps}>
