@@ -21,34 +21,9 @@ const { moment, humanize, isBefore } = Moment
 export default function(props) {
 
   //generate inital state
-  let initialState = { tasks: {}, columns: { 'column-1': { taskIds: [] } } };
-  initialState.columns['column-1'].id = 'column-1'
-  initialState.columns['column-1'].title = 'Day list'
-  initialState.columns['column-2'] = { id: 'column-2', title: 'Bin', taskIds: [] }
-  initialState.columnOrder = ['column-1', 'column-2']
-
-  props.daysArr.map(point => {
-    initialState.tasks[point.id.toString()] = {
-      trip_id: point.trip_id,
-      id: point.id,
-      name: point.name,
-      latitude: point.latitude,
-      longitude: point.longitude,
-      time: { start: point.start_time, end: point.end_time, },
-      region: point.region,
-      activity: point.activity,
-      travel: { method: point.travel_method, duration: point.travel_duration }
-    }
-    if (point.start_time && point.end_time) {
-      initialState.columns['column-1'].taskIds.push(point.id.toString())
-    }
-    else {
-      initialState.columns['column-2'].taskIds.push(point.id.toString())
-    }
-
-  })
-
-
+  let initialState = { tasks: {}, columns: {}, columnOrder: ['bin'] };
+  initialState.columns.bin = {id: 'bin', title: 'bin', taskIds: []}
+ 
   const [deleteId, setDelete] = useState([]);
   const [state, setDayState] = useState(initialState);
   const [tripTime, setTripTime] = useState({})
@@ -153,16 +128,12 @@ export default function(props) {
           newState.columnOrder.push(m.format('YYYY-MM-DD'))
   
         }
-      }
-
-
-      newState.columns['column-1'].taskIds = [];
-      newState.columns['column-2'].taskIds = [];
-      props.daysArr.map(point => {
-        newState.tasks[point.id.toString()] = {
-          trip_id: point.trip_id,
-          id: point.id,
-          name: point.name,
+        
+        props.daysArr.map(point => {
+          newState.tasks[point.id.toString()] = {
+            trip_id: point.trip_id,
+            id: point.id,
+            name: point.name,
           latitude: point.latitude,
           longitude: point.longitude,
           time: { start: point.start_time, end: point.end_time, },
@@ -170,22 +141,17 @@ export default function(props) {
           activity: point.activity,
           travel: { method: point.travel_method, duration: point.travel_duration }
         }
-
-        // console.log('after', newState.tasks)
-        // }
-
-
         if (newState.tasks[point.id.toString()].time.start && newState.tasks[point.id.toString()].time.end) {
           // console.log('point.id', point.id)
-          newState.columns['column-1'].taskIds.push(point.id.toString())
+          newState.columns[moment(point.start_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')].taskIds.push(point.id.toString())
         }
         else {
-          newState.columns['column-2'].taskIds.push(point.id.toString())
+          newState.columns['bin'].taskIds.push(point.id.toString())
         }
-
       })
       // console.log('newState', newState)
-
+      
+    }
       return newState
     })
   }, [props.daysArr])
@@ -224,10 +190,11 @@ export default function(props) {
       return newState
     })
     // setDayState(prev => manageTime(prev))
-
-    for (let id of state.columns['column-1'].taskIds) {
-      axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
-        name: state.tasks[id].name,
+    for (let columnId of state.columnOrder){
+    
+      for (let id of state.columns[columnId].taskIds) {
+        axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
+          name: state.tasks[id].name,
         start_time: state.tasks[id].time.start,
         end_time: state.tasks[id].time.end,
         activity: state.tasks[id].activity,
@@ -236,6 +203,7 @@ export default function(props) {
       }
       )
     }
+  }
     // setDayState(prev => {console.log('prev', prev);
     // return prev})
 

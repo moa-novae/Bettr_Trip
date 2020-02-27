@@ -7,7 +7,7 @@ const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
   border-radius: 2px;
-  height: 70vh;
+  min-height: 10vh;
   overflow: auto;
   
   `;
@@ -26,7 +26,7 @@ export default function(props) {
     <>
     {/* {console.log('column state', props.state)} */}
     {/* {console.log('column tasks', props.tasks)} */}
-      {column.title === "Day list" &&
+      {column.title !== "bin" &&
       <>
         <Title> {props.column.title} </Title>
           <Container>
@@ -35,7 +35,7 @@ export default function(props) {
               <TaskList
                 provided={provided}
                 ref={provided.innerRef}
-                style={{minHeight: '70vh'}}
+                style={{minHeight: '10vh'}}
                 {...provided.droppableProps}
                 >
                 {props.tasks.map((task, index) => {
@@ -64,9 +64,9 @@ export default function(props) {
         </>
       }
     
-      {column.title === 'Bin' &&
+      {column.title === 'bin' &&
         <Bin
-        bin={props.state.columns['column-2'].taskIds.map(point => props.state.tasks[point])}
+        bin={props.state.columns['bin'].taskIds.map(point => props.state.tasks[point])}
           column={column}
         />
       }
