@@ -30,7 +30,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function(props) {
-  
+ 
+  let { id } = useParams();
+  const [tripName, setTripName] = useState("");
+
+
+
+ 
 
   useEffect(() => {
     axios.get(`http://localhost:3001/api/trips/${id}`)
