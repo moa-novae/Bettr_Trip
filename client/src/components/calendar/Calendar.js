@@ -49,7 +49,7 @@ export default function(props) {
   const classes = useStyles()
 
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview
-
+  // console.log('cal trip', props.tripTime)
   return (
     <div className={classes.root}>
       <div>

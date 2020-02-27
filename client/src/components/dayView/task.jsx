@@ -47,9 +47,10 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     alignContent: 'center',
+    textAlign: 'center', 
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
-    width: 100,
+    width: '7em',
   },
   info: {
     alignContent: 'left',
@@ -121,8 +122,8 @@ export default function(props) {
                     .then(props.setDayState(prev => {
                       let newState = { ...prev }
                       delete newState.tasks[props.task.id]
-                      const idIndex = newState.columns['column-1'].taskIds.indexOf(props.task.id.toString())
-                      newState.columns['column-1'].taskIds.splice(idIndex, 1)
+                      const idIndex = newState.columns[props.columnId].taskIds.indexOf(props.task.id.toString())
+                      newState.columns[props.columnId].taskIds.splice(idIndex, 1)
                       return newState
 
                     }))

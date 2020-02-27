@@ -164,8 +164,8 @@ export default function Content() {
           binArray.push(binObject);
         }
         setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
-        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000
-        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
+        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000 + 86400
+        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000 + 86400
         setTripTime({start: tripStart, end: tripEnd})
         console.log('trip data', tripStart, tripEnd)
         const daysInTrip = (tripEnd - tripStart) / (3600 * 24)

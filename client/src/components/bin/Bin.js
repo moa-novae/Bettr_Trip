@@ -43,7 +43,7 @@ export default function(props) {
 
   return (
     <div className='in-bin'>
-
+      {/* {console.log('bin is rendered')} */}
     <Droppable droppableId={props.column.id} direction='horizontal'>
       {(provided) => (
         
