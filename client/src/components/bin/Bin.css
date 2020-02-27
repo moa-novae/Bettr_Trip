@@ -1,8 +1,8 @@
 .in-bin {
   position: fixed;
   min-height: 5vh;
-  width: 47.5em;
+  width: 39.2vw;
   z-index: 5;
   bottom: 0px;
-  left: 3vw;
+  left: 3.5vw;
 }

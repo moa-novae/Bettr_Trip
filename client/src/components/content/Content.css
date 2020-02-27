@@ -1,11 +1,11 @@
 
 .content {
   display:grid;
-  height: 200vh;
+  height: 100vh;
   grid-template-columns: 2em 40% 1em 50%;
-  grid-template-rows: 8vh [calendar-start] 0em [map-start] 70vh 20vh [recommend-start];
+  grid-template-rows: 8vh [switch-start] 1em [calendar-start] 70vh [calendar-end] 20vh [recommend-start];
   grid-column-gap: 2em;
-  grid-row-gap: 0.5em;
+  
 }
 
 .map-container {
@@ -13,31 +13,35 @@
   width: 100%;
   grid-column-start: 4;
   grid-column-end: 5;
-  grid-row-start: map-start;
+  grid-row-start: calendar-start;
+  grid-row-end: calendar-end;
 }
 
 .calendar-container {
   grid-column-start: 2;
   grid-column-end: 3;
-  grid-row-start: 1;
+  grid-row-start: calendar-start;
   grid-row-end: recommend-start;
-  overflow-y: auto;
   height: 70vh;
   width: 100%;
 }
-
+.calendar-switch {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+}
 
 .recommend {
   background-color: rgb(173, 216, 230, 0.8);
   position: fixed;
-  top: 6.4vh;
+  top: 11.5vh;
   left: -50vh;
   grid-column-start: 2;
   grid-column-end: 4;
   grid-row-start: recommend-start;
   z-index: 6;
   width: 84vh;
-  height: 88.5vh;
+  height: 83.5vh;
   display: flex;
   flex-wrap: wrap;
   padding-left: 2.5em;
@@ -47,7 +51,7 @@
   position: fixed;
   transform-origin: left center;
   right: -3em;
-  top: 38vh;
+  top: 40vh;
   text-align: center;
   width: 3em;
   height: 7em;

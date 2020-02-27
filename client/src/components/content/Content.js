@@ -3,6 +3,7 @@ import './Content.css';
 import MapWithASearchBox from '../map'
 import Calendar from '../calendar'
 import Recommend from '../recommend'
+import CalendarSwitch from '../switch';
 import {
   BrowserRouter as Router,
   Switch,
@@ -49,6 +50,23 @@ export default function Content() {
 
   let { id } = useParams();
 
+  //calendar switch
+  const [switchValue, setSwitchValue] = useState(null);
+  useEffect(() => {
+    if (view === 'week') {
+      setSwitchValue(false);
+    } else {
+      setSwitchValue(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (switchValue) {
+      setView('day');
+    } else {
+      setView('week');
+    }
+  }, [switchValue]);
+  
   //function called when save button clicked
   const saveLocation = () => {
     const location = state.location
@@ -262,12 +280,23 @@ export default function Content() {
   const springProp = useSpring(({ left: recommendToggle ? '0vh' : '-84vh' }))
   return (
     <div className="content">
-
-      <div className="calendar-container">
-        <Calendar tripTime={tripTime} daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
+      <div className='calendar-switch'>
+        <CalendarSwitch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
       </div>
-      <div className="map-container">
-        <MapWithASearchBox
+      <div className="calendar-container">
+        <Calendar tripTime={tripTime}
+        daysArr={state.bin} 
+        view={view} 
+        setView={setView} 
+        weatherState={updatedState} 
+        weekViews={state.weekViews} 
+        setUpdatedState={setUpdatedState} 
+        switchValue={switchValue}
+        setSwitchValue={setSwitchValue}
+        />
+      </div>
+      <div className="map-container" style={{backgroundColor:'grey'}}>
+        {/* <MapWithASearchBox
           saveLocation={saveLocation}
           onPlacesChanged={onPlacesChanged}
           center={state.center}
@@ -277,7 +306,7 @@ export default function Content() {
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
           updatedState={(updatedState.bin ? updatedState : "not rendered yet")}
-        />
+        /> */}
       </div>
       <animated.div className="recommend" style={springProp}>
   

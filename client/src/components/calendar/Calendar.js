@@ -6,12 +6,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
-import Switch from '../switch';
+
 import MomentUtils from '@date-io/moment';
+import { noAuto } from '@fortawesome/fontawesome-svg-core';
 
 const useStyles = makeStyles(theme => ({
   root: {
-
+    overflow: 'auto',
+    height: '100%',
+    width: '100%',
+    
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -25,24 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function(props) {
-  const [switchValue, setSwitchValue] = useState(null);
-
-  useEffect(() => {
-    if (props.view === 'week') {
-      setSwitchValue(false);
-    } else {
-      setSwitchValue(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (switchValue) {
-      props.setView('day');
-    } else {
-      props.setView('week');
-    }
-
-  }, [switchValue]);
+  
 
   // console.log('props.daysArr',props.daysArr)
 
@@ -51,17 +38,18 @@ export default function(props) {
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview
   // console.log('cal trip', props.tripTime)
   return (
-    <div className={classes.root}>
-      <div>
-        <Switch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
-      </div>
-      <div style={{ marginTop: props.view === 'week' ? '3.2em' : '0em' }}>
+    <>
+      
+      <div className={classes.root}>
+        <div style={{ marginTop: props.view === 'week' ? '3.2em' : '0em' }}>
 
-        {props.view === 'week' && props.weekViews}
+          {props.view === 'week' && props.weekViews}
+        </div>
+
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          {props.view === 'day' && <ReactDnd tripTime={props.tripTime} daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
+        </MuiPickersUtilsProvider>
       </div>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        {props.view === 'day' && <ReactDnd tripTime={props.tripTime} daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
-      </MuiPickersUtilsProvider>
-    </div>
+    </>
   );
 }
