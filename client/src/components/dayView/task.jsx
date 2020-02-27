@@ -154,8 +154,7 @@ export default function(props) {
                 <EditableContainer setDayState={props.setDayState} state={props.state} children={props.task.activity} id={props.task.id} />
               </CardContent>
               <CardActions disableSpacing>
-                <p className='card-footer'>Travel Information
-                </p>
+                <p className='card-header'>Travel Information</p>
                 <IconButton
                   className={clsx(classes.expand, {
                     [classes.expandOpen]: props.expanded,

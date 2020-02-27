@@ -109,6 +109,7 @@ export default function(props) {
   // update state when daysArr updates
 
   useEffect(() => {
+    console.log('beforeUse', state)
     if (props.tripTime) {
       console.log('i am receiving', moment(props.tripTime.start, 'X'), moment(props.tripTime.end, 'X'))
       setTripTime({ start: moment(props.tripTime.start, 'X'), end: moment(props.tripTime.end, 'X') })
@@ -127,36 +128,51 @@ export default function(props) {
           // console.log('forloop test', m.format('YYYY-MM-DD'))
           newState.columns[m.format('YYYY-MM-DD')] = { id: m.format('YYYY-MM-DD'), title: m.format('YYYY-MM-DD'), taskIds: [] }
           newState.columnOrder.push(m.format('YYYY-MM-DD'))
-          
+
         }
-        console.log('props.daysarray', props.daysArr)
-        newState.columns['bin'].taskids=[]
+        // console.log('newState1', newState)
+
+        newState.columns['bin'].taskids = []
+
         props.daysArr.map(point => {
-          newState.tasks[point.id.toString()] = {
-            trip_id: point.trip_id,
-            id: point.id,
-            name: point.name,
-            latitude: point.latitude,
-            longitude: point.longitude,
-            time: { start: point.start_time, end: point.end_time, },
-            region: point.region,
-            activity: point.activity,
-            travel: { method: point.travel_method, duration: point.travel_duration }
+          let run = true;
+          if (!point.start_time) {
+            if (newState.tasks[point.id]) {
+              if (newState.tasks[point.id].time.start) {
+                run = false
+              }
+            }
           }
+          if (run) {
+            newState.tasks[point.id.toString()] = {
+              trip_id: point.trip_id,
+              id: point.id,
+              name: point.name,
+              latitude: point.latitude,
+              longitude: point.longitude,
+              time: { start: point.start_time, end: point.end_time, },
+              region: point.region,
+              activity: point.activity,
+              travel: { method: point.travel_method, duration: point.travel_duration }
+            }
+          }
+          // console.log('newState2', newState)
           if (newState.tasks[point.id.toString()].time.start && newState.tasks[point.id.toString()].time.end) {
             console.log('newState.column', newState.columns, point.start_time)
-            newState.columns[moment(point.start_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')].taskIds.push(point.id.toString())
+            newState.columns[moment(newState.tasks[point.id].time.start, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')].taskIds.push(point.id.toString())
           }
           else {
-            if (newState.columns['bin'].taskIds.indexOf(point.id.toString()) < 0){
+            if (newState.columns['bin'].taskIds.indexOf(point.id.toString()) < 0) {
 
               newState.columns['bin'].taskIds.push(point.id.toString())
             }
           }
         })
-        // console.log('newState', newState)
+
+        console.log('newState', newState)
 
       }
+      console.log('newstate after', newState)
       return newState
     })
   }, [props.daysArr, props.tripTime])
@@ -170,10 +186,10 @@ export default function(props) {
 
   //update to database when state changes 
   useEffect(() => {
-    console.log('THIS IS DAY STATE UE 2', state)
+    // console.log('for', state)
 
     props.setUpdatedState(prev => {
-
+      console.log('useeffectcheck', state)
       let newState = { ...state }
       newState.bin = []
       for (let [key, value] of Object.entries(newState.tasks)) {
@@ -197,7 +213,6 @@ export default function(props) {
     })
     // setDayState(prev => manageTime(prev))
     for (let columnId of state.columnOrder) {
-
       for (let id of state.columns[columnId].taskIds) {
         axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
           name: state.tasks[id].name,
@@ -209,10 +224,10 @@ export default function(props) {
         }
         )
       }
-    }
-    // setDayState(prev => {console.log('prev', prev);
-    // return prev})
+      // setDayState(prev => {console.log('prev', prev);
+      // return prev})
 
+    }
   }, [state])
 
   console.log('dayview state', state)

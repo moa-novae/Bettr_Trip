@@ -3,6 +3,7 @@ import './Content.css';
 import MapWithASearchBox from '../map'
 import Calendar from '../calendar'
 import Recommend from '../recommend'
+import CalendarSwitch from '../switch';
 import {
   BrowserRouter as Router,
   Switch,
@@ -65,8 +66,23 @@ export default function Content(props) {
 
   let { id } = useParams();
 
-  console.log('updated state', updatedState)
-
+  //calendar switch
+  const [switchValue, setSwitchValue] = useState(null);
+  useEffect(() => {
+    if (view === 'week') {
+      setSwitchValue(false);
+    } else {
+      setSwitchValue(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (switchValue) {
+      setView('day');
+    } else {
+      setView('week');
+    }
+  }, [switchValue]);
+  
   //function called when save button clicked
   const saveLocation = () => {
     const location = state.location
@@ -90,8 +106,6 @@ export default function Content(props) {
           region: (location.name.region ? location.name.region : null),
           latitude: location.coordinates.lat,
           longitude: location.coordinates.lng,
-          start_time: data.point.start_time,
-          end_time: data.point.end_time,
           created_at: data.point.created_at,
           updated_at: data.point.updated_at,
           trip_id: parseFloat(data.point.trip_id),
@@ -99,6 +113,7 @@ export default function Content(props) {
           travel_method: data.point.travel_method,
           travel_duration: data.point.travel_duration
         }
+        console.log('state.bin',state.bin)
         setState(state => ({
           ...state,
           markers: [...state.markers, marker],
@@ -288,11 +303,22 @@ export default function Content(props) {
   const springProp = useSpring(({ left: recommendToggle ? '0vh' : '-84vh' }))
   return (
     <div className="content">
-
-      <div className="calendar-container">
-        <Calendar tripTime={tripTime} daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} tripData={props.appState.trip} />
+      <div className='calendar-switch'>
+        <CalendarSwitch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
       </div>
-      <div className="map-container">
+      <div className="calendar-container">
+        <Calendar tripTime={tripTime}
+        daysArr={state.bin} 
+        view={view} 
+        setView={setView} 
+        weatherState={updatedState} 
+        weekViews={state.weekViews} 
+        setUpdatedState={setUpdatedState} 
+        switchValue={switchValue}
+        setSwitchValue={setSwitchValue}
+        />
+      </div>
+      <div className="map-container" style={{backgroundColor:'grey'}}>
         <MapWithASearchBox
           onBoundsChanged={onBoundsChanged}
           bounds={state.bounds}
