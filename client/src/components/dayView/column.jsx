@@ -77,6 +77,7 @@ export default function(props) {
         <Bin
           bin={props.state.columns['bin'].taskIds.map(point => props.state.tasks[point])}
           column={column}
+          setDayState={props.setDayState}
         />
       }
     </>
