@@ -31,19 +31,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function(props) {
  
-  let { id } = useParams();
-  const [tripName, setTripName] = useState("");
-
-
-
  
-
-  useEffect(() => {
-    axios.get(`http://localhost:3001/api/trips/${id}`)
-    .then(res => {
-      setTripName(res.data.trip.name);
-    })
-  }, []);
+  let { id } = useParams();
 
   // console.log('props.daysArr',props.daysArr)
 

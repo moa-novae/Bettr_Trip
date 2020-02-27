@@ -32,6 +32,9 @@ export default function(props) {
   const [trail, setTrail] = useTrail(bin.length, () => ({ opacity: 1, backgroundColor: 'white',config: config.slow }))
 
   const classes = useStyles();
+  if(bin.length > 0) {
+    
+  }
   const binItems = trail.map((trailProp, index) => {
     if (bin[index]) {
       return (
@@ -61,13 +64,16 @@ export default function(props) {
         {(provided) => (
 
 
-          <ExpansionPanel
+          <ExpansionPanel 
             onChange={(event, expanded) => { if (expanded) { setTrail({ opacity: 1 , backgroundColor: 'lightblue', config: config.slow}) } else { setTrail({ opacity: 0, backgroundColor:'white', config: config.slow}) } }}
             provided={provided}
             ref={provided.innerRef}
+            expanded={ props.binExpanded }
+            
+            
             {...provided.droppableProps}>
             <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
+              expandIcon={<ExpandMoreIcon/>}
               aria-controls="panel1a-content"
               id="panel1a-header"
             >

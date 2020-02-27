@@ -28,7 +28,9 @@ export default function(props) {
   const [state, setDayState] = useState(initialState);
   const [tripTime, setTripTime] = useState({})
   const [expanded, setExpanded] = useState(true);
+  const [binExpanded, setBinExpanded] = useState(false)
   const [exit, setExit] = useState(true) //animation of collapse material ui
+  
   const onBeforeCapture = start => {
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
@@ -36,6 +38,7 @@ export default function(props) {
   // console.log('trip time', props.tripTime)
   //manages logic when drag finishes
   const onDragEnd = result => {
+    setBinExpanded(undefined)
     setExpanded(true)
     const { destination, source, draggableId } = result;
     if (!destination) {
@@ -106,6 +109,10 @@ export default function(props) {
     })
 
   };
+
+  const onDragStart = start => {
+    setBinExpanded(false)
+  } 
   // update state when daysArr updates
 
   useEffect(() => {
@@ -235,6 +242,7 @@ export default function(props) {
     <div className='detailed-view'>
       <DragDropContext
         onDragEnd={onDragEnd}
+        onDragStart={onDragStart}
         onBeforeCapture={onBeforeCapture}>
         {state.columnOrder.map(columnId => { //currently only one column
           const column = state.columns[columnId];
@@ -251,6 +259,8 @@ export default function(props) {
             state={state}
             setDelete={setDelete}
             tripData={props.tripData}
+            binExpanded={binExpanded}
+            setBinExpanded={setBinExpanded}
           />
         })}
       </DragDropContext>

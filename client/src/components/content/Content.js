@@ -83,6 +83,16 @@ export default function Content(props) {
     }
   }, [switchValue]);
   
+
+  const [tripName, setTripName] = useState("");
+
+
+  useEffect(() => {
+    axios.get(`http://localhost:3001/api/trips/${id}`)
+    .then(res => {
+      setTripName(res.data.trip.name);
+    })
+  }, []);
   //function called when save button clicked
   const saveLocation = () => {
     const location = state.location
@@ -304,7 +314,10 @@ export default function Content(props) {
   return (
     <div className="content">
       <div className='calendar-switch'>
+        <span className="toggle-flag">Overview</span>
         <CalendarSwitch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
+        <span className='toggle-flag'>Details</span>
+        <div className="trip-title">{tripName}</div>
       </div>
       <div className="calendar-container">
         <Calendar tripTime={tripTime}

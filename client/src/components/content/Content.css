@@ -3,7 +3,7 @@
   display:grid;
   height: 100vh;
   grid-template-columns: 2em 40% 1em 50%;
-  grid-template-rows: 8vh [switch-start] 1em [calendar-start] 70vh [calendar-end] 20vh [recommend-start];
+  grid-template-rows: 2vh [switch-start] 5em [calendar-start] 70vh [calendar-end] 20vh [recommend-start];
   grid-column-gap: 2em;
   
 }
@@ -25,10 +25,11 @@
   height: 70vh;
   width: 100%;
 }
+
 .calendar-switch {
   grid-column-start: 2;
   grid-column-end: 3;
-  grid-row-start: 1;
+  grid-row-start: 2;
 }
 
 .recommend {
@@ -66,3 +67,4 @@
   color: white;
   box-shadow: lightblue;
 }
+
