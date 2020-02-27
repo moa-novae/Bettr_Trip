@@ -9,7 +9,7 @@ module API
       user = User.find_by(id: params[:user_id])
       trip.users << user
 
-      render json: { trip_id: trip.id }
+      render json: { trip_id: trip.id, trip_name: trip.name }
     end
 
     def destroy

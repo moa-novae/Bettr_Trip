@@ -17,6 +17,7 @@
     "axios": "^0.18.1",
     "bootstrap": "^4.4.1",
     "font-awesome": "^4.7.0",
+    "framer-motion": "^1.8.4",
     "immutability-helper": "^3.0.1",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
@@ -37,7 +38,9 @@
     "react-skycons": "^0.7.0",
     "react-spring": "^8.0.27",
     "react-time-picker": "^3.9.0",
-    "styled-components": "^5.0.1"
+    "react-transition-group": "^4.3.0",
+    "styled-components": "^5.0.1",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "react-scripts start",

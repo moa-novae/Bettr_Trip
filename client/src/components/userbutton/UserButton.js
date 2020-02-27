@@ -12,7 +12,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   }, 
   icon: {
-    color: 'rbg(255, 235, 205)'
+    color: '#ffebcd',
+    width: 40,
+    height: 40
   }
 }));
 
@@ -31,7 +33,7 @@ export default function IconLabelButtons(props) {
         color="primary"
         size="large"
         className={classes.button}
-        endIcon={<CardTravelIcon className={classes.icon} style={{ color: 'rbg(255, 235, 205)' }} />}
+        endIcon={<CardTravelIcon className={classes.icon} style={{ color: 'rbg(255, 235, 205)' }} fontSize='large' />}
         onClick={redirect}
       >
       <div className="button-text">

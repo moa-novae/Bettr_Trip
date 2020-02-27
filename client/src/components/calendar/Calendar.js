@@ -9,6 +9,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picki
 
 import MomentUtils from '@date-io/moment';
 import { noAuto } from '@fortawesome/fontawesome-svg-core';
+import './Calendar.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +31,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function(props) {
   
+
+  useEffect(() => {
+    axios.get(`http://localhost:3001/api/trips/${id}`)
+    .then(res => {
+      setTripName(res.data.trip.name);
+    })
+  }, []);
 
   // console.log('props.daysArr',props.daysArr)
 
