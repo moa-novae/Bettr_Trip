@@ -29,10 +29,26 @@ const onMapMounted = (ref) => {
   refs.map = ref;
 }
 
+function compare(a, b) {
+  const time1 = a.start_time
+  const time2 = b.start_time
+  const time1Linux = new Date(time1).getTime()
+  const time2Linux = new Date(time2).getTime()
+
+  let comparison = 0;
+  if (time1Linux > time2Linux) {
+    comparison = 1;
+  } else if (time1Linux < time2Linux) {
+    comparison = -1;
+  }
+  return comparison
+}
+
 export default function Content() {
   const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [savedState, setSavedState] = useState({})
+  const [suggested, setSuggested] = useState(false);
   const [state, setState] = useState({
     bounds: null,
     center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
@@ -87,8 +103,9 @@ export default function Content() {
           ...state,
           markers: [...state.markers, marker],
           bin: [...state.bin, binObject]
-        }))
-        setUpdatedState(state => ({ ...state, bin: [...state.bin, binObject] }))
+        }));
+        setSuggested(false);
+        // setUpdatedState(state => ({ ...state, bin: [...state.bin, binObject] }))
         setSavedState(state => ({saved: binObject}))
       })
   }
@@ -198,7 +215,7 @@ export default function Content() {
       }
     }
     fetchData();
-  }, [])
+  }, [view])
 
   useEffect(() => {
     async function fetchData() {
@@ -208,10 +225,12 @@ export default function Content() {
         const tripStart = new Date(tripResponse.data.trip.start_date).getTime() / 1000
         const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
         const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
+        const sorted = updatedState.bin.sort(compare);
+        console.log('SORTED!!!!!', sorted)
         for (let i = 0; i <= daysInTrip; i++) {
           let newDate = moment(tripResponse.data.trip.start_date, "YYYY-MM-DD").add(i, "days")
-
-          week.push(<WeekItem key={i} date={newDate} weatherState={updatedState} pointData={updatedState.bin} setView={setView} />)
+          let formatedDate = newDate.format("dddd, MMMM Do YYYY") 
+          week.push(<WeekItem key={i} formatedDate={formatedDate} date={newDate} weatherState={updatedState} pointData={sorted} setView={setView} />)
         }
         setState(state => ({
           ...state,
@@ -225,6 +244,9 @@ export default function Content() {
     fetchData();
   }, [updatedState])
 
+  useEffect(() => {
+    console.log('updated state changed', updatedState)
+  }, [updatedState])
   useEffect(() => {
     setTimeout(function () {
       const markerArray = [];
@@ -249,7 +271,7 @@ export default function Content() {
     const suggestMarker = new window.google.maps.Marker({
       position: locationObj,
     });
-
+    setSuggested(true);
     setSuggestMarkerState(suggestMarker);
   };
 
@@ -267,6 +289,7 @@ export default function Content() {
           center={state.center}
           markers={state.markers}
           suggestMarker={suggestMarkerState}
+          suggestedState={suggested}
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
           updatedState={(updatedState.bin ? updatedState : "not rendered yet")}

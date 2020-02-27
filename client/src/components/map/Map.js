@@ -34,6 +34,7 @@ const Input = (props) => {
         fontSize: `14px`,
         outline: `none`,
       }}
+    // value={props.}
     />
   )
 }
@@ -52,7 +53,12 @@ function compare(a, b) {
   }
   return comparison
 }
-const MapWithASearchBox = withScriptjs(withGoogleMap((props) => { 
+const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
+  let log = props.directions
+  console.log('direction props', { log })
+  if (props.directions && props.directions.directionsArray) {
+    console.log('hit?', props.directions.directionsArray)
+  }
   return (
     <GoogleMap
       defaultZoom={10}
@@ -65,18 +71,18 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
         controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
         onPlacesChanged={props.onPlacesChanged}
       >
-        <Input />
+        <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
       </SearchBox>
       {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
-        props.directions.directionsArray.map((item) => <DirectionsRenderer directions={item} options={{suppressBicyclingLayer: true}}/>)
+        props.directions.directionsArray.map((item, index) => <DirectionsRenderer key={index} directions={item} options={{ suppressBicyclingLayer: true }} />)
       )}
-      {/* {((DirectionsDisplay && props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
-        props.directions.directionsArray.map((item) => <DirectionsDisplay directions={item} />)
-      )} */}
       <Button className={"saveButton"} onClick={() => props.saveLocation()}>Save</Button>
       {(props.markers ? props.markers.map((marker, index) =>
         <Marker key={index} position={marker.position} title={marker.title} />
       ) : console.log('no marker'))}
+
+      {props.suggestedState ? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
+
     </GoogleMap>
   )
 }
@@ -86,13 +92,18 @@ export default (props) => {
   const [directions, setDirections] = useState({ directionsArray: [] });
   const [loaded, setLoaded] = useState("false")
   const google = window.google
+
+  console.log('updated state map', props.updatedState)
+  console.log('updated directions map', directions)
+
   useEffect(() => {
     setTimeout(function () {
       setLoaded("true")
       if (props.updatedState.bin && props.updatedState.bin.length > 0 && loaded === "true") {
+        // const array = [];
         const directionsService = new google.maps.DirectionsService()
         const updatedBin = props.updatedState.bin.filter(item => item.start_time !== null)
-        const sorted = updatedBin.sort(compare)
+        const sorted = updatedBin.sort(compare);
         for (let i = 0; i < sorted.length - 1; i++) {
           if (sorted[i].latitude === sorted[i + 1].latitude && sorted[i].longitude === sorted[i + 1].longitude) {
             i++
@@ -119,18 +130,26 @@ export default (props) => {
             },
               (result, status) => {
                 if (status === google.maps.DirectionsStatus.OK) {
-                  directions.directionsArray.push(result)
-                  let array = directions.directionsArray
-                  setDirections(state => ({ ...state, directions: array }))
+                  // array.push(result)
+                  const previousArray = directions.directionsArray
+                  previousArray.push(result)
+                  // directions.directionsArray.push(result)
+                  // let array = directions.directionsArray
+                  // setDirections(state => ({ ...state, directions: array }))
+                  setDirections(state => ({ directionsArray: previousArray }))
                 } else {
                   console.error(`error fetching directions ${result} ${status}`)
                 }
               })
           }
         }
+        // console.log(array, 'array')
+        //   if (array.length > 0) {
+        //     setDirections(state => ({...state, directionsArray: array }))
+        //  }
       }
 
-    }, 3000)
+    }, 3500)
   }, [props.updatedState, loaded])
 
   return (<>
@@ -150,6 +169,41 @@ export default (props) => {
       directions={directions}
       suggestMarker={props.suggestMarker}
       loaded={loaded}
+      suggestedState={props.suggestedState}
     />
   </>)
 }
+
+
+
+
+
+
+
+
+
+
+// const MapWithASearchBox = withScriptjs(withGoogleMap((props) =>
+//   <GoogleMap
+//     defaultZoom={10}
+//     center={props.center}
+//     ref={props.onMapMounted}
+//   >
+//     <SearchBox
+//       ref={props.onSearchBoxMounted}
+//       defaultZoom={15}
+//       controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
+//       onPlacesChanged={props.onPlacesChanged}
+//     >
+//       <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
+//     </SearchBox>
+//     <Button saveLocation={() => props.saveLocation()} />
+
+//     {(props.markers ? props.markers.map((marker, index) =>
+//       <Marker key={index} position={marker.position} title={marker.title} />
+//     ) : console.log('no marker'))}
+
+//     {props.suggestedState? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
+
+//   </GoogleMap>
+// ));

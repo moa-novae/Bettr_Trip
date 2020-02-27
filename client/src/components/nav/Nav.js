@@ -26,58 +26,40 @@ export default function(props) {
   };
 
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark" expand="lg">
       <Navbar.Brand>
         <Link to='/'>LOGO</Link>
       </Navbar.Brand>
-      <div className='nav-larger'>
-
-        <div className='nav-options'>
-          <LinkContainer to='/trips'>
-            <NavItem className='nav-option'>Get Started</NavItem>
-          </LinkContainer>
-          <LinkContainer to='/about'>
-            <NavItem className='nav-option'>About</NavItem>
-          </LinkContainer>
-          <LinkContainer to='/signup'>
-            <NavItem className='nav-option'>Sign Up</NavItem>
-          </LinkContainer>
-        </div>
-
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link className="nav-option" href="/trips">Get Started</Nav.Link>
+          <Nav.Link className="nav-option" href="/about">About Us</Nav.Link>
+          <Nav.Link className="nav-option" href="/signup">Sign Up</Nav.Link>
+        </Nav>
         {(() => {
-          switch (props.loggedInStatus) {
-            case 'LOGGED_IN':
-              return [
-                <UserButton />,
-                <SignoutButton logout={handleLogoutClick} />
-              ];
-            case 'NOT_LOGGED_IN':
-              return <SigninButton />;
-            default:
-              return null;
-          }
+            switch (props.loggedInStatus) {
+              case 'LOGGED_IN':
+                return (
+                  <Nav >
+                    <Nav.Link >
+                      <UserButton userName={props.appState.user.name} />
+                    </Nav.Link>
+                    <Nav.Link >
+                      <SignoutButton logout={handleLogoutClick} />
+                    </Nav.Link>
+                  </Nav>
+                );
+              case 'NOT_LOGGED_IN':
+                return (
+                  <Nav >
+                    <SigninButton />
+                  </Nav>);
+              default:
+                return null;
+            }
         })()}
-      </div>
+      </Navbar.Collapse>
     </Navbar>
-
-    // <nav className="container-fullwidth">
-    //   <Link to='/'>
-    //     <h3>Logo</h3>
-    //   </Link>
-    //   <ul className="nav-links">
-    //     <Link to='/about'>
-    //       <li>About</li>
-    //     </Link>
-    //     <Link to='/trips'>
-    //       <li>Get Started</li>
-    //     </Link>
-    //     <Link to='/signup'>
-    //       <li>Sign Up</li>
-    //     </Link>
-    //     <Link to='/login'>
-    //       <li>Log In</li>
-    //     </Link>
-    //   </ul>
-    // </nav>
   );
 }

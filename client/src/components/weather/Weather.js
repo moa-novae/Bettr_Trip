@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactAnimatedWeather from 'react-animated-weather';
+import './Weather.css';
 
 const setIcon = function (icon) {
   let object = {
@@ -21,11 +22,12 @@ export default function Weather(props) {
     return (
       <div>
         <ReactAnimatedWeather
+        className={"weather-icon"}
         icon={iconObject.icon}
         size={iconObject.size}
         animate={iconObject.animate} 
-        />
-        High: {props.data.high}°F
+        /> 
+        High: {props.data.high}°F 
     Low: {props.data.low}°F
   </div>
     )

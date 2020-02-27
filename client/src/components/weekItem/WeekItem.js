@@ -12,6 +12,7 @@ import TravelTime from '../traveltime';
 import axios from 'axios';
 import Weather from '../weather';
 import MomentAdapter from '@date-io/moment'
+import "./WeekItem.css"
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
 
@@ -42,6 +43,21 @@ const useStyles = makeStyles(theme => ({
 //   return output
 // }
 
+function compare(a, b) {
+  const time1 = a.start_time
+  const time2 = b.start_time
+  const time1Linux = new Date(time1).getTime()
+  const time2Linux = new Date(time2).getTime()
+
+  let comparison = 0;
+  if (time1Linux > time2Linux) {
+    comparison = 1;
+  } else if (time1Linux < time2Linux) {
+    comparison = -1;
+  }
+  return comparison
+}
+
 export default function weekItem(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
@@ -59,12 +75,9 @@ export default function weekItem(props) {
       }
     })
     console.log('points filtered---', pointsFiltered)
-    setFiltered(state => ({ points: pointsFiltered }))
+    const sortedFiltered = pointsFiltered.sort(compare)
+    setFiltered(state => ({ points: sortedFiltered }))
   }, [props.pointData])
-
-
-
-
 
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -124,6 +137,7 @@ export default function weekItem(props) {
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log('im filtired', filtered, filtered.points)
         const coordOfFirst = { latitude: filtered.points[0].latitude, longitude: filtered.points[0].longitude }
         const startTimeOfFirst = filtered.points[0].start_time
         const today = Date.now() / 1000
@@ -137,7 +151,8 @@ export default function weekItem(props) {
           })
           const weekWeather = JSON.parse(weekWeatherResponse.data.data)
           const weekSelectDays = weekWeather.daily.data.filter(item => item.time > startTimeLinux)
-          setWeather(state => ({ icon: weekSelectDays[0].icon, high: weekSelectDays[0].temperatureHigh, low: weekSelectDays[0].temperatureLow }))
+          // console.log('WHERE ICON---', weekSelectDays[0].icon)
+          setWeather(state => ({ icon: weekSelectDays[0].icon, high: Math.round(weekSelectDays[0].temperatureHigh), low: Math.round(weekSelectDays[0].temperatureLow) }))
         } else if (startTimeLinux - today > 604800) {
           const historicalWeatherResponse = await axios.post(`http://localhost:3001/weather/old`, {
             latitude: coordOfFirst.latitude.toFixed(3),
@@ -145,19 +160,19 @@ export default function weekItem(props) {
             time: startTimeLinux
           })
           const historicalWeather = JSON.parse(historicalWeatherResponse.data.data)
-          setWeather(state => ({ high: historicalWeather.daily.data[0].temperatureHigh, low: historicalWeather.daily.data[0].temperatureLow }))
+          setWeather(state => ({ high: Math.round(historicalWeather.daily.data[0].temperatureHigh), low: Math.round(historicalWeather.daily.data[0].temperatureLow) }))
         } else {
           console.log('date in past')
-        }
+        }     
       } catch (error) {
         console.error(error)
       }
-      if (filtered.points && filtered.points.length > 0) {
-        console.log('filtered points', filtered.points)
-        fetchData()
-      }
+      // if (filtered.points && filtered.points.length > 0) {
+      //   console.log('filtered points', filtered.points)
+      // }
     }
-  }, [filtered])
+    fetchData()
+  }, [props.pointData, filtered])
 
   return (
     //this is mostly material UI copy pasta
@@ -168,9 +183,9 @@ export default function weekItem(props) {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          {/* <Typography className={classes.heading}>{((filtered.points && filtered.points[0]) ? formatTime(filtered.points[0].start_time) : console.log('date not rendered'))}</Typography> */}
-          {((filtered.points && filtered.points[0])? <Typography className={classes.heading}>{formatTime(filtered.points[0].start_time)}</Typography> : console.log('date not rendered'))}
-          <Typography className={classes.secondaryHeading}>Date Itinerary</Typography>
+          {/* {((filtered.points && filtered.points[0])? <Typography className={classes.heading}>{props.formatedDate}</Typography> : console.log('date not rendered'))} */}
+          {<Typography className={classes.heading}>{props.formatedDate}</Typography>}
+          {(weather.high && <Weather className={"weather-header"} data={weather} /> )}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div className={classes.demo}>
@@ -180,7 +195,6 @@ export default function weekItem(props) {
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      {(weather.high ? <Weather data={weather} /> : console.log('weather null'))}
     </React.Fragment>
   )
 }

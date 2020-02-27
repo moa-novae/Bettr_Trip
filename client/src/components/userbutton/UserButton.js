@@ -3,13 +3,17 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import CardTravelIcon from '@material-ui/icons/CardTravel';
+import './UserButton.css';
 
 
 
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
-  },
+  }, 
+  icon: {
+    color: 'rbg(255, 235, 205)'
+  }
 }));
 
 export default function IconLabelButtons(props) {
@@ -23,15 +27,17 @@ export default function IconLabelButtons(props) {
   return (
     <div>
       <Button
-        variant="contained"
+        variant="text"
         color="primary"
-        size="medium"
+        size="large"
         className={classes.button}
-        endIcon={<CardTravelIcon />}
+        endIcon={<CardTravelIcon className={classes.icon} style={{ color: 'rbg(255, 235, 205)' }} />}
         onClick={redirect}
       >
-        <div>Welcome Back!</div>
-        <div>James</div>
+      <div className="button-text">
+        <div>Welcome Back! </div>
+        <div>{props.userName}</div>
+      </div>
       </Button>
     </div>
   );

@@ -56,27 +56,36 @@ const BootstrapButton = withStyles({
 
 export default function(props) {
   const classes = useStyles();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPS, setConfirmPS] = useState("");
+  const [name, setName] = useState("");
 
   const [error1, setError1] = useState(false);
   const [error2, setError2] = useState(false);
   const [error3, setError3] = useState(false);
+  const [error4, setError4] = useState(false);
 
   const [errorText1, setErrorText1] = useState("");
   const [errorText2, setErrorText2] = useState("");
   const [errorText3, setErrorText3] = useState("");
+  const [errorText5, setErrorText5] = useState("");
 
   const helperText1 = "email cannot be blank";
   const helperText2 = "password cannot be blank";
   const helperText3 = "confirm password has to match";
   const helperText4 = "email has to include \"@\"";
-
+  const helperText5 = "name cannot be blank";
 
 
 
   const validate = () => {
+    if (name === "") {
+      setError4(true);
+      setErrorText5(helperText5);
+      return;
+    }
     if (email === "") {
       setError1(true);
       setErrorText1(helperText1);
@@ -101,15 +110,17 @@ export default function(props) {
     setError1(false);
     setError2(false);
     setError3(false);
+    setError4(false);
     setErrorText1("");
     setErrorText2("");
     setErrorText3("");
+    setErrorText5("");
 
-    save(email, password, confirmPS);
+    save(email, password, confirmPS, name);
   };
 
-  const save = (email, password, password_confirmation) => {
-    const user = { email, password, password_confirmation };
+  const save = (email, password, password_confirmation, name) => {
+    const user = { email, password, password_confirmation, name };
     axios.post(`http://localhost:3001/users`, { user }, { withCredentials: true })
     .then(res => {
       console.log(res, "<--- res after creating a new user");
@@ -123,12 +134,25 @@ export default function(props) {
   };
 
 
+
   return (
     <div>
       <h1>Sign Up Page</h1>
       <Container maxWidth="sm">
         
         <form className="signup-form" noValidate autoComplete="off" onSubmit={event => event.preventDefault()} >
+        <div class="input-field">
+            <TextField
+              required 
+              error={error4}
+              id="standard-required"
+              label="Name"
+              value={name}
+              onChange={e => {setName(e.target.value); setError4(false); setErrorText5("");}}
+              type="text"
+              helperText={errorText5}
+            />
+          </div>
           <div class="input-field">
             <TextField
               required 
