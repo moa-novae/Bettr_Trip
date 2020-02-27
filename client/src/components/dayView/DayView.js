@@ -109,6 +109,7 @@ export default function(props) {
   // update state when daysArr updates
 
   useEffect(() => {
+    console.log('beforeUse', state)
     if (props.tripTime) {
       console.log('i am receiving', moment(props.tripTime.start, 'X'), moment(props.tripTime.end, 'X'))
       setTripTime({ start: moment(props.tripTime.start, 'X'), end: moment(props.tripTime.end, 'X') })
@@ -128,8 +129,10 @@ export default function(props) {
           newState.columnOrder.push(m.format('YYYY-MM-DD'))
           
         }
-        console.log('props.daysarray', props.daysArr)
+        // console.log('newState1', newState)
+
         newState.columns['bin'].taskids=[]
+        
         props.daysArr.map(point => {
           newState.tasks[point.id.toString()] = {
             trip_id: point.trip_id,
@@ -142,6 +145,7 @@ export default function(props) {
             activity: point.activity,
             travel: { method: point.travel_method, duration: point.travel_duration }
           }
+          // console.log('newState2', newState)
           if (newState.tasks[point.id.toString()].time.start && newState.tasks[point.id.toString()].time.end) {
             console.log('newState.column', newState.columns, point.start_time)
             newState.columns[moment(point.start_time, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD')].taskIds.push(point.id.toString())
@@ -153,9 +157,11 @@ export default function(props) {
             }
           }
         })
-        // console.log('newState', newState)
+        
+        console.log('newState', newState)
 
       }
+      console.log('newstate after', newState)
       return newState
     })
   }, [props.daysArr, props.tripTime])
@@ -169,9 +175,10 @@ export default function(props) {
 
   //update to database when state changes 
   useEffect(() => {
+    // console.log('for', state)
 
     props.setUpdatedState(prev => {
-
+      console.log('useeffectcheck', state)
       let newState = { ...state }
       newState.bin = []
       for (let [key, value] of Object.entries(newState.tasks)) {
@@ -195,7 +202,6 @@ export default function(props) {
     })
     // setDayState(prev => manageTime(prev))
     for (let columnId of state.columnOrder) {
-
       for (let id of state.columns[columnId].taskIds) {
         axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
           name: state.tasks[id].name,

@@ -91,8 +91,6 @@ export default function Content() {
           region: (location.name.region ? location.name.region : null),
           latitude: location.coordinates.lat,
           longitude: location.coordinates.lng,
-          start_time: data.point.start_time,
-          end_time: data.point.end_time,
           created_at: data.point.created_at,
           updated_at: data.point.updated_at,
           trip_id: parseFloat(data.point.trip_id),
@@ -100,6 +98,8 @@ export default function Content() {
           travel_method: data.point.travel_method,
           travel_duration: data.point.travel_duration
         }
+        console.log('state.bin',state.bin)
+        debugger;
         setState(state => ({
           ...state,
           markers: [...state.markers, marker],
@@ -296,7 +296,7 @@ export default function Content() {
         />
       </div>
       <div className="map-container" style={{backgroundColor:'grey'}}>
-        {/* <MapWithASearchBox
+        <MapWithASearchBox
           saveLocation={saveLocation}
           onPlacesChanged={onPlacesChanged}
           center={state.center}
@@ -306,7 +306,7 @@ export default function Content() {
           onSearchBoxMounted={onSearchBoxMounted}
           onMapMounted={onMapMounted}
           updatedState={(updatedState.bin ? updatedState : "not rendered yet")}
-        /> */}
+        />
       </div>
       <animated.div className="recommend" style={springProp}>
   
