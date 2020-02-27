@@ -133,6 +133,7 @@ export default function Content(props) {
       const nextCenter = _.get(nextMarkers, '0.position', state.center);
       setState(state => ({
         ...state,
+        bounds: bounds,
         center: nextCenter,
         markers: [...state.markers, nextMarkers],
         location: {
@@ -147,6 +148,15 @@ export default function Content(props) {
         }
       }))
     }
+  }
+
+  // manages logic when place is searched and bound is changed
+  const onBoundsChanged = () => {
+    setState(state => ({
+      ...state, 
+      bounds: refs.map.getBounds(),
+      center: refs.map.getCenter()
+    }))
   }
 
   //loads data and sets state when page rendered
@@ -284,6 +294,8 @@ export default function Content(props) {
       </div>
       <div className="map-container">
         <MapWithASearchBox
+          onBoundsChanged={onBoundsChanged}
+          bounds={state.bounds}
           saveLocation={saveLocation}
           onPlacesChanged={onPlacesChanged}
           center={state.center}

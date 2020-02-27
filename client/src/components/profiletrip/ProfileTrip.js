@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: theme.spacing(2),
-    margin: 'auto',
+    margin: '10px',
     maxWidth: 500,
     background: "#f1f1f1",
     '&:hover': {

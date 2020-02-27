@@ -10,6 +10,7 @@ import Trip from '../trip';
 import Signup from '../signup';
 import Profile from '../profile';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { AnimatePresence, motion } from "framer-motion";
 
 class App extends Component {
   constructor() {
@@ -82,6 +83,8 @@ class App extends Component {
 
 
             <Nav handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} appState={this.state} />
+
+            <AnimatePresence exitBeforeEnter>
             <Switch>
               <Route path='/' exact render={props => (<Home {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/about' exact render={props => (<About {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
@@ -91,6 +94,7 @@ class App extends Component {
               <Route path='/trips/:id' render={props => (<Content {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} />)} />
               <Route path='/profile' exact render={props => (<Profile {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} handleTrip={this.handleTrip} />)} />
             </Switch>
+            </AnimatePresence>
 
         </div>
             

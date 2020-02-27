@@ -46,7 +46,7 @@ export default function(props) {
   return (
     <div>
       <h1>My Trips</h1>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" style={{maxHeight: 610, overflow: "auto"}} >
         <List>
           {tripData}
         </List>

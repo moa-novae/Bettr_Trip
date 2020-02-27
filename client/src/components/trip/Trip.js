@@ -7,6 +7,8 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { AnimatePresence, motion } from "framer-motion";
+
 
 
 
@@ -58,6 +60,17 @@ const BootstrapButton = withStyles({
   },
 })(Button);
 
+const pageTransition = {
+  in: {
+    opacity: 1,
+    x: 0
+  }, 
+  out: {
+    opacity: 0,
+    x: "-100%"
+  }
+}
+
 
 export default function(props) {
   const [name, setName] = useState("");
@@ -97,6 +110,7 @@ export default function(props) {
   };
 
   return (
+    <motion.div initial="out" animate="in" exit="out" variants={pageTransition} >
     <section className="trip-form-container">
       <Container maxWidth="sm">
         <h1>Start your trip here!</h1>
@@ -132,5 +146,6 @@ export default function(props) {
         </div>
       </Container>
     </section>
+    </motion.div>
   );
 }

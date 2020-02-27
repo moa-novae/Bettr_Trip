@@ -8,9 +8,6 @@ import { AiOutlineLogout } from 'react-icons/ai';
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center"
   },
 
 }));
