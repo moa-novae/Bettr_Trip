@@ -37,6 +37,7 @@ export default function(props) {
         lng={binObj.lng}
         id={binObj.id}
         index={index}
+        delete={props.delete}
       />)
     }
   })

@@ -21,6 +21,7 @@ width: 300px`
 
 
 export default function(props) {
+  console.log('column props', props)
   const { column } = props
   return (
     <>
@@ -63,7 +64,7 @@ export default function(props) {
       }
     
       {column.title === 'Bin' &&
-        <Bin
+        <Bin delete={props.delete}
         bin={props.state.columns['column-2'].taskIds.map(point => props.state.tasks[point])}
           column={column}
         />

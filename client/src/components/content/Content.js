@@ -32,6 +32,7 @@ const onMapMounted = (ref) => {
 export default function Content() {
   const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
+  const [savedState, setSavedState] = useState({})
   const [state, setState] = useState({
     bounds: null,
     center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
@@ -47,6 +48,8 @@ export default function Content() {
   const [view, setView] = useState('day')
 
   let { id } = useParams();
+
+  console.log('updated state', updatedState)
 
   //function called when save button clicked
   const saveLocation = () => {
@@ -64,7 +67,6 @@ export default function Content() {
       longitude: location.coordinates.lng
     })
       .then(response => {
-        console.log(response.data)
         const data = response.data
         const binObject = {
           name: location.name.placeName,
@@ -86,6 +88,8 @@ export default function Content() {
           markers: [...state.markers, marker],
           bin: [...state.bin, binObject]
         }))
+        setUpdatedState(state => ({ ...state, bin: [...state.bin, binObject] }))
+        setSavedState(state => ({saved: binObject}))
       })
   }
 
@@ -145,7 +149,6 @@ export default function Content() {
     async function fetchData() {
       try {
         const response = await axios.get(`http://localhost:3001/api/trips/${id}/points/`)
-        const tripResponse = await axios.get(`http://localhost:3001/api/trips/${id}`)
         const markerArray = [];
         const binArray = [];
         for (let point of response.data.points) {
@@ -172,71 +175,55 @@ export default function Content() {
           binArray.push(binObject);
         }
         setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
-        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000
-        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
-        console.log('trip data', tripStart, tripEnd)
-        const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
-        console.log('day difference', daysInTrip)
-        let week = [];
-        // const momentStartDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY")
-        // for (let i = 0; i <= daysInTrip; i++) {
-        //   let newDate = moment(tripResponse.data.trip.start_date, "DD-MM-YYYY").add(i, "days")
-        //   console.log('new date', newDate)
-        // }
-        if (!binArray || binArray.length === 0) {
-          week.push(<Alert />);
+        const binFilter = binArray.filter(item => item.start_time !== null)
+        if (binArray[0]) { //if theres a point in the database - set that center 
+          setState(state => ({
+            ...state,
+            bin: [...binArray],
+            markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+            center: { lat: binArray[0].latitude, lng: binArray[0].longitude },
+            daysFiltered: [...binFilter]
+          }))
         } else {
-          const binFilter = binArray.filter(item => item.start_time !== null)
-          // for accumuluating points data
-          let pointDataArr = [];
-          for (let i = 0; i < binFilter.length; i++) {
-            if (i === 0) {
-              pointDataArr.push(binFilter[i])
-            } else if (i === binFilter.length - 1) {
-              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-                pointDataArr = [];
-                pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-              } else {
-                pointDataArr.push(binFilter[i]);
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-              }
-            } else {
-              if (binFilter[i].start_time.slice(8, 10) !== binFilter[i - 1].start_time.slice(8, 10)) {
-                week.push(<WeekItem weatherState={updatedState} pointData={pointDataArr} setView={setView} />);
-                pointDataArr = [];
-                pointDataArr.push(binFilter[i]);
-              } else {
-                pointDataArr.push(binFilter[i]);
-              }
-            }
-          }
-          if (binArray[0]) { //if theres a point in the database - set that center 
-            setState(state => ({
-              ...state,
-              bin: [...binArray],
-              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-              weekViews: week,
-              center: { lat: binArray[0].latitude, lng: binArray[0].longitude },
-              daysFiltered: [...binFilter]
-            }))
-          } else {
-            setState(state => ({
-              ...state,
-              bin: [...binArray],
-              markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
-              weekViews: week,
-              daysFiltered: [...binFilter]
-            }))
-          }
+          setState(state => ({
+            ...state,
+            bin: [...binArray],
+            markerLibrary: [...markerArray], //sets new markers data into marker library to later be turned into markers 
+            daysFiltered: [...binFilter]
+          }))
         }
+        // }
       } catch (error) {
         console.error(error)
       }
     }
     fetchData();
-  }, [view])
+  }, [])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const tripResponse = await axios.get(`http://localhost:3001/api/trips/${id}`)
+        const week = [];
+        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() / 1000
+        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000
+        const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
+        for (let i = 0; i <= daysInTrip; i++) {
+          let newDate = moment(tripResponse.data.trip.start_date, "YYYY-MM-DD").add(i, "days")
+
+          week.push(<WeekItem key={i} date={newDate} weatherState={updatedState} pointData={updatedState.bin} setView={setView} />)
+        }
+        setState(state => ({
+          ...state,
+          weekViews: week,
+          markerLibrary: updatedState.bin
+        }))
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchData();
+  }, [updatedState])
 
   useEffect(() => {
     setTimeout(function () {
@@ -271,7 +258,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
+        <Calendar daysArr={state.bin} savedState={savedState} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
@@ -286,11 +273,11 @@ export default function Content() {
         />
       </div>
       <animated.div className="recommend" style={springProp}>
-  
 
-          <Button className='expand-recommend' variant="Info" onClick={() => setRecommendToggle(prev => !prev)}>Recommend </Button>
-          <Recommend currentState={state} addPointToMap={addPointToMap} />
-      
+
+        <Button className='expand-recommend' variant="Info" onClick={() => setRecommendToggle(prev => !prev)}>Recommend </Button>
+        <Recommend currentState={state} addPointToMap={addPointToMap} />
+
       </animated.div>
 
     </div>

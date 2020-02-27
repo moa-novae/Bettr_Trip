@@ -57,7 +57,6 @@ export default function(props) {
     setExit(false) //disable animation so collapsed tab unmounts right away
     setExpanded(false) //collapses tab before drag starts
   }
-
   //manages logic when drag finishes
   const onDragEnd = result => {
     setExpanded(true)
@@ -227,6 +226,7 @@ export default function(props) {
             setDayState={setDayState}
             state={state}
             setDelete={setDelete}
+            delete={props.delete}
 
           />
         })}
