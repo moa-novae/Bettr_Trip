@@ -7,7 +7,7 @@ const moment = extendMoment(originalMoment);
 
 const stateDefinitions = {
   available: {
-    color: "#ffedba",
+    color: "#f5e9c9",
     label: 'Available'
   }
 };
