@@ -26,7 +26,6 @@ export default function(props) {
     <>
       {column.title === "Day list" &&
       <>
-        <Title> {props.column.title} </Title>
           <Container>
           <Droppable droppableId={props.column.id} style={{minHeight: '30vh'}}>
             {(provided) => (

@@ -37,7 +37,9 @@
     "react-skycons": "^0.7.0",
     "react-spring": "^8.0.27",
     "react-time-picker": "^3.9.0",
-    "styled-components": "^5.0.1"
+    "react-transition-group": "^4.3.0",
+    "styled-components": "^5.0.1",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "react-scripts start",

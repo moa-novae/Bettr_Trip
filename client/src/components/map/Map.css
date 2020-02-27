@@ -1,4 +1,9 @@
-div {
-  height: 100%;
-  width: 100%;
+.saveButton {
+  width: 200px;
+  color:#f7f288;
+  background-color: darkblue;
+}
+
+.saveButton-div {
+  margin: 0.2em;
 }

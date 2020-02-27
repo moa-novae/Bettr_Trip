@@ -1,3 +1,31 @@
 ul {
   background-color: white;
 }
+
+.card-bin {
+  border-radius: 10px;
+}
+
+.card-body-bin {
+  background-color: rgb(246, 243, 243);
+  border-radius: 10px;
+}
+
+.card-title {
+  margin: 5px;
+  font-size: 1em;
+}
+
+.card-subtitle {
+  color: rgb(97, 92, 92);
+  font-size: small;
+  margin: 5px;
+}
+
+.card-delete-icon {
+  color: lightblue;
+}
+
+.card-delete-icon:hover {
+  color: darkblue;
+}

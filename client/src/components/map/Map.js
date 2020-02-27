@@ -13,6 +13,7 @@ import {
   useParams
 } from "react-router-dom";
 import Bin from '../bin'
+import './Map.css';
 
 
 
@@ -56,13 +57,12 @@ function compare(a, b) {
 const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
   return (
     <GoogleMap
-      defaultZoom={10}
+      defaultZoom={2}
       center={props.center}
       ref={props.onMapMounted}
     >
       <SearchBox
         ref={props.onSearchBoxMounted}
-        defaultZoom={15}
         controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
         onPlacesChanged={props.onPlacesChanged}
       >
@@ -71,7 +71,9 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
        {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
         props.directions.directionsArray.map((item) => <DirectionsRenderer directions={item} />)
       )}
-       <Button className={"saveButton"} onClick={() => props.saveLocation() }>Save</Button>
+      <div className="saveButton-div" >
+        <Button className={"saveButton"} onClick={() => props.saveLocation() }>Save</Button>
+      </div>
       {(props.markers ? props.markers.map((marker, index) =>
         <Marker key={index} position={marker.position} title={marker.title} />
       ) : console.log('no marker'))}

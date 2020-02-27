@@ -227,7 +227,7 @@ export default function(props) {
             setDayState={setDayState}
             state={state}
             setDelete={setDelete}
-
+            tripData={props.tripData}
           />
         })}
       </DragDropContext>

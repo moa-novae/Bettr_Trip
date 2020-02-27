@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'; //for time picking material ui
 import Switch from '../switch';
 import MomentUtils from '@date-io/moment';
+import './Calendar.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,6 +27,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function ControlledExpansionPanels(props) {
   const [switchValue, setSwitchValue] = useState(null);
+  let { id } = useParams();
+  const [tripName, setTripName] = useState("");
+
+
 
   useEffect(() => {
     if (props.view === 'week') {
@@ -44,6 +49,13 @@ export default function ControlledExpansionPanels(props) {
 
   }, [switchValue]);
 
+  useEffect(() => {
+    axios.get(`http://localhost:3001/api/trips/${id}`)
+    .then(res => {
+      setTripName(res.data.trip.name);
+    })
+  }, []);
+
   // console.log('props.daysArr',props.daysArr)
 
   const classes = useStyles()
@@ -52,10 +64,18 @@ export default function ControlledExpansionPanels(props) {
 
   return (
     <div className={classes.root}>
-      <div>
+
+      <div className="toggle-switch-div">
+        <span className="toggle-flag" >Overview</span>
         <Switch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
+        <span className="toggle-flag" >Details</span>
       </div>
-      <div style={{marginTop: props.view === 'week' ? '3.2em' : '0em'}}>
+
+      <div className="trip-title">
+        {tripName}
+      </div>
+
+      <div style={{marginTop: props.view === 'week' ? '1em' : '0em'}}>
 
       {props.view === 'week' && props.weekViews}
       </div>

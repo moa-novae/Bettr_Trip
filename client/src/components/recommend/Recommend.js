@@ -34,8 +34,8 @@ export default function(props) {
 
             if (res.data.results[i].photos) {
               nearByLocation["photo_reference"] = res.data.results[i].photos[0].photo_reference;
+              console.log(nearByLocation.photo_reference, "AAAAAAA");
               nearByLocation["location"] = res.data.results[i].geometry.location;
-              console.log(res.data.results);
               locationInfoArr.push({ name: res.data.results[i].name, vicinity: res.data.results[i].vicinity })
 
               output.push(nearByLocation);
@@ -52,8 +52,6 @@ export default function(props) {
 
     {
       springProps.map(({ xys }, index) => {
-        console.log('springprops', springProps[index])
-        console.log('locationInfo', locationInfo)
         return (
           <animated.div
             class="recommend-card"

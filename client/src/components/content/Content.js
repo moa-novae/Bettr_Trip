@@ -29,13 +29,13 @@ const onMapMounted = (ref) => {
   refs.map = ref;
 }
 
-export default function Content() {
+export default function Content(props) {
   const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [suggested, setSuggested] = useState(false);
   const [state, setState] = useState({
     bounds: null,
-    center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
+    center: { lat: 34.455523, lng: 3.857350 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page
     markers: [],
     location: {},
     bin: [],
@@ -108,7 +108,8 @@ export default function Content() {
 
   //manages logic when place is searched 
   const onPlacesChanged = () => {
-    const places = refs.searchBox.getPlaces(); //gets place of thing searched 
+    const places = refs.searchBox.getPlaces(); //gets place of thing searched
+    console.log(places[0], "This is places from onPlacesChanged");
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
     if (places[0].geometry) {
 
@@ -135,8 +136,14 @@ export default function Content() {
         center: nextCenter,
         markers: [...state.markers, nextMarkers],
         location: {
-          name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
-          coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
+          name: {
+            placeName: places[0].name, 
+            region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null)
+          },
+          coordinates: {
+            lat: places[0].geometry.location.lat(), 
+            lng: places[0].geometry.location.lng()
+          }
         }
       }))
     }
@@ -273,7 +280,7 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
+        <Calendar daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} tripData={props.appState.trip} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
