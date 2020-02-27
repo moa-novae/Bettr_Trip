@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ControlledExpansionPanels(props) {
+export default function(props) {
   const [switchValue, setSwitchValue] = useState(null);
   let { id } = useParams();
   const [tripName, setTripName] = useState("");
@@ -59,9 +59,9 @@ export default function ControlledExpansionPanels(props) {
   // console.log('props.daysArr',props.daysArr)
 
   const classes = useStyles()
-  
-  // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview
 
+  // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview
+  // console.log('cal trip', props.tripTime)
   return (
     <div className={classes.root}>
 
@@ -74,13 +74,12 @@ export default function ControlledExpansionPanels(props) {
       <div className="trip-title">
         {tripName}
       </div>
+      <div style={{ marginTop: props.view === 'week' ? '3.2em' : '0em' }}>
 
-      <div style={{marginTop: props.view === 'week' ? '1em' : '0em'}}>
-
-      {props.view === 'week' && props.weekViews}
+        {props.view === 'week' && props.weekViews}
       </div>
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        {props.view === 'day' && <ReactDnd daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
+        {props.view === 'day' && <ReactDnd tripTime={props.tripTime} daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}
       </MuiPickersUtilsProvider>
     </div>
   );

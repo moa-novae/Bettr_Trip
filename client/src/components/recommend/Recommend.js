@@ -23,7 +23,7 @@ export default function(props) {
 
   useEffect(() => {
     if (!props.currentState.location.coordinates) {
-      console.log(props.currentState, "no coordinates for currentState");
+      // console.log(props.currentState, "no coordinates for currentState");
     } else {
       axios.get(`${proxyurl}https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${props.currentState.location.coordinates.lat},${props.currentState.location.coordinates.lng}&radius=1000&type=tourist_attraction&key=${process.env.REACT_APP_GOOGLE_API_KEY}`)
         .then(res => {

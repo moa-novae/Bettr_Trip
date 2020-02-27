@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { Card } from 'react-bootstrap'
+import axios from 'axios'
 import './BinItem.css'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -9,11 +10,22 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const Button = (props) => {
   return (
-    <button
-      className={"delete-point-button"}
-      onClick={() => { props.deletePoint(props.id, props.lat, props.lng) }}
-    >Delete
-    </button>
+    <IconButton>
+    <DeleteIcon className={"card-delete-icon"} 
+     className={"delete-point-button"}
+     onClick={() => {
+       axios.delete(`http://localhost:3001/api/trips/1/points/${props.id}`)
+         .then(props.setDayState(prev => {
+           let newState = { ...prev }
+           delete newState.tasks[props.id]
+           const idIndex = newState.columns['bin'].taskIds.indexOf(props.id.toString())
+           newState.columns['bin'].taskIds.splice(idIndex, 1)
+           return newState
+
+         }))
+     }}/>
+  </IconButton>
+    
   )
 }
 
@@ -40,9 +52,7 @@ export default function(props) {
                   {props.region}
                 </Card.Subtitle>
 
-                <IconButton lat={props.lat} lng={props.lng} id={props.id} deletePoint={props.deletePoint} >
-                  <DeleteIcon className={"card-delete-icon"} />
-                </IconButton>
+                <Button id={props.id} setDayState={props.setDayState} />
               </Card.Body>
             </Card>
           </div>

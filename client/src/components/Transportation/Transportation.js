@@ -63,7 +63,7 @@ export default function(props) {
 
   return (
     <>
-      <p>Duration: {props.travel.duration}</p>
+      {/* <p>Duration: {props.travel.duration}</p> */}
       <p>Method: {props.travel.method}</p>
       <div className="icon-container">
 
@@ -74,7 +74,7 @@ export default function(props) {
               key={i}
               style={{
                 left: x,
-                zIndex: 10 - x,
+                
               }}>
 
               {(i === 0 || !unmountIcons) &&
