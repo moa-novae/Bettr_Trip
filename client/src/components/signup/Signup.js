@@ -136,7 +136,7 @@ export default function(props) {
 
 
   return (
-    <div>
+    <div className="background-image" >
       <h1>Sign Up Page</h1>
       <Container maxWidth="sm">
         
