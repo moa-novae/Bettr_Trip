@@ -199,7 +199,7 @@ export default function Content(props) {
           }
           binArray.push(binObject);
         }
-        setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
+        // setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
         const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000 + 86400
         const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000 + 86400
         setTripTime({start: tripStart, end: tripEnd})

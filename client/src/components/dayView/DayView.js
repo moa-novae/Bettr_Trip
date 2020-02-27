@@ -116,6 +116,7 @@ export default function(props) {
 
 
     setDayState(prev => {
+      console.log('THIS IS DAY STATE UE 1', state)
       let newState = { ...prev }
 
       // console.log('useeffect trip',tripTime.start)
@@ -169,6 +170,7 @@ export default function(props) {
 
   //update to database when state changes 
   useEffect(() => {
+    console.log('THIS IS DAY STATE UE 2', state)
 
     props.setUpdatedState(prev => {
 
