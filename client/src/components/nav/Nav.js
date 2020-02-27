@@ -8,6 +8,8 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from "react-router-bootstrap";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+import Image from 'react-bootstrap/Image';
+import Logo from "../../images/logo.png"
 
 
 
@@ -29,7 +31,9 @@ export default function(props) {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Navbar.Brand>
-        <Link to='/'>LOGO</Link>
+        <Link to='/'>
+          <Image src={Logo} fluid width="50px" height="50px" />
+        </Link>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
