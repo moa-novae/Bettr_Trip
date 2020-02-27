@@ -93,17 +93,17 @@ export default function(props) {
             [newColumn.id]: newColumn,
           },
         }
-        console.log('newTasks in dropend', newState.tasks)
+        // console.log('newTasks in dropend', newState.tasks)
         return (manageTime(newState, source.index, destination.index))
       }
 
       //move between lists
       else {
         const startTaskIds = Array.from(start.taskIds)
-        console.log('start', startTaskIds)
-        console.log('source.index', source.index)
+        // console.log('start', startTaskIds)
+        // console.log('source.index', source.index)
         startTaskIds.splice(source.index, 1)
-        console.log('finish', startTaskIds)
+        // console.log('finish', startTaskIds)
         const newStart = {
           ...start,
           taskIds: startTaskIds,
@@ -133,16 +133,23 @@ export default function(props) {
   // update state when daysArr updates
 
   useEffect(() => {
-    console.log('daysarr useeffect!!!!!!!!!!')
+
     setDayState(prev => {
       let newState = { ...prev }
       newState.columns['column-1'].taskIds = [];
       newState.columns['column-2'].taskIds = [];
       props.daysArr.map(point => {
-
-        // if (!point.time.start && newState.tasks[point.id.toString()].time.start) {
-
-        // } else {
+        let run = true;
+        // console.log('push', point)
+          if (newState.tasks[point.id]) {
+            if (newState.tasks[point.id].time.start) {
+              if (!point.start_time) {
+                run = false;
+              }
+            }
+          }
+        // console.log('before',newState.tasks)
+        if (run) {
           newState.tasks[point.id.toString()] = {
             trip_id: point.trip_id,
             id: point.id,
@@ -154,11 +161,13 @@ export default function(props) {
             activity: point.activity,
             travel: { method: point.travel_method, duration: point.travel_duration }
           }
+        }
+        // console.log('after', newState.tasks)
         // }
 
 
-        if (point.start_time && point.end_time) {
-          console.log('point.id', point.id)
+        if (newState.tasks[point.id.toString()].time.start && newState.tasks[point.id.toString()].time.end) {
+          // console.log('point.id', point.id)
           newState.columns['column-1'].taskIds.push(point.id.toString())
         }
         else {
@@ -166,6 +175,8 @@ export default function(props) {
         }
 
       })
+      // console.log('newState', newState)
+    
       return newState
     })
   }, [props.daysArr])
@@ -181,7 +192,7 @@ export default function(props) {
   useEffect(() => {
 
     props.setUpdatedState(prev => {
-
+    
       let newState = { ...state }
       newState.bin = []
       for (let [key, value] of Object.entries(newState.tasks)) {
@@ -200,12 +211,10 @@ export default function(props) {
 
         })
       }
-      console.log('return up', newState)
       return newState
-
     })
     // setDayState(prev => manageTime(prev))
-    console.log('before put', state)
+  
     for (let id of state.columns['column-1'].taskIds) {
       axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
         name: state.tasks[id].name,
@@ -217,11 +226,14 @@ export default function(props) {
       }
       )
     }
+    // setDayState(prev => {console.log('prev', prev);
+  // return prev})
+
   }, [state])
-  console.log('state', state)
+
+  
   return (
     <div className='detailed-view'>
-
       <DragDropContext
         onDragEnd={onDragEnd}
         onBeforeCapture={onBeforeCapture}>

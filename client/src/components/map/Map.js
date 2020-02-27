@@ -3,7 +3,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker, DirectionsRenderer } fr
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 import _ from 'lodash';
 import axios from 'axios';
-import {Button} from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { componentDidMount } from 'react-google-maps/lib/utils/MapChildHelper';
 import {
   BrowserRouter as Router,
@@ -34,7 +34,7 @@ const Input = (props) => {
         fontSize: `14px`,
         outline: `none`,
       }}
-      // value={props.}
+    // value={props.}
     />
   )
 }
@@ -66,17 +66,17 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
         controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
         onPlacesChanged={props.onPlacesChanged}
       >
-      <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
+        <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
       </SearchBox>
-       {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
+      {((props.directions.directionsArray && props.directions.directionsArray.length > 0) &&
         props.directions.directionsArray.map((item) => <DirectionsRenderer directions={item} />)
       )}
-       <Button className={"saveButton"} onClick={() =>  {props.saveLocation()} }>Save</Button>
+      <Button className={"saveButton"} onClick={() => { props.saveLocation() }}>Save</Button>
       {(props.markers ? props.markers.map((marker, index) =>
         <Marker key={index} position={marker.position} title={marker.title} />
       ) : console.log('no marker'))}
 
-      {props.suggestedState? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
+      {props.suggestedState ? (<Marker position={props.suggestMarker.position} />) : console.log('no suggested marker')}
 
     </GoogleMap>
   )
@@ -88,49 +88,49 @@ export default (props) => {
   const [loaded, setLoaded] = useState("false")
   const google = window.google
   useEffect(() => {
-    setTimeout(function () {
+    setTimeout(function() {
       setLoaded("true")
       if (props.updatedState.bin && props.updatedState.bin.length > 0 && loaded === "true") {
-          const directionsService = new google.maps.DirectionsService()
-          const updatedBin = props.updatedState.bin.filter(item => item.start_time !== null)
-          const sorted = updatedBin.sort(compare)
-          for (let i = 0; i < sorted.length - 1; i++) {
-            if (sorted[i].latitude === sorted[i + 1].latitude && sorted[i].longitude === sorted[i + 1].longitude) {
-              i++
-            } else {
-              let travelMethod = sorted[i].travel_method.toUpperCase()
-              if (travelMethod === "CAR") {
-                travelMethod = "DRIVING"
-              }
-              if (travelMethod === "DRIVING") {
-                travelMethod = google.maps.TravelMode.DRIVING
-              } else if (travelMethod === "BICYCLING") {
-                travelMethod = google.maps.TravelMode.BICYCLING
-              } else if (travelMethod === "WALKING") {
-                travelMethod = google.maps.TravelMode.WALKING
-              } else if (travelMethod === "TRANSIT") {
-                travelMethod = google.maps.TravelMode.TRANSIT
-              }
-              directionsService.route({
-                origin: { lat: sorted[i].latitude, lng: sorted[i].longitude },
-                destination: { lat: sorted[i + 1].latitude, lng: sorted[i + 1].longitude },
-                travelMode: travelMethod,
-                avoidFerries: true,
-                provideRouteAlternatives: false
-              },
-                (result, status) => {
-                  if (status === google.maps.DirectionsStatus.OK) {
-                    directions.directionsArray.push(result)
-                    let array = directions.directionsArray
-                    setDirections(state => ({ ...state, directions: array }))
-                  } else {
-                    console.error(`error fetching directions ${result} ${status}`)
-                  }
-                })
+        const directionsService = new google.maps.DirectionsService()
+        const updatedBin = props.updatedState.bin.filter(item => item.start_time !== null)
+        const sorted = updatedBin.sort(compare)
+        for (let i = 0; i < sorted.length - 1; i++) {
+          if (sorted[i].latitude === sorted[i + 1].latitude && sorted[i].longitude === sorted[i + 1].longitude) {
+            i++
+          } else {
+            let travelMethod = sorted[i].travel_method.toUpperCase()
+            if (travelMethod === "CAR") {
+              travelMethod = "DRIVING"
             }
+            if (travelMethod === "DRIVING") {
+              travelMethod = google.maps.TravelMode.DRIVING
+            } else if (travelMethod === "BICYCLING") {
+              travelMethod = google.maps.TravelMode.BICYCLING
+            } else if (travelMethod === "WALKING") {
+              travelMethod = google.maps.TravelMode.WALKING
+            } else if (travelMethod === "TRANSIT") {
+              travelMethod = google.maps.TravelMode.TRANSIT
+            }
+            directionsService.route({
+              origin: { lat: sorted[i].latitude, lng: sorted[i].longitude },
+              destination: { lat: sorted[i + 1].latitude, lng: sorted[i + 1].longitude },
+              travelMode: travelMethod,
+              avoidFerries: true,
+              provideRouteAlternatives: false
+            },
+              (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  directions.directionsArray.push(result)
+                  let array = directions.directionsArray
+                  setDirections(state => ({ ...state, directions: array }))
+                } else {
+                  console.error(`error fetching directions ${result} ${status}`)
+                }
+              })
           }
         }
-      
+      }
+
     }, 3000)
   }, [props.updatedState, loaded])
 

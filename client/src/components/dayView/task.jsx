@@ -105,6 +105,8 @@ export default function(props) {
           ref={provided.innerRef}
         >
           <Card className={classes.root}>
+            {/* {console.log('task state', props.state)} */}
+            {/* {console.log(' task tasks', props.task)} */}
             {/* <CardMedia
               image={require('../../images/bosnia.jpg')}
               className={classes.media}

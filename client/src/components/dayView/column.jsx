@@ -24,6 +24,8 @@ export default function(props) {
   const { column } = props
   return (
     <>
+    {/* {console.log('column state', props.state)} */}
+    {/* {console.log('column tasks', props.tasks)} */}
       {column.title === "Day list" &&
       <>
         <Title> {props.column.title} </Title>
