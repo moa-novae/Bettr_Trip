@@ -20,7 +20,6 @@ import { useSpring, animated } from 'react-spring'
 const Moment = new MomentAdapter();
 const { moment, humanize } = Moment
 
-
 const refs = {}; //google map element 
 const onSearchBoxMounted = (ref) => {
   refs.searchBox = ref;
@@ -44,14 +43,15 @@ function compare(a, b) {
   return comparison
 }
 
-export default function Content() {
+export default function Content(props) {
+  const [tripTime, setTripTime] = useState();
   const [recommendToggle, setRecommendToggle] = useState(false)
   const [suggestMarkerState, setSuggestMarkerState] = useState({});
   const [savedState, setSavedState] = useState({})
   const [suggested, setSuggested] = useState(false);
   const [state, setState] = useState({
     bounds: null,
-    center: { lat: -34.397, lng: 150.644 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page 
+    center: { lat: 34.455523, lng: 3.857350 }, //center - using set time out to set center causes it to have an error - but doesnt affect functionality- for now will pass default center to state also but will have to change if want to pass center from landing page
     markers: [],
     location: {},
     bin: [],
@@ -110,24 +110,11 @@ export default function Content() {
       })
   }
 
-  const deletePoint = function (pointId, lat, lng) {
-    //axios delete with lat and long to find point in database 
-    //then filter bin and markers to find those objects and remove them from state
-    axios.delete(`http://localhost:3001/api/trips/${id}/points/${pointId}`)
-      .then(() => {
-        const binArray = state.bin.filter(item => item.id !== pointId)
-        const markerArray = state.markerLibrary.filter(item => (item.position.latitude !== lat && item.position.longitude !== lng))
-        setState(state => ({
-          ...state,
-          markers: markerArray,
-          bin: binArray
-        }))
-      })
-  }
-
+  
   //manages logic when place is searched 
   const onPlacesChanged = () => {
-    const places = refs.searchBox.getPlaces(); //gets place of thing searched 
+    const places = refs.searchBox.getPlaces(); //gets place of thing searched
+    console.log(places[0], "This is places from onPlacesChanged");
     const bounds = new window.google.maps.LatLngBounds(); //gets boundaries for that place
     if (places[0].geometry) {
 
@@ -151,14 +138,34 @@ export default function Content() {
       const nextCenter = _.get(nextMarkers, '0.position', state.center);
       setState(state => ({
         ...state,
+        bounds: bounds,
         center: nextCenter,
         markers: [...state.markers, nextMarkers],
         location: {
-          name: { placeName: places[0].address_components[0].long_name, region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null) },
-          coordinates: { lat: places[0].geometry.location.lat(), lng: places[0].geometry.location.lng() }
+          name: {
+            placeName: places[0].name, 
+            region: (places[0].address_components[2] ? places[0].address_components[2].long_name : null)
+          },
+          coordinates: {
+            lat: places[0].geometry.location.lat(), 
+            lng: places[0].geometry.location.lng()
+          }
         }
       }))
     }
+  }
+  // useEffect(() => {
+  
+  // },[updatedState])
+
+
+  // manages logic when place is searched and bound is changed
+  const onBoundsChanged = () => {
+    setState(state => ({
+      ...state, 
+      bounds: refs.map.getBounds(),
+      center: refs.map.getCenter()
+    }))
   }
 
   //loads data and sets state when page rendered
@@ -166,6 +173,7 @@ export default function Content() {
     async function fetchData() {
       try {
         const response = await axios.get(`http://localhost:3001/api/trips/${id}/points/`)
+        const tripResponse = await axios.get(`http://localhost:3001/api/trips/${id}`)
         const markerArray = [];
         const binArray = [];
         for (let point of response.data.points) {
@@ -192,6 +200,11 @@ export default function Content() {
           binArray.push(binObject);
         }
         setUpdatedState(state => ({ ...state, bin: [...state.bin, ...binArray] }))
+        const tripStart = new Date(tripResponse.data.trip.start_date).getTime() /1000 + 86400
+        const tripEnd = new Date(tripResponse.data.trip.end_date).getTime() / 1000 + 86400
+        setTripTime({start: tripStart, end: tripEnd})
+        console.log('trip data', tripStart, tripEnd)
+        const daysInTrip = (tripEnd - tripStart) / (3600 * 24)
         const binFilter = binArray.filter(item => item.start_time !== null)
         if (binArray[0]) { //if theres a point in the database - set that center 
           setState(state => ({
@@ -245,9 +258,6 @@ export default function Content() {
   }, [updatedState])
 
   useEffect(() => {
-    console.log('updated state changed', updatedState)
-  }, [updatedState])
-  useEffect(() => {
     setTimeout(function () {
       const markerArray = [];
       if (state.markerLibrary) {
@@ -280,10 +290,12 @@ export default function Content() {
     <div className="content">
 
       <div className="calendar-container">
-        <Calendar daysArr={state.bin} savedState={savedState} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} />
+        <Calendar tripTime={tripTime} daysArr={state.bin} view={view} setView={setView} weatherState={updatedState} weekViews={state.weekViews} setUpdatedState={setUpdatedState} tripData={props.appState.trip} />
       </div>
       <div className="map-container">
         <MapWithASearchBox
+          onBoundsChanged={onBoundsChanged}
+          bounds={state.bounds}
           saveLocation={saveLocation}
           onPlacesChanged={onPlacesChanged}
           center={state.center}

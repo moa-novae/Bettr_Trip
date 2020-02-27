@@ -10,16 +10,19 @@ import Trip from '../trip';
 import Signup from '../signup';
 import Profile from '../profile';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { AnimatePresence, motion } from "framer-motion";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       loggedInStatus: 'NOT_LOGGED_IN',
-      user: {}
+      user: {}, 
+      trip: {}
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleTrip = this.handleTrip.bind(this);
   }
 
   checkLoginStatus() {
@@ -61,6 +64,14 @@ class App extends Component {
     });
   }
 
+  handleTrip(data) {
+    this.setState({
+      ...this.state, 
+      trip: data
+    });
+    console.log(this.state, "current staaate");
+  }
+
   render() {
     return (
       <Router>
@@ -72,15 +83,18 @@ class App extends Component {
 
 
             <Nav handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} appState={this.state} />
+
+            <AnimatePresence exitBeforeEnter>
             <Switch>
               <Route path='/' exact render={props => (<Home {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/about' exact render={props => (<About {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
-              <Route path='/trips' exact render={props => (<Trip {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} />)} />
+              <Route path='/trips' exact render={props => (<Trip {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} handleTrip={this.handleTrip} />)} />
               <Route path='/login' exact render={props => (<Login {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
               <Route path='/signup' exact render={props => (<Signup {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus}/>)} />
-              <Route path='/trips/:id' render={props => (<Content {...props} loggedInStatus={this.state.loggedInStatus}/>)} />
-              <Route path='/profile' exact render={props => (<Profile {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} />)} />
+              <Route path='/trips/:id' render={props => (<Content {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} />)} />
+              <Route path='/profile' exact render={props => (<Profile {...props} loggedInStatus={this.state.loggedInStatus} appState={this.state} handleTrip={this.handleTrip} />)} />
             </Switch>
+            </AnimatePresence>
 
         </div>
             

@@ -1,0 +1,18 @@
+.toggle-flag {
+  font-family: monospace;
+  font-size: 20px;
+  margin: 30px;
+  display: inline-flexbox;
+}
+
+.toggle-switch-div {
+  height: 30px;
+}
+
+.trip-title {
+  height: 40px;
+  font-size: 30px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-weight: 700;
+  color: darkblue;
+}

@@ -5,6 +5,13 @@ import originalMoment from "moment";
 import { extendMoment } from "moment-range";
 const moment = extendMoment(originalMoment);
 
+const stateDefinitions = {
+  available: {
+    color: "#ffedba",
+    label: 'Available'
+  }
+};
+
 class DatePicker extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -12,8 +19,8 @@ class DatePicker extends React.Component {
     const today = moment();
 
     this.state = {
-      isOpen: false,
-      value: moment.range(today.clone().subtract(7, "days"), today.clone())
+      isOpen: true,
+      value: null
     };
   }
 
@@ -23,17 +30,11 @@ class DatePicker extends React.Component {
     this.props.onSelect(this.state);
   };
 
-  onToggle = () => {
-    this.setState({ isOpen: !this.state.isOpen });
-  };
-
   renderSelectionValue = () => {
     return (
       <div>
         <div>Selection</div>
-        {this.state.value.start.format("YYYY-MM-DD")}
-        {" - "}
-        {this.state.value.end.format("YYYY-MM-DD")}
+        {(this.state.value ? `${this.state.value.start.format("YYYY-MM-DD")} - ${this.state.value.end.format("YYYY-MM-DD")}` : `---------- - ----------`)}
       </div>
     );
   };
@@ -43,19 +44,14 @@ class DatePicker extends React.Component {
       <div>
         <div>{this.renderSelectionValue()}</div>
 
-        <div>
-          <input
-            type="button"
-            value="Toggle date picker"
-            onClick={this.onToggle}
-          />
-        </div>
-
         {this.state.isOpen && (
           <DateRangePicker
             value={this.state.value}
             onSelect={this.onSelect}
             singleDateRange={true}
+            minimumDate={new Date()}
+            defaultState="available"
+            stateDefinitions={stateDefinitions}
           />
         )}
       </div>

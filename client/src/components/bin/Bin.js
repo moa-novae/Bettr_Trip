@@ -37,14 +37,14 @@ export default function(props) {
         lng={binObj.lng}
         id={binObj.id}
         index={index}
-        delete={props.delete}
+        setDayState={props.setDayState}
       />)
     }
   })
 
   return (
     <div className='in-bin'>
-
+      {/* {console.log('bin is rendered')} */}
     <Droppable droppableId={props.column.id} direction='horizontal'>
       {(provided) => (
         

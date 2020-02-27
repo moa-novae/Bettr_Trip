@@ -13,7 +13,8 @@ import {
   useParams
 } from "react-router-dom";
 import Bin from '../bin'
-
+import './Map.css';
+import CustomMarker from '../custommarker';
 
 
 
@@ -61,15 +62,16 @@ const MapWithASearchBox = withScriptjs(withGoogleMap((props) => {
   }
   return (
     <GoogleMap
-      defaultZoom={10}
+      defaultZoom={2}
       center={props.center}
       ref={props.onMapMounted}
+      onBoundsChanged={props.onBoundsChanged}
     >
       <SearchBox
         ref={props.onSearchBoxMounted}
-        defaultZoom={15}
         controlPosition={window.google.maps.ControlPosition.TOP_LEFT}
         onPlacesChanged={props.onPlacesChanged}
+        bounds={props.bounds}
       >
         <Input suggestedState={props.suggestedState} suggestedLocation={props.suggestMarker.position} />
       </SearchBox>
@@ -97,7 +99,7 @@ export default (props) => {
   console.log('updated directions map', directions)
 
   useEffect(() => {
-    setTimeout(function () {
+    setTimeout(function() {
       setLoaded("true")
       if (props.updatedState.bin && props.updatedState.bin.length > 0 && loaded === "true") {
         // const array = [];

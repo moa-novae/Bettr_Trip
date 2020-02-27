@@ -3,22 +3,96 @@ import './Trip.css';
 import DatePicker from '../datepicker/DatePicker';
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { AnimatePresence, motion } from "framer-motion";
+
+
+
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: 200,
+    },
+  },
+}));
+
+const BootstrapButton = withStyles({
+  root: {
+    boxShadow: 'none',
+    textTransform: 'none',
+    fontSize: 16,
+    padding: '6px 12px',
+    border: '1px solid',
+    margin: '10px',
+    lineHeight: 1.5,
+    backgroundColor: '#007bff',
+    borderColor: '#007bff',
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    '&:hover': {
+      backgroundColor: '#0069d9',
+      borderColor: '#0062cc',
+      boxShadow: 'none',
+    },
+    '&:active': {
+      boxShadow: 'none',
+      backgroundColor: '#0062cc',
+      borderColor: '#005cbf',
+    },
+    '&:focus': {
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+    },
+  },
+})(Button);
+
+const pageTransition = {
+  in: {
+    opacity: 1,
+    x: 0
+  }, 
+  out: {
+    opacity: 0,
+    x: "-100%"
+  }
+}
+
 
 export default function(props) {
   const [name, setName] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [date, setDate] = useState({});
+  const [errorText, setErrorText] = useState("");
   let history = useHistory();
+  const classes = useStyles();
+
+  const helperText = "trip name cannot be blank";
 
 
 
   const validate = () => {
     if (name === "") {
-      setError("Trip name cannot be blank");
+      setError(true);
+      setErrorText(helperText);
       return;
     }
-    setError("");
-    console.log(props.appState.user.id, "USER_IDDDDDD");
+    setError(false);
+    setErrorText("");
+
     const trip = {
       name: name, 
       start_date: date.value.start._i, 
@@ -29,29 +103,49 @@ export default function(props) {
     axios
       .post('http://localhost:3001/api/trips', trip)
       .then(response => {
-        // console.log(response, "<---look at me!");
-        // console.log(response.data.trip_id, "<---look at me again!");
+        props.handleTrip(response.data);
         let tripID = response.data.trip_id;
         history.push(`trips/${tripID}`);
       });
   };
 
   return (
+    <motion.div initial="out" animate="in" exit="out" variants={pageTransition} >
     <section className="trip-form-container">
-      <h3>Start your trip here!</h3>
-      <form autoComplete="off" onSubmit={event => event.preventDefault()}>
-        <input
-          className="trip-form-trip-name"
-          name="name"
-          type="text"
-          placeholder="Give your trip a name"
-          onChange={event => setName(event.target.value)}
-          value={name}
-        />
-        <section className="trip_form_validation">{error}</section>
-        <DatePicker onSelect={setDate}/>
-      </form>
-      <button confirm onClick={() => validate()}>Save</button>
+      <Container maxWidth="sm">
+        <h1>Start your trip here!</h1>
+        <form autoComplete="off" onSubmit={event => event.preventDefault()}>
+          <div class="input-field">
+            <TextField
+              required
+              error={error}
+              id="standard-required"
+              label="Trip Name"
+              value={name}
+              onChange={e => {
+                setName(e.target.value);
+                setErrorText("");
+                setError(false);
+              }}
+              type="text"
+              helperText={errorText}
+            />
+          </div>
+          <DatePicker onSelect={setDate} />
+        </form>
+        <div>
+          <BootstrapButton
+            variant="contained"
+            color="primary"
+            enableRipple
+            className={classes.margin}
+            onClick={() => validate()}
+          >
+            Save
+          </BootstrapButton>
+        </div>
+      </Container>
     </section>
+    </motion.div>
   );
 }
