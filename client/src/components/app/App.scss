@@ -8,6 +8,12 @@ $dark: #003559;
 }
 .content {
   background-color: #f2f2f2;
+  background-image: linear-gradient(to bottom, #f2f2f2, rgb(120, 134, 160));
+}
+
+.main {
+  background-color: #f2f2f2;
+  background-image: linear-gradient(to bottom, #f2f2f2, rgb(120, 134, 160));
 }
 
 // .main::before {
