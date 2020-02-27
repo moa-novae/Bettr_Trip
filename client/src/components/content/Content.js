@@ -99,7 +99,6 @@ export default function Content(props) {
           travel_duration: data.point.travel_duration
         }
         console.log('state.bin',state.bin)
-        debugger;
         setState(state => ({
           ...state,
           markers: [...state.markers, marker],
