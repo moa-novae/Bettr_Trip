@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ControlledExpansionPanels(props) {
+export default function(props) {
   const [switchValue, setSwitchValue] = useState(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function ControlledExpansionPanels(props) {
   // console.log('props.daysArr',props.daysArr)
 
   const classes = useStyles()
-  
+
   // const week = daysArr.map(e => <WeekItem day={e} setView={setView}/>) //creates a bunch of day overview
 
   return (
@@ -55,9 +55,9 @@ export default function ControlledExpansionPanels(props) {
       <div>
         <Switch isOn={switchValue} handleToggle={() => setSwitchValue(!switchValue)} />
       </div>
-      <div style={{marginTop: props.view === 'week' ? '3.2em' : '0em'}}>
+      <div style={{ marginTop: props.view === 'week' ? '3.2em' : '0em' }}>
 
-      {props.view === 'week' && props.weekViews}
+        {props.view === 'week' && props.weekViews}
       </div>
       <MuiPickersUtilsProvider utils={MomentUtils}>
         {props.view === 'day' && <ReactDnd tripTime={props.tripTime} daysArr={props.daysArr} setUpdatedState={props.setUpdatedState} />}

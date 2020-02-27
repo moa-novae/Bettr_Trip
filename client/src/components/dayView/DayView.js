@@ -8,7 +8,7 @@ import MomentAdapter from '@date-io/moment'
 import manageTime from './helper'
 import './dayView.css'
 const Moment = new MomentAdapter();
-const { moment, humanize } = Moment
+const { moment, humanize, isBefore } = Moment
 
 
 
@@ -51,6 +51,7 @@ export default function(props) {
 
   const [deleteId, setDelete] = useState([]);
   const [state, setDayState] = useState(initialState);
+  const [tripTime, setTripTime] = useState({})
   const [expanded, setExpanded] = useState(true);
   const [exit, setExit] = useState(true) //animation of collapse material ui
   const onBeforeCapture = start => {
@@ -134,34 +135,40 @@ export default function(props) {
 
   useEffect(() => {
 
+    if (props.tripTime) {
+      console.log('i am receiving', moment(props.tripTime.start, 'X'),  moment(props.tripTime.end, 'X'))
+      setTripTime({ start: moment(props.tripTime.start, 'X'), end: moment(props.tripTime.end, 'X') })
+    }
+  
+    
     setDayState(prev => {
       let newState = { ...prev }
+      
+      // if (moment(tripTime.start).format('YYYY')) {
+      //   // console.log('the trip goes from', moment(tripTime.start).format('YYYY-MM-DD'), 'to', moment(tripTime.end).format('YYYY-MM-DD'))
+      //   for (let m = moment(tripTime.start); m.diff(tripTime.end) <= 0; m.add(1, 'days')) {
+      //     // console.log('forloop test', m.format('YYYY-MM-DD'))
+      //     newState.columns[m.format('YYYY-MM-DD')].taskIds = []
+  
+      //   }
+      // }
+
+
       newState.columns['column-1'].taskIds = [];
       newState.columns['column-2'].taskIds = [];
       props.daysArr.map(point => {
-        let run = true;
-        // console.log('push', point)
-          if (newState.tasks[point.id]) {
-            if (newState.tasks[point.id].time.start) {
-              if (!point.start_time) {
-                run = false;
-              }
-            }
-          }
-        // console.log('before',newState.tasks)
-        if (run) {
-          newState.tasks[point.id.toString()] = {
-            trip_id: point.trip_id,
-            id: point.id,
-            name: point.name,
-            latitude: point.latitude,
-            longitude: point.longitude,
-            time: { start: point.start_time, end: point.end_time, },
-            region: point.region,
-            activity: point.activity,
-            travel: { method: point.travel_method, duration: point.travel_duration }
-          }
+        newState.tasks[point.id.toString()] = {
+          trip_id: point.trip_id,
+          id: point.id,
+          name: point.name,
+          latitude: point.latitude,
+          longitude: point.longitude,
+          time: { start: point.start_time, end: point.end_time, },
+          region: point.region,
+          activity: point.activity,
+          travel: { method: point.travel_method, duration: point.travel_duration }
         }
+
         // console.log('after', newState.tasks)
         // }
 
@@ -176,7 +183,7 @@ export default function(props) {
 
       })
       // console.log('newState', newState)
-    
+
       return newState
     })
   }, [props.daysArr])
@@ -192,7 +199,7 @@ export default function(props) {
   useEffect(() => {
 
     props.setUpdatedState(prev => {
-    
+
       let newState = { ...state }
       newState.bin = []
       for (let [key, value] of Object.entries(newState.tasks)) {
@@ -211,10 +218,11 @@ export default function(props) {
 
         })
       }
+      console.log('newState', newState)
       return newState
     })
     // setDayState(prev => manageTime(prev))
-  
+
     for (let id of state.columns['column-1'].taskIds) {
       axios.put(`http://localhost:3001/api/trips/${state.tasks[id].trip_id}/points/${id}`, {
         name: state.tasks[id].name,
@@ -227,11 +235,11 @@ export default function(props) {
       )
     }
     // setDayState(prev => {console.log('prev', prev);
-  // return prev})
+    // return prev})
 
   }, [state])
 
-  
+
   return (
     <div className='detailed-view'>
       <DragDropContext
