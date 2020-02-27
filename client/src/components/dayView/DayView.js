@@ -143,15 +143,17 @@ export default function(props) {
     
     setDayState(prev => {
       let newState = { ...prev }
-      
-      // if (moment(tripTime.start).format('YYYY')) {
-      //   // console.log('the trip goes from', moment(tripTime.start).format('YYYY-MM-DD'), 'to', moment(tripTime.end).format('YYYY-MM-DD'))
-      //   for (let m = moment(tripTime.start); m.diff(tripTime.end) <= 0; m.add(1, 'days')) {
-      //     // console.log('forloop test', m.format('YYYY-MM-DD'))
-      //     newState.columns[m.format('YYYY-MM-DD')].taskIds = []
+      // console.log('useeffect trip',tripTime.start)
+      if (tripTime.start) {
+        // console.log('the trip goes from', moment(tripTime.start).format('YYYY-MM-DD'), 'to', moment(tripTime.end).format('YYYY-MM-DD'))
+        for (let m = moment(tripTime.start); m.diff(tripTime.end) <= 0; m.add(1, 'days')) {
+          // console.log('forloop test', m.format('YYYY-MM-DD'))
   
-      //   }
-      // }
+          newState.columns[m.format('YYYY-MM-DD')] = {id: m.format('YYYY-MM-DD'), title: m.format('YYYY-MM-DD'), taskIds: []} 
+          newState.columnOrder.push(m.format('YYYY-MM-DD'))
+  
+        }
+      }
 
 
       newState.columns['column-1'].taskIds = [];
