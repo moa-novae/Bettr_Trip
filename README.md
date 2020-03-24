@@ -9,7 +9,7 @@ In one terminal, run `bundle` to install the dependencies. Run `bin/rake db:setu
 
 In the other terminal, `cd` into `client`. Run `npm install`. Then run `npm start` and go to `localhost:3000` in your browser.
 
-##Features
+## Features
 Choose dates for your trip, search locations to add and drag and drop them into your calendar
 ![](Gif1.gif)
 
