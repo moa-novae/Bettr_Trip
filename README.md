@@ -18,7 +18,7 @@ Add more locations to view routes between destinations based on method of travel
 
 ![](Gif2.gif)
 
-Open the Reccomendations tab to view suggested places to visit and their location on the map.
+Open the Reccomendations tab to view suggested places and their location on the map.
 
 ![](Gif3.gif)
 
