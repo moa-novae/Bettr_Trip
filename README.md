@@ -11,12 +11,18 @@ In the other terminal, `cd` into `client`. Run `npm install`. Then run `npm star
 
 ## Features
 Choose dates for your trip, search locations to add and drag and drop them into your calendar.
+
 ![](Gif1.gif)
 
 Add more locations to view routes between destinations based on method of travel.
+
 ![](Gif2.gif)
 
-Open the Reccomendations tab to view suggest places to visit and their location on the map.
+Open the Reccomendations tab to view suggested places to visit and their location on the map.
+
 ![](Gif3.gif)
+
+Use the Week View to show your full itineray, the forecasted weather for your saved locations and travel time between locations.
+
 ![](Gif4.gif)
 
