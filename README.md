@@ -15,6 +15,8 @@ Choose dates for your trip, search locations to add and drag and drop them into 
 
 Add more locations to view routes between destinations based on method of travel.
 ![](Gif2.gif)
+
+Open the Reccomendations tab to view suggest places to visit and their location on the map.
 ![](Gif3.gif)
 ![](Gif4.gif)
 
