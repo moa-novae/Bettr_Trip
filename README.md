@@ -22,7 +22,12 @@ Open the Reccomendations tab to view suggested places to visit and their locatio
 
 ![](Gif3.gif)
 
-Use the Week View to show your full itineray, the forecasted weather for your saved locations and travel time between locations.
+Use the OverView to show your full itineray, the forecasted weather for your saved locations and travel time between locations.
 
 ![](Gif4.gif)
+
+## APIs and Tech Stack
+This project used ReactJs for the Frontend and Ruby on Rails for the Backend.
+
+APIs used were DarkSky: Forecast and Time Machine, Google: Maps Javascript, Places, Distance Matrix, Directions.
 
