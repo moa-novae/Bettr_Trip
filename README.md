@@ -36,5 +36,14 @@ Use the OverView to show your full itineray, the forecasted weather for your sav
 ## APIs and Tech Stack
 This project used ReactJs for the Frontend and Ruby on Rails for the Backend.
 
-APIs used were DarkSky: Forecast and Time Machine, Google: Maps Javascript, Places, Distance Matrix, Directions.
+APIs used were DarkSky: Forecast and Time Machine, Google: Maps JavaScript, Places, Distance Matrix, Directions.
 
+## Authors
+
+* Alan Mo: https://www.linkedin.com/in/alan-mo-a5377b144/
+* Kaiteng Lo: https://www.linkedin.com/in/kaiteng-lo-968b2697/
+* Jashan Brar: https://www.linkedin.com/in/jashan-brar/
+
+## License
+
+This project is licensed under the LHL License
