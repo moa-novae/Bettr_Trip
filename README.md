@@ -1,15 +1,22 @@
 # Bettr Trip - Read Me
 
-## Getting Started
-First, fork this repo so you get your own copy of it. Once you have done that, you can clone your new repo to your machine, and get started.
+If you're planning a trip then look no further. Bettr Trip allows you to search and save locations for your trip, and organizes everything into an adjustable itinerary. Plus, it gives you important details such as routes between destinations, recommended locations to visit, and weather forecasts. Trip planning has never been easier with Bettr Trip!
 
-You need **TWO** terminals for this.
+## Installation
+You will need two terminals for this.
 
 In one terminal, run `bundle` to install the dependencies. Run `bin/rake db:setup` to create the databases (called rails_project_development by default). Run `bin/rails s` to run the server.
 
 In the other terminal, `cd` into `client`. Run `npm install`. Then run `npm start` and go to `localhost:3000` in your browser.
 
+## Running the tests
+
+No tests added to this project.
+
 ## App Flow
+
+Welcome to Bettr Trip! 
+
 Choose dates for your trip, search locations to add and drag and drop them into your calendar.
 
 ![](Gif1.gif)
@@ -22,7 +29,7 @@ Open the Reccomendations tab to view suggested places and their location on the 
 
 ![](Gif3.gif)
 
-Use the OverView to show your full itineray, the forecasted weather for your saved locations and travel time between locations.
+Use the OverView to show your full itineray, the forecasted weather for your saved locations, and travel time between locations.
 
 ![](Gif4.gif)
 
