@@ -14,7 +14,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@wojtekmaj/react-timerange-picker": "^2.4.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "font-awesome": "^4.7.0",
     "framer-motion": "^1.8.4",
