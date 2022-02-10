@@ -60,7 +60,7 @@
   "devDependencies": {
     "@types/react-beautiful-dnd": "^12.1.1",
     "@types/styled-components": "^4.4.3",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "nodemon": "^2.0.2",
     "sass-loader": "^8.0.2"
   }
